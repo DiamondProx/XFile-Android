@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_background"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/list_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/listview_divider_color"
+        android:dividerHeight="0.1dp"
+        android:listSelector="@color/tab_btn_normal" >
+    </ListView>
+
+    <com.huangjiang.widgets.FileBrowserControl
+        android:id="@+id/fileBrowser"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:visibility="gone" >
+    </com.huangjiang.widgets.FileBrowserControl>
+
+</FrameLayout>
