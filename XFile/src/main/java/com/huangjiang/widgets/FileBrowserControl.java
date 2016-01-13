@@ -22,7 +22,7 @@ import com.huangjiang.adapter.FileListAdapter;
 import com.huangjiang.files.FileManager;
 import com.huangjiang.model.FileVO;
 
-import huangjiang.com.xfile_android.R;
+import com.huangjiang.filetransfer.R;
 
 public class FileBrowserControl extends LinearLayout implements OnItemClickListener, View.OnClickListener
 

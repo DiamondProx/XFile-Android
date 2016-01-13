@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.huangjiang.model.FileVO;
 
-import huangjiang.com.xfile_android.R;
+import com.huangjiang.filetransfer.R;
 
 public class FileListAdapter extends BaseAdapter {
 

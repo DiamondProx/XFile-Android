@@ -18,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
+import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -25,7 +26,6 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import java.util.ArrayList;
 import java.util.List;
 
-import huangjiang.com.xfile_android.R;
 
 public class HomeActivity extends FragmentActivity implements OnClickListener, OnCheckedChangeListener {
 

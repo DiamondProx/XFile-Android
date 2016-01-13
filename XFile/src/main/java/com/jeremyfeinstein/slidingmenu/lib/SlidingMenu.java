@@ -29,7 +29,7 @@ import android.widget.RelativeLayout;
 
 import com.jeremyfeinstein.slidingmenu.lib.CustomViewAbove.OnPageChangeListener;
 
-import huangjiang.com.xfile_android.R;
+import com.huangjiang.filetransfer.R;
 
 public class SlidingMenu extends RelativeLayout {
 

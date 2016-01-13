@@ -22,7 +22,7 @@ import com.huangjiang.utils.Utils;
 import com.huangjiang.video.VideoScanner;
 import com.huangjiang.video.VideoScanner.ScanVideoCompleteCallBack;
 
-import huangjiang.com.xfile_android.R;
+import com.huangjiang.filetransfer.R;
 
 public class VideoBrowerControl extends ListView {
 

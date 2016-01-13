@@ -32,7 +32,7 @@ import com.huangjiang.utils.Utils;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
 
-import huangjiang.com.xfile_android.R;
+import com.huangjiang.filetransfer.R;
 
 public class PictureBrowserControl extends StickyGridHeadersGridView {
 

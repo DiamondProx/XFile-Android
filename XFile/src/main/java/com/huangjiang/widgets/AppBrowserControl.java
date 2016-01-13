@@ -22,7 +22,7 @@ import com.huangjiang.picture.LocalImageView.OnMeasureListener;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
 
-import huangjiang.com.xfile_android.R;
+import com.huangjiang.filetransfer.R;
 
 public class AppBrowserControl extends StickyGridHeadersGridView{
 

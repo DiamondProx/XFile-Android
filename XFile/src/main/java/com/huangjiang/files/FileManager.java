@@ -10,7 +10,7 @@ import com.huangjiang.model.FileVO;
 import com.huangjiang.model.FileVO.FileType;
 import com.huangjiang.utils.Utils;
 
-import huangjiang.com.xfile_android.R;
+import com.huangjiang.filetransfer.R;
 
 public class FileManager {
 

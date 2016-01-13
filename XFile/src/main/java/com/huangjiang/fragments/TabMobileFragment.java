@@ -25,7 +25,7 @@ import com.huangjiang.widgets.FileBrowserControl;
 import com.huangjiang.widgets.FileBrowserControl.FileBrowserListener;
 import com.huangjiang.widgets.PictureBrowserControl;
 
-import huangjiang.com.xfile_android.R;
+import com.huangjiang.filetransfer.R;
 
 public class TabMobileFragment extends Fragment implements OnPageChangeListener, OnItemClickListener, FileBrowserListener {
 
