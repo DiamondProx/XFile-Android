@@ -17,4 +17,12 @@
 
     <color name="group_header_name_color">#AAC1CD</color>
     <color name="group_header_select_color">#16C9E9</color>
+
+
+    <color name="gray">#BFCBD1</color>
+    <color name="slider_menu_group_bg">#F1F7FA</color>
+    <color name="slider_menu_group_font">#AAC1CD</color>
+    <color name="division_line">#ECECEC</color>
+
+
 </resources>
