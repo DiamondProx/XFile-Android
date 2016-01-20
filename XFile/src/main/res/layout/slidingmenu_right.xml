@@ -167,6 +167,7 @@
         android:background="@color/division_line" />
 
     <LinearLayout
+        android:id="@+id/help_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -217,6 +218,7 @@
         android:background="@color/division_line" />
 
     <LinearLayout
+        android:id="@+id/feedback_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"

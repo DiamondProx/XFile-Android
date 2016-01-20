@@ -4,16 +4,15 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.widget.TextView;
 
+import com.huangjiang.activity.BaseActivity;
 import com.huangjiang.filetransfer.R;
 
-public class UserCenterActivity extends Activity {
+public class UserCenterActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_center);
-        TextView text=(TextView)findViewById(R.id.textView);
-        text.setText("111111111111aaaaaaaaaaa");
+        initView(R.string.user_center_title, R.layout.activity_user_center);
     }
 
 }

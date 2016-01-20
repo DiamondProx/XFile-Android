@@ -35,7 +35,12 @@
         <activity
             android:name="com.huangjiang.setting.UserCenterActivity"
             android:label="@string/title_activity_user_center" />
-
+        <activity
+            android:name="com.huangjiang.setting.HelpActivity"
+            android:label="@string/title_activity_help" />
+        <activity
+            android:name="com.huangjiang.setting.FeedBackActivity"
+            android:label="@string/title_activity_feed_back"></activity>
     </application>
 
 </manifest>

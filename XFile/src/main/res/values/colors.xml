@@ -23,6 +23,8 @@
     <color name="slider_menu_group_bg">#F1F7FA</color>
     <color name="slider_menu_group_font">#AAC1CD</color>
     <color name="division_line">#ECECEC</color>
+    <color name="blue">#1AC9E9</color>
+    <color name="white">#ffffff</color>
 
 
 </resources>

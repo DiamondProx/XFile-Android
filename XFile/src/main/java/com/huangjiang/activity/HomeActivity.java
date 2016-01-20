@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
+import com.huangjiang.setting.FeedBackActivity;
+import com.huangjiang.setting.HelpActivity;
 import com.huangjiang.setting.UserCenterActivity;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -80,6 +82,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
         // 测试代码
         findViewById(R.id.btn_right).setOnClickListener(this);
+        findViewById(R.id.help_layout).setOnClickListener(this);
+        findViewById(R.id.feedback_layout).setOnClickListener(this);
         tvPersonNumber = (TextView) slidingMenu.findViewById(R.id.person_number);
         tvCountNumber = (TextView) slidingMenu.findViewById(R.id.count_number);
         tvFileNumber = (TextView) slidingMenu.findViewById(R.id.file_number);
@@ -120,6 +124,12 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
             case R.id.edit_user:
                 Intent intent = new Intent(HomeActivity.this, UserCenterActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.help_layout:
+                startActivity(new Intent(HomeActivity.this, HelpActivity.class));
+                break;
+            case R.id.feedback_layout:
+                startActivity(new Intent(HomeActivity.this, FeedBackActivity.class));
                 break;
             default:
                 break;
