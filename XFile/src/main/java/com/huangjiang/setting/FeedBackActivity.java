@@ -12,7 +12,6 @@ public class FeedBackActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed_back);
         initView(R.string.title_activity_feed_back, R.layout.activity_feed_back, R.mipmap.common_title_ok);
     }
 

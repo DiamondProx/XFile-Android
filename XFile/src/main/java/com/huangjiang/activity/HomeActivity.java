@@ -19,14 +19,15 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.setting.FeedBackActivity;
 import com.huangjiang.setting.HelpActivity;
+import com.huangjiang.setting.SettingActivity;
 import com.huangjiang.setting.UserCenterActivity;
+import com.huangjiang.setting.VersionActivity;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
@@ -84,6 +85,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         findViewById(R.id.btn_right).setOnClickListener(this);
         findViewById(R.id.help_layout).setOnClickListener(this);
         findViewById(R.id.feedback_layout).setOnClickListener(this);
+        findViewById(R.id.setting_layout).setOnClickListener(this);
         tvPersonNumber = (TextView) slidingMenu.findViewById(R.id.person_number);
         tvCountNumber = (TextView) slidingMenu.findViewById(R.id.count_number);
         tvFileNumber = (TextView) slidingMenu.findViewById(R.id.file_number);
@@ -129,7 +131,10 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 startActivity(new Intent(HomeActivity.this, HelpActivity.class));
                 break;
             case R.id.feedback_layout:
-                startActivity(new Intent(HomeActivity.this, FeedBackActivity.class));
+                startActivity(new Intent(HomeActivity.this, VersionActivity.class));
+                break;
+            case R.id.setting_layout:
+                startActivity(new Intent(HomeActivity.this, SettingActivity.class));
                 break;
             default:
                 break;

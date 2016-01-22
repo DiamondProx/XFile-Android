@@ -8,8 +8,10 @@
     <string name="file_total_b">%1$sB</string>
     <string name="file_total_kb">%1$sKB</string>
     <string name="file_total_mb">%1$sMB</string>
-    <string name="title_activity_user_center">UserCenterActivity</string>
-    <string name="user_center_title">个人中心</string>
+    <string name="title_activity_user_center">个人中心</string>
     <string name="title_activity_help">快速指南</string>
     <string name="title_activity_feed_back">意见反馈</string>
+    <string name="title_activity_version">版本和反馈</string>
+    <string name="title_activity_contact_us">联系我们</string>
+    <string name="title_activity_setting">设置</string>
 </resources>
