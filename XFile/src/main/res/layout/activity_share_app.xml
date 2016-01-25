@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/bluetooth_invite"
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_55"
+        android:layout_marginTop="@dimen/dp_30"
+        android:background="@drawable/blue_selector"
+        android:drawableLeft="@mipmap/invite_bluetooth"
+        android:paddingLeft="@dimen/dp_10"
+        android:text="@string/bluetooth_invite"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_18"
+
+        />
+
+    <Button
+        android:id="@+id/zero_invite"
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_55"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/green_selector"
+        android:drawableLeft="@mipmap/invite_norate"
+        android:paddingLeft="@dimen/dp_10"
+        android:text="@string/zero_traffic_invite"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_18" />
+
+    <ImageView
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="@dimen/dp_120"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@mipmap/download_app1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:text="@string/invite_description"
+        android:textSize="@dimen/sp_16" />
+
+</LinearLayout>

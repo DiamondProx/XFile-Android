@@ -14,4 +14,11 @@
     <string name="title_activity_version">版本和反馈</string>
     <string name="title_activity_contact_us">联系我们</string>
     <string name="title_activity_setting">设置</string>
+    <string name="title_activity_share_app">给身边的人装快传</string>
+    <string name="bluetooth_invite">蓝牙邀请</string>
+    <string name="zero_traffic_invite">零流量邀请</string>
+    <string name="invite_description">扫描二维码可以直接下载快传</string>
+    <string name="title_activity_find_bluethooth">蓝牙设备选择器</string>
+    <string name="search_mobile">扫描查找设备</string>
+    <string name="useable_mobile">可用设备</string>
 </resources>

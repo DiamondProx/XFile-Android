@@ -25,6 +25,9 @@
     <color name="division_line">#ECECEC</color>
     <color name="blue">#1AC9E9</color>
     <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="green">#5EE0BA</color>
+    <color name="green_pressed">#54C9A7</color>
 
 
 </resources>

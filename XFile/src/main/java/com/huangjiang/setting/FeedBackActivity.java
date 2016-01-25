@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.huangjiang.activity.BaseActivity;
 import com.huangjiang.filetransfer.R;
+import com.huangjiang.tools.XFileActivityManager;
 
 public class FeedBackActivity extends BaseActivity {
 
@@ -17,7 +18,8 @@ public class FeedBackActivity extends BaseActivity {
 
     @Override
     protected void rightClick(int index) {
-        Toast.makeText(FeedBackActivity.this, "rightClick", Toast.LENGTH_SHORT).show();
+        Toast.makeText(FeedBackActivity.this, "意见已经提交,谢谢你的支持", Toast.LENGTH_SHORT).show();
+        XFileActivityManager.create().finishActivity();
     }
 
 }
