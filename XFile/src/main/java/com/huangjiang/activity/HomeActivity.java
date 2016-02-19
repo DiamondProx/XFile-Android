@@ -23,15 +23,12 @@ import android.widget.TextView;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
-import com.huangjiang.setting.FeedBackActivity;
 import com.huangjiang.setting.HelpActivity;
 import com.huangjiang.setting.SettingActivity;
 import com.huangjiang.setting.ShareAppActivity;
 import com.huangjiang.setting.UserCenterActivity;
-import com.huangjiang.setting.VersionActivity;
+import com.huangjiang.setting.VersionFeedBackActivity;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-
-import org.apache.http.client.methods.HttpOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +132,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 startActivity(new Intent(HomeActivity.this, HelpActivity.class));
                 break;
             case R.id.feedback_layout:
-                startActivity(new Intent(HomeActivity.this, VersionActivity.class));
+                startActivity(new Intent(HomeActivity.this, VersionFeedBackActivity.class));
                 break;
             case R.id.setting_layout:
                 startActivity(new Intent(HomeActivity.this, SettingActivity.class));

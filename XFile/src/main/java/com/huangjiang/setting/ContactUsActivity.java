@@ -11,7 +11,7 @@ public class ContactUsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initView(R.string.title_activity_user_center, R.layout.activity_contact_us);
+        initView(R.string.title_activity_contact_us, R.layout.activity_contact_us);
     }
 
 }

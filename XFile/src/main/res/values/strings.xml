@@ -21,4 +21,14 @@
     <string name="title_activity_find_bluethooth">蓝牙设备选择器</string>
     <string name="search_mobile">扫描查找设备</string>
     <string name="useable_mobile">可用设备</string>
+    <string name="wx_qr_code">微信二维码</string>
+    <string name="contact_qq">QQ:26666302</string>
+    <string name="app_version">版本: %1$s</string>
+    <string name="company">渡江科技有限公司</string>
+    <string name="copyright">Copyright © 2016 DuMobile,Inc.</string>
+    <string name="allright">All Rights Reserved</string>
+    <string name="is_new">已经是最新版本</string>
+    <string name="check_version">检查新版本</string>
+    <string name="thanks_feedback">意见已经提交,谢谢你的支持</string>
+    <string name="feedback_tip">请输入反馈意见</string>
 </resources>

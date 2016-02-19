@@ -5,11 +5,14 @@
     android:background="@color/search_background">
 
     <EditText
+        android:id="@+id/edt_feedback"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@null"
         android:gravity="top|left"
-        android:hint="请输入反馈意见"
-        android:textSize="@dimen/sp_16" />
+        android:hint="@string/feedback_tip"
+        android:padding="@dimen/dp_2"
+        android:textColor="@color/gray_font"
+        android:textSize="@dimen/sp_14" />
 
 </FrameLayout>

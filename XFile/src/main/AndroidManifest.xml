@@ -15,7 +15,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Light.NoTitleBar">
@@ -40,9 +40,10 @@
             android:label="@string/title_activity_help" />
         <activity
             android:name="com.huangjiang.setting.FeedBackActivity"
+            android:windowSoftInputMode="stateVisible"
             android:label="@string/title_activity_feed_back" />
         <activity
-            android:name="com.huangjiang.setting.VersionActivity"
+            android:name="com.huangjiang.setting.VersionFeedBackActivity"
             android:label="@string/title_activity_version" />
         <activity
             android:name="com.huangjiang.setting.ContactUsActivity"

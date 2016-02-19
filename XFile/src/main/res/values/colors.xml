@@ -11,6 +11,7 @@
 
     <color name="listview_divider_color">#EEEEEE</color>
     <color name="font_txt_gray">#B0C6D1</color>
+    <color name="gray_font">#999999</color>
 
     <color name="updir_background_normal">#F1F7FA</color>
     <color name="updir_background_pressed">#EEEEEE</color>

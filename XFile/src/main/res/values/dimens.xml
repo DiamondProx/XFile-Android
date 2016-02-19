@@ -79,4 +79,7 @@
     <dimen name="dp_170">170dp</dimen>
     <dimen name="dp_118">118dp</dimen>
     <dimen name="dp_210">210dp</dimen>
+    <dimen name="dp_220">220dp</dimen>
+    <dimen name="dp_230">230dp</dimen>
+    <dimen name="dp_240">240dp</dimen>
 </resources>
