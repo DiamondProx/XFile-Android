@@ -31,4 +31,7 @@
     <string name="check_version">检查新版本</string>
     <string name="thanks_feedback">意见已经提交,谢谢你的支持</string>
     <string name="feedback_tip">请输入反馈意见</string>
+    <string name="more">更多</string>
+    <string name="cross_platform_transfer">跨平台传输</string>
+    <string name="connect_pc">连接电脑</string>
 </resources>

@@ -6,8 +6,10 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/edit_user_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_90"
+        android:background="@drawable/menu_selector"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -15,14 +17,14 @@
             android:id="@+id/default_head"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dp_20"
             android:background="@mipmap/avatar_default" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -30,14 +32,14 @@
                 android:id="@+id/mobile_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:text="Lenovo K30-T"
                 android:textColor="@android:color/black" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:orientation="horizontal">
 
                 <TextView
@@ -88,7 +90,7 @@
             android:id="@+id/edit_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="@dimen/dp_20"
             android:src="@mipmap/user_edit" />
 
     </LinearLayout>
@@ -101,16 +103,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="跨平台传输"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
+            android:text="@string/cross_platform_transfer"
             android:textColor="@color/slider_menu_group_font" />
 
     </LinearLayout>
 
 
     <LinearLayout
+        android:id="@+id/share_pc_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_50"
+        android:background="@drawable/menu_selector"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -118,12 +124,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/icon_pc_selector" />
+            android:background="@mipmap/icon_pc" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="连接电脑" />
+            android:text="@string/connect_pc"
+            android:textSize="@dimen/sp_15" />
 
     </LinearLayout>
 
@@ -135,8 +142,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="更多"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
+            android:text="@string/more"
             android:textColor="@color/slider_menu_group_font" />
 
     </LinearLayout>
@@ -145,6 +154,7 @@
         android:id="@+id/share_app_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/menu_selector"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -152,7 +162,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/icon_invite_selector" />
+            android:background="@mipmap/icon_invite" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -171,6 +181,7 @@
         android:id="@+id/help_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/menu_selector"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -178,7 +189,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/icon_help_selector" />
+            android:background="@mipmap/icon_help" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -197,6 +208,7 @@
         android:id="@+id/setting_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/menu_selector"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -204,7 +216,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/icon_setting_selector" />
+            android:background="@mipmap/icon_setting" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -223,6 +235,7 @@
         android:id="@+id/feedback_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/menu_selector"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -230,7 +243,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/icon_message_selector" />
+            android:background="@mipmap/icon_message" />
 
         <TextView
             android:layout_width="wrap_content"

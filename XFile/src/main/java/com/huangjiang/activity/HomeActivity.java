@@ -59,6 +59,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
     public List<Fragment> fragments = new ArrayList<Fragment>();
 
+    private TextView device_name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,10 +89,12 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         findViewById(R.id.feedback_layout).setOnClickListener(this);
         findViewById(R.id.setting_layout).setOnClickListener(this);
         findViewById(R.id.share_app_layout).setOnClickListener(this);
+        findViewById(R.id.share_pc_layout).setOnClickListener(this);
+        device_name = (TextView) findViewById(R.id.mobile_name);
         tvPersonNumber = (TextView) slidingMenu.findViewById(R.id.person_number);
         tvCountNumber = (TextView) slidingMenu.findViewById(R.id.count_number);
         tvFileNumber = (TextView) slidingMenu.findViewById(R.id.file_number);
-        slidingMenu.findViewById(R.id.edit_user).setOnClickListener(this);
+        slidingMenu.findViewById(R.id.edit_user_layout).setOnClickListener(this);
 
 
         // 选择按钮列表
@@ -118,15 +122,12 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
     }
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_right:
                 slidingMenu.showSecondaryMenu();
-                break;
-            case R.id.edit_user:
-                Intent intent = new Intent(HomeActivity.this, UserCenterActivity.class);
-                startActivity(intent);
                 break;
             case R.id.help_layout:
                 startActivity(new Intent(HomeActivity.this, HelpActivity.class));
@@ -139,6 +140,13 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 break;
             case R.id.share_app_layout:
                 startActivity(new Intent(HomeActivity.this, ShareAppActivity.class));
+                break;
+            case R.id.share_pc_layout:
+
+                break;
+            case R.id.edit_user_layout:
+                Intent intent = new Intent(HomeActivity.this, UserCenterActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;
@@ -238,6 +246,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         tvPersonNumber.setText(String.format(getString(R.string.person_number), "0"));
         tvCountNumber.setText(String.format(getString(R.string.count_number), "0"));
         tvFileNumber.setText(String.format(getString(R.string.file_total_b), "0.00"));
+        device_name.setText(android.os.Build.MODEL);
     }
 
 }
