@@ -16,6 +16,7 @@
 
 <resources>
 
+    <!-- 侧滑菜单 -->
     <declare-styleable name="SlidingMenu">
         <attr name="mode">
             <enum name="left" value="0" />
@@ -40,6 +41,13 @@
         <attr name="fadeDegree" format="float" />
         <attr name="selectorEnabled" format="boolean" />
         <attr name="selectorDrawable" format="reference" />
+    </declare-styleable>
+
+    <!-- 开关按钮-->
+    <declare-styleable name="SwitchButton">
+        <attr name="bmWidth" format="dimension"></attr>
+        <attr name="bmHeight" format="dimension"></attr>
+        <attr name="bmChecked" format="boolean"></attr>
     </declare-styleable>
 
 </resources>

@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/data_downmenu_green_pressed" android:state_pressed="true" />
-    <!-- 选中时效果 -->
-    <item android:drawable="@drawable/data_downmenu_green" />
-    <!-- 未选中时效果 -->
+
+    <item android:state_selected="true">
+        <shape>
+            <gradient android:angle="270" android:endColor="#56BEA0"
+                android:startColor="#56BEA0" />
+            <size android:height="60dp" android:width="320dp" />
+            <corners android:radius="2dp" />
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape>
+            <gradient android:angle="270" android:endColor="#56BEA0"
+                android:startColor="#56BEA0"/>
+            <size android:height="60dp" android:width="320dp" />
+            <corners android:radius="2dp" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <gradient android:angle="270" android:endColor="#60D4B2"
+                android:startColor="#60D4B2"/>
+            <size android:height="60dp" android:width="320dp" />
+            <corners android:radius="2dp" />
+        </shape>
+    </item>
 </selector>

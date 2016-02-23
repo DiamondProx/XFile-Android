@@ -2,28 +2,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/app_background" >
+        android:background="@color/app_background">
 
         <Button
             android:id="@+id/btn_share"
-            android:layout_width="200dp"
-            android:layout_height="45dp"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_40"
             android:layout_centerInParent="true"
-            android:background="@drawable/btn_share_selector"
-            android:paddingBottom="6dp"
-            android:text="XFile"
+            android:background="@drawable/blue_selector"
+            android:text="@string/connect_firend"
             android:textColor="@color/font_btn_share"
             android:textSize="18sp" />
 
         <Button
             android:id="@+id/btn_right"
-            android:layout_width="40dp"
-            android:layout_height="43dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@drawable/btn_more_selector" />
@@ -47,14 +46,13 @@
         android:layout_height="wrap_content"
         android:contentDescription="@null"
         android:scaleType="matrix"
-        android:src="@mipmap/tab_mobile_arrow_down_blue"
-         />
+        android:src="@mipmap/tab_mobile_arrow_down_blue" />
 
     <RadioGroup
         android:id="@+id/rg_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/rdb_tabhome"

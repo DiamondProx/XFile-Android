@@ -34,4 +34,5 @@
     <string name="more">更多</string>
     <string name="cross_platform_transfer">跨平台传输</string>
     <string name="connect_pc">连接电脑</string>
+    <string name="connect_firend">连朋友 传文件</string>
 </resources>
