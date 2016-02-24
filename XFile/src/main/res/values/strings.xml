@@ -35,4 +35,9 @@
     <string name="cross_platform_transfer">跨平台传输</string>
     <string name="connect_pc">连接电脑</string>
     <string name="connect_firend">连朋友 传文件</string>
+    <string name="mobile_all">手机全部</string>
+    <string name="picture">照片</string>
+    <string name="music">音乐</string>
+    <string name="video">视频</string>
+    <string name="application">应用</string>
 </resources>

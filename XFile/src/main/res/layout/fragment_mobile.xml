@@ -10,12 +10,82 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:focusable="true" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.huangjiang.widgets.TabBar
+        android:id="@+id/tab_mobile"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:background="#16C9E9"
-        android:orientation="horizontal" >
-    </LinearLayout>
+        android:background="#16C9E9"/>
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:visibility="gone"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="#16C9E9"
+            android:orientation="horizontal" >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test1"
+                android:layout_marginLeft="@dimen/dp_160"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test2"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test1"
+                android:layout_marginLeft="@dimen/dp_10"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test2"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test1"
+                android:layout_marginLeft="@dimen/dp_10"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test2"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test1"
+                android:layout_marginLeft="@dimen/dp_10"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test2"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test1"
+                android:layout_marginLeft="@dimen/dp_10"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test2"
+                android:layout_marginRight="@dimen/dp_160"
+                />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
 
 </LinearLayout>
