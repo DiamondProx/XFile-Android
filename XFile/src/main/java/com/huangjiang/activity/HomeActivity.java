@@ -1,6 +1,7 @@
 package com.huangjiang.activity;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
@@ -61,6 +62,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
     private TextView device_name;
 
+    ColorStateList gray_color, blue_color, green_color;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +73,11 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     }
 
     void initializeView() {
+
+        gray_color = this.getResources().getColorStateList(R.color.gray_font);
+        blue_color = this.getResources().getColorStateList(R.color.tab_select);
+        green_color = this.getResources().getColorStateList(R.color.tab_green_select);
+
         // 设置抽屉菜单
         slidingMenu = new SlidingMenu(this);
         slidingMenu.setMode(SlidingMenu.RIGHT);
@@ -198,9 +206,13 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         switch (mTabindex) {
             case 0:
                 cursor.setImageResource(R.mipmap.tab_mobile_arrow_down_blue);
+                rdb_home.setTextColor(blue_color);
+                rdb_userinfo.setTextColor(gray_color);
                 break;
             case 1:
                 cursor.setImageResource(R.mipmap.tab_computer_arrow_down_green);
+                rdb_home.setTextColor(gray_color);
+                rdb_userinfo.setTextColor(green_color);
                 break;
 
             default:

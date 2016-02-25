@@ -40,4 +40,6 @@
     <string name="music">音乐</string>
     <string name="video">视频</string>
     <string name="application">应用</string>
+    <string name="message">历史消息</string>
+    <string name="inbox">收件箱</string>
 </resources>

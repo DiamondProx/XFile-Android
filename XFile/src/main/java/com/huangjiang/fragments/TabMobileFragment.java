@@ -28,7 +28,7 @@ import com.huangjiang.widgets.PictureBrowserControl;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.widgets.TabBar;
 
-public class TabMobileFragment extends Fragment implements OnPageChangeListener, OnItemClickListener, FileBrowserListener {
+public class TabMobileFragment extends Fragment implements OnPageChangeListener, OnItemClickListener, FileBrowserListener, TabBar.OnTabListener {
 
     List<View> list;
     ViewPager viewPager;
@@ -42,30 +42,32 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
 
         View view = inflater.inflate(R.layout.fragment_mobile, null);
         tabBar = (TabBar) view.findViewById(R.id.tab_mobile);
-        // LayoutInflater inflate = LayoutInflater.from(this.getActivity());
-        View page1 = inflater.inflate(R.layout.page_search, null);
-        View page2 = inflater.inflate(R.layout.page_root, null);
-        View page3 = inflater.inflate(R.layout.page_picture, null);
-        View page4 = inflater.inflate(R.layout.page_video, null);
-        View page5 = inflater.inflate(R.layout.page_app, null);
+        tabBar.setListener(this);
+        View view_search = inflater.inflate(R.layout.page_search, null);
+        View view_root = inflater.inflate(R.layout.page_root, null);
+        View view_picture = inflater.inflate(R.layout.page_picture, null);
+        View view_music = inflater.inflate(R.layout.page_video, null);
+        View view_video = inflater.inflate(R.layout.page_video, null);
+        View view_app = inflater.inflate(R.layout.page_app, null);
 
-        initializeRootView(page2);
-        initializePictureView(page3);
-        initializeAppView(page5);
+        initializeRootView(view_root);
+        initializePictureView(view_picture);
+        initializeAppView(view_app);
 
-        list = new ArrayList<View>();
-        list.add(page1);
-        list.add(page2);
-        list.add(page3);
-        list.add(page4);
-        list.add(page5);
+        list = new ArrayList<>();
+        list.add(view_search);
+        list.add(view_root);
+        list.add(view_picture);
+        list.add(view_music);
+        list.add(view_video);
+        list.add(view_app);
+
+        tabBar.setMenu(R.mipmap.common_tab_refresh_white, R.string.mobile_all, R.string.picture, R.string.music, R.string.video, R.string.application);
 
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(new MyPagerAdapter(list));
         viewPager.setOnPageChangeListener(this);
         viewPager.setCurrentItem(1);
-
-        tabBar.setMenu(R.mipmap.common_tab_refresh_white,R.string.mobile_all,R.string.picture,R.string.music,R.string.video,R.string.application);
 
         return view;
     }
@@ -123,6 +125,11 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
         sgvApps.loadApps();
     }
 
+    @Override
+    public void onTabSelect(int index) {
+        viewPager.setCurrentItem(index);
+    }
+
     class MyPagerAdapter extends PagerAdapter {
         public List<View> mListViews;
 
@@ -174,25 +181,24 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
 
     @Override
     public void onPageScrollStateChanged(int arg0) {
-        // TODO Auto-generated method stub
+
 
     }
 
     @Override
     public void onPageScrolled(int arg0, float arg1, int arg2) {
-        // TODO Auto-generated method stub
+
 
     }
 
     @Override
-    public void onPageSelected(int arg0) {
-        // TODO Auto-generated method stub
-
+    public void onPageSelected(int index) {
+        tabBar.setCurrentTab(index);
     }
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int index, long arg3) {
-        // TODO Auto-generated method stub
+
         StorageRootVO storage = (StorageRootVO) rootAdapter.getItem(index);
         if (storage != null) {
             fileBrowser.initRootPath(storage.getFilePath());
@@ -203,7 +209,7 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
 
     @Override
     public void rootDir() {
-        // TODO Auto-generated method stub
+
         fileBrowser.setVisibility(View.GONE);
     }
 

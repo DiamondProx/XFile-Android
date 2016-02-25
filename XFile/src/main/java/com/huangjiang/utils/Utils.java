@@ -17,6 +17,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 public class Utils {
 
@@ -206,6 +208,15 @@ public class Utils {
             e.printStackTrace();
         }
         return version;
+    }
+
+    public static int getScreenWidth(Context context) {
+        WindowManager wm = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        int mScreenWidth = dm.widthPixels;// 获取屏幕分辨率宽度
+        return mScreenWidth;
     }
 
 

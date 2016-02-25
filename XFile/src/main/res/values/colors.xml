@@ -30,6 +30,9 @@
     <color name="green">#5EE0BA</color>
     <color name="green_pressed">#54C9A7</color>
     <color name="gray_pressed">#F3F3F3</color>
+    <color name="tab_select">#3DD5F5</color>
+    <color name="tab_green">#60D4B2</color>
+    <color name="tab_green_select">#68E2BE</color>
 
 
 </resources>
