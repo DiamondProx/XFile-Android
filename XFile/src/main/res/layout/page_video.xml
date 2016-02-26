@@ -7,6 +7,8 @@
     <com.huangjiang.widgets.VideoBrowerControl
         android:id="@+id/videoBrowser"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
+
 
 </LinearLayout>

@@ -31,14 +31,12 @@ public class VideoBrowerControl extends ListView {
 
 	public VideoBrowerControl(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 		initializeVideo(context);
 
 	}
 
 	public VideoBrowerControl(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
 		initializeVideo(context);
 	}
 
@@ -90,25 +88,21 @@ public class VideoBrowerControl extends ListView {
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return mList.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
 			return mList.get(position);
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return position;
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
 			VideoViewHoler videoHolder = null;
 			if (convertView == null) {
 				videoHolder = new VideoViewHoler();

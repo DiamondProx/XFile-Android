@@ -42,4 +42,10 @@
     <string name="application">应用</string>
     <string name="message">历史消息</string>
     <string name="inbox">收件箱</string>
+    <string name="other">其他</string>
+    <string name="folder">文件夹</string>
+    <string name="install">安装包</string>
+    <string name="disk_status">可用:%1$s/%2$s</string>
+    <string name="clear">清除</string>
+    <string name="from">接收自 %1$s</string>
 </resources>
