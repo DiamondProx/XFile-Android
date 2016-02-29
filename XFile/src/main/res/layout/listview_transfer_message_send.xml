@@ -22,6 +22,7 @@
         android:layout_marginBottom="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_2"
         android:layout_toLeftOf="@id/head"
         android:background="@drawable/message_send_selector"
         android:orientation="vertical">
