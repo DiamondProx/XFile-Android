@@ -2,13 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@drawable/menu_selector"
     android:orientation="vertical" >
 
     <com.huangjiang.picture.LocalImageView
         android:id="@+id/group_item"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_margin="1dp"
+        android:layout_width="@dimen/dp_55"
+        android:layout_height="@dimen/dp_55"
+        android:layout_margin="@dimen/dp_5"
+        android:layout_gravity="center_horizontal"
         android:contentDescription="@null"
         android:scaleType="fitXY"
         android:src="@mipmap/ic_launcher" />
@@ -18,17 +20,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:text="@null"
-        android:textSize="12sp" />
+        android:gravity="center"
+        android:text="百度输入法"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_11" />
 
     <TextView
         android:id="@+id/txtSize"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:text="@null"
-        android:textSize="12sp" />
+        android:gravity="center"
+        android:text="8.12MB"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_11" />
 
 </LinearLayout>
