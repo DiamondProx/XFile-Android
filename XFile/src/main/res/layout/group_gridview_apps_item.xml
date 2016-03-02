@@ -5,7 +5,7 @@
     android:background="@drawable/menu_selector"
     android:orientation="vertical" >
 
-    <com.huangjiang.picture.LocalImageView
+    <com.huangjiang.business.picture.LocalImageView
         android:id="@+id/group_item"
         android:layout_width="@dimen/dp_55"
         android:layout_height="@dimen/dp_55"

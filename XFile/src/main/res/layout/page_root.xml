@@ -14,12 +14,12 @@
         android:listSelector="@color/tab_btn_normal" >
     </ListView>
 
-    <com.huangjiang.widgets.FileBrowserControl
+    <com.huangjiang.view.FileBrowserControl
         android:id="@+id/fileBrowser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
         android:visibility="gone" >
-    </com.huangjiang.widgets.FileBrowserControl>
+    </com.huangjiang.view.FileBrowserControl>
 
 </FrameLayout>

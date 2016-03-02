@@ -5,7 +5,7 @@
     android:background="@color/white"
     android:orientation="vertical" >
 
-    <com.huangjiang.widgets.VideoBrowerControl
+    <com.huangjiang.view.VideoBrowerControl
         android:id="@+id/videoBrowser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

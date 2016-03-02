@@ -24,11 +24,6 @@ import android.widget.TextView;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
-import com.huangjiang.setting.HelpActivity;
-import com.huangjiang.setting.SettingActivity;
-import com.huangjiang.setting.ShareAppActivity;
-import com.huangjiang.setting.UserCenterActivity;
-import com.huangjiang.setting.VersionFeedBackActivity;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;

@@ -11,18 +11,18 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.huangjiang.model.FileVO;
+import com.huangjiang.business.model.FileInfo;
 
 import com.huangjiang.filetransfer.R;
 
 public class FileListAdapter extends BaseAdapter {
 
-	List<FileVO> mList;
+	List<FileInfo> mList;
 	private LayoutInflater inflater;
 
 	public FileListAdapter(Context context) {
 		inflater = LayoutInflater.from(context);
-		mList = new ArrayList<FileVO>();
+		mList = new ArrayList<FileInfo>();
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class FileListAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		FileVO vo = mList.get(position);
+		FileInfo vo = mList.get(position);
 		if (vo.isDirectory()) {
 			holder.size.setVisibility(View.GONE);
 			holder.img.setImageResource(R.mipmap.data_folder_folder);
@@ -95,7 +95,7 @@ public class FileListAdapter extends BaseAdapter {
 		mList.clear();
 	}
 
-	public List<FileVO> getFiles() {
+	public List<FileInfo> getFiles() {
 		return mList;
 	}
 

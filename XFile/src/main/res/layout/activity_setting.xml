@@ -52,7 +52,7 @@
                     android:textSize="@dimen/sp_11" />
             </LinearLayout>
 
-            <com.huangjiang.widgets.SwitchButton
+            <com.huangjiang.view.SwitchButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -95,7 +95,7 @@
                     android:textSize="@dimen/sp_11" />
             </LinearLayout>
 
-            <com.huangjiang.widgets.SwitchButton
+            <com.huangjiang.view.SwitchButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -138,7 +138,7 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <com.huangjiang.widgets.SwitchButton
+            <com.huangjiang.view.SwitchButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -181,7 +181,7 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <com.huangjiang.widgets.SwitchButton
+            <com.huangjiang.view.SwitchButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -319,7 +319,7 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <com.huangjiang.widgets.SwitchButton
+            <com.huangjiang.view.SwitchButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -372,7 +372,7 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <com.huangjiang.widgets.SwitchButton
+            <com.huangjiang.view.SwitchButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -415,7 +415,7 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <com.huangjiang.widgets.SwitchButton
+            <com.huangjiang.view.SwitchButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -467,7 +467,7 @@
                     android:textSize="@dimen/sp_11" />
             </LinearLayout>
 
-            <com.huangjiang.widgets.SwitchButton
+            <com.huangjiang.view.SwitchButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"

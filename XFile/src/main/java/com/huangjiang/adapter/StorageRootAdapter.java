@@ -11,17 +11,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.huangjiang.model.StorageRootVO;
+import com.huangjiang.business.model.StorageRootInfo;
 
 import com.huangjiang.filetransfer.R;
 
 public class StorageRootAdapter extends BaseAdapter {
 	
 	private LayoutInflater inflater;
-	private List<StorageRootVO> mList;
+	private List<StorageRootInfo> mList;
 	public StorageRootAdapter(Context context) {
 		inflater = LayoutInflater.from(context);
-		mList=new ArrayList<StorageRootVO>();
+		mList=new ArrayList<StorageRootInfo>();
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class StorageRootAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		StorageRootVO vo = mList.get(position);
+		StorageRootInfo vo = mList.get(position);
 		holder.img.setImageResource(vo.getImg());
 		holder.desc.setText(vo.getDesc());
 		
@@ -64,7 +64,7 @@ public class StorageRootAdapter extends BaseAdapter {
 		return convertView;
 	}
 	
-	public List<StorageRootVO> getRoots() {
+	public List<StorageRootInfo> getRoots() {
 		return mList;
 	}
 

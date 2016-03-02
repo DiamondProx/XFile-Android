@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name="com.huangjiang.XFileApplication"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
@@ -32,31 +33,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.huangjiang.activity.TestActivity" />
         <activity
-            android:name="com.huangjiang.setting.UserCenterActivity"
+            android:name="com.huangjiang.activity.UserCenterActivity"
             android:label="@string/title_activity_user_center" />
         <activity
-            android:name="com.huangjiang.setting.HelpActivity"
+            android:name="com.huangjiang.activity.HelpActivity"
             android:label="@string/title_activity_help" />
         <activity
-            android:name="com.huangjiang.setting.FeedBackActivity"
+            android:name="com.huangjiang.activity.FeedBackActivity"
             android:windowSoftInputMode="stateVisible"
             android:label="@string/title_activity_feed_back" />
         <activity
-            android:name="com.huangjiang.setting.VersionFeedBackActivity"
+            android:name="com.huangjiang.activity.VersionFeedBackActivity"
             android:label="@string/title_activity_version" />
         <activity
-            android:name="com.huangjiang.setting.ContactUsActivity"
+            android:name="com.huangjiang.activity.ContactUsActivity"
             android:label="@string/title_activity_contact_us" />
         <activity
-            android:name="com.huangjiang.setting.SettingActivity"
+            android:name="com.huangjiang.activity.SettingActivity"
             android:label="@string/title_activity_setting" />
         <activity
-            android:name="com.huangjiang.setting.ShareAppActivity"
+            android:name="com.huangjiang.activity.ShareAppActivity"
             android:label="@string/title_activity_share_app" />
         <activity
-            android:name="com.huangjiang.setting.FindBluetoothActivity"
+            android:name="com.huangjiang.activity.FindBluetoothActivity"
             android:label="@string/title_activity_find_bluethooth"></activity>
     </application>
 

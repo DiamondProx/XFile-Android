@@ -37,7 +37,7 @@
         android:layout_weight="1"
         android:focusable="true" />
 
-    <com.huangjiang.widgets.TabBar
+    <com.huangjiang.view.TabBar
         android:id="@+id/tab_mobile"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_40"

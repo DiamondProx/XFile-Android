@@ -5,12 +5,12 @@
     android:background="@color/white"
     android:orientation="vertical" >
 
-    <com.huangjiang.widgets.AppBrowserControl
+    <com.huangjiang.view.AppBrowserControl
         android:id="@+id/sgv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:listSelector="@android:color/transparent"
         android:numColumns="4" >
-    </com.huangjiang.widgets.AppBrowserControl>
+    </com.huangjiang.view.AppBrowserControl>
 
 </LinearLayout>

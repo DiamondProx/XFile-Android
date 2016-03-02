@@ -4,7 +4,6 @@ package com.huangjiang.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -17,11 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.huangjiang.manager.event.MyEvent;
 import com.huangjiang.filetransfer.R;
-import com.huangjiang.model.TransferMessage;
-import com.huangjiang.model.VideoVO;
-import com.huangjiang.utils.Utils;
-import com.huangjiang.widgets.TabBar;
+import com.huangjiang.business.model.TransferMessageInfo;
+import com.huangjiang.view.TabBar;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
     ListView lv_message;
 
-    List<TransferMessage> listMessage;
+    List<TransferMessageInfo> listMessage;
 
     TransferMessageAdpater adpater;
 
@@ -90,14 +91,23 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
         testMessageData();
 
+        EventBus.getDefault().register(this);
+
+
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     void testMessageData() {
         listMessage=new ArrayList<>();
 
-        TransferMessage message = new TransferMessage();
+        TransferMessageInfo message = new TransferMessageInfo();
         message.setMessageType(2);
         message.setFrom("R815T");
         message.setFileName("4dazxcvbng");
@@ -105,7 +115,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         listMessage.add(message);
 
 
-        message = new TransferMessage();
+        message = new TransferMessageInfo();
         message.setMessageType(1);
         message.setFrom("R815T");
         message.setFileName("指南针.apk");
@@ -113,14 +123,14 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         listMessage.add(message);
 
 
-        message = new TransferMessage();
+        message = new TransferMessageInfo();
         message.setMessageType(1);
         message.setFrom("R815T");
         message.setFileName("头文字D.mp3");
         message.setFileSize("1.65MB");
         listMessage.add(message);
 
-        message = new TransferMessage();
+        message = new TransferMessageInfo();
         message.setMessageType(1);
         message.setFrom("R815T");
         message.setFileName("975124556321");
@@ -232,7 +242,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
         @Override
         public int getItemViewType(int position) {
-            TransferMessage message = listMessage.get(position);
+            TransferMessageInfo message = listMessage.get(position);
             if (message.getMessageType() == 1) {
                 return REVICE_MESSAGE;
             } else {
@@ -243,7 +253,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            final TransferMessage message = listMessage.get(position);
+            final TransferMessageInfo message = listMessage.get(position);
             int messageType = message.getMessageType();
             VideoViewHoler videoHolder = null;
             if (convertView == null) {
@@ -283,6 +293,34 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         }
 
     }
+
+    @Subscribe
+    public void onEventMainThread(MyEvent event) {
+        if (event != null) {
+            TransferMessageInfo message = new TransferMessageInfo();
+            message.setMessageType(1);
+            message.setFrom("R815T");
+            message.setFileName("event.apkkkkkkk");
+            message.setFileSize("682kb");
+            listMessage.add(message);
+            adpater.notifyDataSetChanged();
+        }
+    }
+    public void onEventPostThread(MyEvent event)
+    {
+
+    }
+
+    public void onEventBackgroundThread(MyEvent event)
+    {
+
+    }
+
+    public void onEventAsync(MyEvent event)
+    {
+
+    }
+
 
     @Override
     public void onTabSelect(int index) {

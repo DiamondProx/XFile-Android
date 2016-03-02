@@ -18,17 +18,20 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.huangjiang.adapter.StorageRootAdapter;
-import com.huangjiang.model.StorageRootVO;
-import com.huangjiang.utils.Utils;
-import com.huangjiang.widgets.AppBrowserControl;
-import com.huangjiang.widgets.FileBrowserControl;
-import com.huangjiang.widgets.FileBrowserControl.FileBrowserListener;
-import com.huangjiang.widgets.PictureBrowserControl;
+import com.huangjiang.manager.event.MyEvent;
+import com.huangjiang.business.model.StorageRootInfo;
+import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.view.AppBrowserControl;
+import com.huangjiang.view.FileBrowserControl;
+import com.huangjiang.view.FileBrowserControl.FileBrowserListener;
+import com.huangjiang.view.PictureBrowserControl;
 
 import com.huangjiang.filetransfer.R;
-import com.huangjiang.widgets.TabBar;
+import com.huangjiang.view.TabBar;
 
-public class TabMobileFragment extends Fragment implements OnPageChangeListener, OnItemClickListener, FileBrowserListener, TabBar.OnTabListener {
+import org.greenrobot.eventbus.EventBus;
+
+public class TabMobileFragment extends Fragment implements OnPageChangeListener, OnItemClickListener, FileBrowserListener, TabBar.OnTabListener,View.OnClickListener {
 
     List<View> list;
     ViewPager viewPager;
@@ -44,6 +47,7 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
         tabBar = (TabBar) view.findViewById(R.id.tab_mobile);
         tabBar.setListener(this);
         View view_search = inflater.inflate(R.layout.page_search, null);
+        view_search.findViewById(R.id.button).setOnClickListener(this);
         View view_root = inflater.inflate(R.layout.page_root, null);
         View view_picture = inflater.inflate(R.layout.page_picture, null);
         View view_music = inflater.inflate(R.layout.page_video, null);
@@ -78,28 +82,28 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
         rootAdapter = new StorageRootAdapter(getActivity());
         listRoot.setAdapter(rootAdapter);
         listRoot.setOnItemClickListener(this);
-        List<StorageRootVO> list = new ArrayList<StorageRootVO>();
+        List<StorageRootInfo> list = new ArrayList<StorageRootInfo>();
 
         // 根目录
-        StorageRootVO rootMemory = new StorageRootVO();
+        StorageRootInfo rootMemory = new StorageRootInfo();
         rootMemory.setImg(R.mipmap.data_folder_memory_default);
         rootMemory.setDesc(this.getString(R.string.root_memory_storage));
         rootMemory.setFilePath("/");
         list.add(rootMemory);
 
         // 内存
-        if (Utils.ExistSDCard()) {
-            StorageRootVO rootSdCard = new StorageRootVO();
+        if (XFileUtils.ExistSDCard()) {
+            StorageRootInfo rootSdCard = new StorageRootInfo();
             rootSdCard.setImg(R.mipmap.data_folder_sdcard_default);
             rootSdCard.setDesc(this.getString(R.string.root_sdcard_storage));
-            rootSdCard.setFilePath(Utils.getStorageCardPath());
+            rootSdCard.setFilePath(XFileUtils.getStorageCardPath());
             list.add(rootSdCard);
         }
 
         // TF存储
-        List<String> sdPaths = Utils.getSdCardPaths();
+        List<String> sdPaths = XFileUtils.getSdCardPaths();
         for (String string : sdPaths) {
-            StorageRootVO rootSdCardExten = new StorageRootVO();
+            StorageRootInfo rootSdCardExten = new StorageRootInfo();
             rootSdCardExten.setImg(R.mipmap.data_folder_sdcard_default);
             rootSdCardExten.setDesc(this.getString(R.string.root_sdcard_storage_exten));
             rootSdCardExten.setFilePath(string);
@@ -111,7 +115,7 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
 
         fileBrowser = (FileBrowserControl) view.findViewById(R.id.fileBrowser);
         fileBrowser.setFileBrowserListener(this);
-        fileBrowser.initFiles(new File(Utils.getStorageCardPath()));
+        fileBrowser.initFiles(new File(XFileUtils.getStorageCardPath()));
         // ListView listFiles = (ListView) view.findViewById(R.id.list_files);
     }
 
@@ -128,6 +132,15 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
     @Override
     public void onTabSelect(int index) {
         viewPager.setCurrentItem(index);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.button:
+                EventBus.getDefault().post(new MyEvent("myevent"));
+                break;
+        }
     }
 
     class MyPagerAdapter extends PagerAdapter {
@@ -199,7 +212,7 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int index, long arg3) {
 
-        StorageRootVO storage = (StorageRootVO) rootAdapter.getItem(index);
+        StorageRootInfo storage = (StorageRootInfo) rootAdapter.getItem(index);
         if (storage != null) {
             fileBrowser.initRootPath(storage.getFilePath());
             fileBrowser.initFiles(new File(storage.getFilePath()));
