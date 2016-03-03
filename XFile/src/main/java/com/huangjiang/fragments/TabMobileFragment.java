@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -15,9 +17,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.huangjiang.adapter.StorageRootAdapter;
+import com.huangjiang.business.audio.AudioInterface;
+import com.huangjiang.business.model.FileInfo;
+import com.huangjiang.business.model.VideoInfo;
+import com.huangjiang.core.ResponseCallback;
 import com.huangjiang.manager.event.MyEvent;
 import com.huangjiang.business.model.StorageRootInfo;
 import com.huangjiang.utils.XFileUtils;
@@ -31,13 +40,15 @@ import com.huangjiang.view.TabBar;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class TabMobileFragment extends Fragment implements OnPageChangeListener, OnItemClickListener, FileBrowserListener, TabBar.OnTabListener,View.OnClickListener {
+public class TabMobileFragment extends Fragment implements OnPageChangeListener, OnItemClickListener, FileBrowserListener, TabBar.OnTabListener, View.OnClickListener {
 
     List<View> list;
     ViewPager viewPager;
     StorageRootAdapter rootAdapter;
     FileBrowserControl fileBrowser;
     TabBar tabBar;
+    ListView listView;
+    SearchAdapter searchAdapter;
 
 
     @Override
@@ -48,6 +59,10 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
         tabBar.setListener(this);
         View view_search = inflater.inflate(R.layout.page_search, null);
         view_search.findViewById(R.id.button).setOnClickListener(this);
+        listView = (ListView) view_search.findViewById(R.id.listview);
+        searchAdapter = new SearchAdapter(getActivity());
+        listView.setAdapter(searchAdapter);
+
         View view_root = inflater.inflate(R.layout.page_root, null);
         View view_picture = inflater.inflate(R.layout.page_picture, null);
         View view_music = inflater.inflate(R.layout.page_video, null);
@@ -72,6 +87,7 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
         viewPager.setAdapter(new MyPagerAdapter(list));
         viewPager.setOnPageChangeListener(this);
         viewPager.setCurrentItem(1);
+
 
         return view;
     }
@@ -136,9 +152,23 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button:
                 EventBus.getDefault().post(new MyEvent("myevent"));
+
+                AudioInterface audioInterface = new AudioInterface(getActivity());
+                audioInterface.getAudioByKey("dialogsound", new ResponseCallback<List<FileInfo>>() {
+                    @Override
+                    public void onResponse(int stateCode, int code, String msg, List<FileInfo> fileInfos) {
+                        if (fileInfos != null) {
+                            System.out.println("audio.list.size:" + fileInfos.size());
+                            searchAdapter.setList(fileInfos);
+                            searchAdapter.notifyDataSetChanged();
+                        }
+
+                    }
+                });
+
                 break;
         }
     }
@@ -222,8 +252,63 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
 
     @Override
     public void rootDir() {
-
         fileBrowser.setVisibility(View.GONE);
+    }
+
+    class SearchAdapter extends BaseAdapter {
+        private LayoutInflater mInflater;
+        private List<FileInfo> mList;
+
+        public SearchAdapter(Context context) {
+            mInflater = LayoutInflater.from(context);
+        }
+
+        public void setList(List<FileInfo> mList) {
+            this.mList = mList;
+        }
+
+        @Override
+        public int getCount() {
+            return mList==null?0:mList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            VideoViewHoler videoHolder = null;
+            if (convertView == null) {
+                videoHolder = new VideoViewHoler();
+                convertView = mInflater.inflate(R.layout.listview_search_item, null);
+                videoHolder.Img = (ImageView) convertView.findViewById(R.id.img);
+                videoHolder.Name = (TextView) convertView.findViewById(R.id.name);
+                videoHolder.Size = (TextView) convertView.findViewById(R.id.size);
+                convertView.setTag(videoHolder);
+            } else {
+                videoHolder = (VideoViewHoler) convertView.getTag();
+            }
+            FileInfo file = mList.get(position);
+            if (file != null) {
+                videoHolder.Img.setImageResource(R.mipmap.data_folder_documents_placeholder);
+                videoHolder.Name.setText(file.getName());
+                videoHolder.Size.setText(file.getSpace());
+            }
+            return convertView;
+        }
+
+        final class VideoViewHoler {
+            ImageView Img;
+            TextView Name;
+            TextView Size;
+        }
     }
 
 }

@@ -129,9 +129,9 @@ public class FileBrowserControl extends LinearLayout implements OnItemClickListe
 		if (file.isDirectory()) {
 			String nextDir = "";
 			if (mCurrentFilePath.equals("/")) {
-				nextDir = mCurrentFilePath + file.getFileName();
+				nextDir = mCurrentFilePath + file.getName();
 			} else {
-				nextDir = mCurrentFilePath + "/" + file.getFileName();
+				nextDir = mCurrentFilePath + "/" + file.getName();
 			}
 			File nextFile = new File(nextDir);
 			if (nextFile.isDirectory()) {
@@ -139,7 +139,7 @@ public class FileBrowserControl extends LinearLayout implements OnItemClickListe
 				initFiles(nextFile);
 			}
 		} else {
-			Toast.makeText(mContext, "fileName:" + file.getFileName(), Toast.LENGTH_LONG).show();
+			Toast.makeText(mContext, "fileName:" + file.getName(), Toast.LENGTH_LONG).show();
 		}
 
 	}

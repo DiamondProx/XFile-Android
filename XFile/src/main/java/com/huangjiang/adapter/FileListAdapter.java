@@ -62,11 +62,11 @@ public class FileListAdapter extends BaseAdapter {
 		if (vo.isDirectory()) {
 			holder.size.setVisibility(View.GONE);
 			holder.img.setImageResource(R.mipmap.data_folder_folder);
-			holder.name.setText(vo.getFileName());
+			holder.name.setText(vo.getName());
 		} else {
 			holder.size.setVisibility(View.VISIBLE);
 			holder.size.setText("100kb");
-			holder.name.setText(vo.getFileName());
+			holder.name.setText(vo.getName());
 			switch (vo.getFileType()) {
 			case Normal:
 				holder.img.setImageResource(R.mipmap.data_folder_documents_placeholder);

@@ -4,99 +4,164 @@ import android.graphics.drawable.Drawable;
 
 public class FileInfo implements Comparable<FileInfo> {
 
-	// 文件名
-	private String fileName;
-	// 文件路径
-	private String filePath;
-	// 图标
-	private Drawable fileIcon;
-	// 文件或文件夹
-	private boolean isDirectory;
-	// 文件类型
-	private FileType fileType;
+    /**
+     * 文件名
+     */
+    private String name;
+    /**
+     * 文件路径
+     */
+    private String path;
+    /**
+     * 图标
+     */
+    private Drawable icon;
+    /**
+     * 文件或文件夹
+     */
+    private boolean directory;
+    /**
+     * 文件类型
+     */
+    private FileType type;
+    /**
+     * 文件大小
+     */
+    private int size;
+    /**
+     * 描述
+     */
+    private String description;
 
-	// 文件大小
-	private int fileLength;
-	// 大小描述
-	private String fileLengthDesc;
+    /**
+     * 作者
+     */
+    private String creator;
 
-	public int getFileLength() {
-		return fileLength;
-	}
+    /**
+     * 大小3M
+     */
+    private String space;
 
-	public void setFileLength(int fileLength) {
-		this.fileLength = fileLength;
-	}
+    /**
+     * 总时长:秒数
+     */
+    private int totalTime;
+    /**
+     * 总时长:字符
+     */
+    private String totalTimeStr;
 
-	public String getFileLengthDesc() {
-		return fileLengthDesc;
-	}
+    public int getFileLength() {
+        return size;
+    }
 
-	public void setFileLengthDesc(String fileLengthDesc) {
-		this.fileLengthDesc = fileLengthDesc;
-	}
+    public void setFileLength(int fileLength) {
+        this.size = fileLength;
+    }
 
-	public FileType getFileType() {
-		return fileType;
-	}
+    public String getFileLengthDesc() {
+        return description;
+    }
 
-	public void setFileType(FileType fileType) {
-		this.fileType = fileType;
-	}
+    public void setFileLengthDesc(String fileLengthDesc) {
+        this.description = fileLengthDesc;
+    }
 
-	public boolean isDirectory() {
-		return isDirectory;
-	}
+    public FileType getFileType() {
+        return type;
+    }
 
-	public void setDirectory(boolean isDirectory) {
-		this.isDirectory = isDirectory;
-	}
+    public void setFileType(FileType fileType) {
+        this.type = fileType;
+    }
 
-	// 是否选中
-	private boolean selectable;
+    public boolean isDirectory() {
+        return directory;
+    }
 
-	public String getFileName() {
-		return fileName;
-	}
+    public void setDirectory(boolean isDirectory) {
+        this.directory = isDirectory;
+    }
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+    // 是否选中
+    private boolean selectable;
 
-	public Drawable getFileIcon() {
-		return fileIcon;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setFileIcon(Drawable fileIcon) {
-		this.fileIcon = fileIcon;
-	}
+    public void setName(String fileName) {
+        this.name = fileName;
+    }
 
-	public boolean isSelectable() {
-		return selectable;
-	}
+    public Drawable getIcon() {
+        return icon;
+    }
 
-	public void setSelectable(boolean selectable) {
-		this.selectable = selectable;
-	}
+    public void setIcon(Drawable fileIcon) {
+        this.icon = fileIcon;
+    }
 
-	public String getFilePath() {
-		return filePath;
-	}
+    public boolean isSelectable() {
+        return selectable;
+    }
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
 
-	@Override
-	public int compareTo(FileInfo vo) {
-		if (this.fileName != null)
-			return this.fileName.compareTo(vo.getFileName());
-		else
-			throw new IllegalArgumentException();
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public enum FileType {
-		Folder, Normal, Audio, Video, Image, Apk
-	}
+    public void setPath(String filePath) {
+        this.path = filePath;
+    }
+
+    @Override
+    public int compareTo(FileInfo vo) {
+        if (this.name != null)
+            return this.name.compareTo(vo.getName());
+        else
+            throw new IllegalArgumentException();
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+    public String getSpace() {
+        return space;
+    }
+
+    public void setSpace(String space) {
+        this.space = space;
+    }
+
+    public int getTotalTime() {
+        return totalTime;
+    }
+
+    public void setTotalTime(int totalTime) {
+        this.totalTime = totalTime;
+    }
+
+    public String getTotalTimeStr() {
+        return totalTimeStr;
+    }
+
+    public void setTotalTimeStr(String totalTimeStr) {
+        this.totalTimeStr = totalTimeStr;
+    }
+
+
+    public enum FileType {
+        Folder, Normal, Audio, Video, Image, Apk
+    }
 
 }

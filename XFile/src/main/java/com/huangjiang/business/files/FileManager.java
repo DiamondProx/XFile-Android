@@ -32,8 +32,8 @@ public class FileManager {
 		for (File file : list) {
 
 			FileInfo vo = new FileInfo();
-			vo.setFileName(file.getName());
-			vo.setFilePath(file.getPath());
+			vo.setName(file.getName());
+			vo.setPath(file.getPath());
 			vo.setDirectory(file.isDirectory());
 			vo.setSelectable(false);
 
