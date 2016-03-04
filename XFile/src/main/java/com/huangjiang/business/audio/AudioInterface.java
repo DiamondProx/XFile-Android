@@ -92,6 +92,9 @@ public class AudioInterface {
                 audio.setFileType(FileInfo.FileType.Audio);
                 audio.setSpace(XFileUtils.getFolderSizeString(size));
                 list.add(audio);
+                list.add(audio);
+                list.add(audio);
+                list.add(audio);
             }
             callback.onResponse(StateCode.REQUEST_SUCCESS, 0, null, list);
         } catch (Exception e) {

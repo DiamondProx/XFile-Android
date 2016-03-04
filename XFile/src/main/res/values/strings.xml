@@ -48,4 +48,7 @@
     <string name="disk_status">可用:%1$s/%2$s</string>
     <string name="clear">清除</string>
     <string name="from">接收自 %1$s</string>
+    <string name="transfer">传输</string>
+    <string name="multi_select">多选</string>
+    <string name="play">播放</string>
 </resources>

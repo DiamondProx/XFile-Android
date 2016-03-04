@@ -12,12 +12,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.app.ActionBar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,14 +37,17 @@ import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.AppBrowserControl;
 import com.huangjiang.view.FileBrowserControl;
 import com.huangjiang.view.FileBrowserControl.FileBrowserListener;
+import com.huangjiang.view.MenuItem;
+import com.huangjiang.view.OperateMenu;
 import com.huangjiang.view.PictureBrowserControl;
 
 import com.huangjiang.filetransfer.R;
+import com.huangjiang.view.PopupMenu;
 import com.huangjiang.view.TabBar;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class TabMobileFragment extends Fragment implements OnPageChangeListener, OnItemClickListener, FileBrowserListener, TabBar.OnTabListener, View.OnClickListener {
+public class TabMobileFragment extends Fragment implements OnPageChangeListener, OnItemClickListener, FileBrowserListener, TabBar.OnTabListener, View.OnClickListener ,PopupMenu.OnItemSelectedListener {
 
     List<View> list;
     ViewPager viewPager;
@@ -49,6 +56,7 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
     TabBar tabBar;
     ListView listView;
     SearchAdapter searchAdapter;
+    EditText edtSearch;
 
 
     @Override
@@ -58,10 +66,35 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
         tabBar = (TabBar) view.findViewById(R.id.tab_mobile);
         tabBar.setListener(this);
         View view_search = inflater.inflate(R.layout.page_search, null);
-        view_search.findViewById(R.id.button).setOnClickListener(this);
+        edtSearch=(EditText)view_search.findViewById(R.id.edt_search);
+        edtSearch.addTextChangedListener(new SearchKeyChange());
         listView = (ListView) view_search.findViewById(R.id.listview);
         searchAdapter = new SearchAdapter(getActivity());
         listView.setAdapter(searchAdapter);
+        listView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                OperateMenu popupMenu = new OperateMenu(getActivity());
+//                popupMenu.showPopupWindow(view);
+//                popupMenu.showAsDropDown(view);
+
+                PopupMenu menu = new PopupMenu(getActivity());
+                // Set Listener
+                menu.setOnItemSelectedListener(TabMobileFragment.this);
+                // Add Menu (Android menu like style)
+                menu.add(0, R.string.transfer).setIcon(
+                        getResources().getDrawable(R.mipmap.data_downmenu_send));
+                menu.add(1, R.string.multi_select).setIcon(
+                        getResources().getDrawable(R.mipmap.data_downmenu_check));
+                menu.add(2, R.string.play).setIcon(
+                        getResources().getDrawable(R.mipmap.data_downmenu_open));
+                menu.add(3, R.string.more).setIcon(
+                        getResources().getDrawable(R.mipmap.data_downmenu_more));
+                menu.show(view);
+
+
+            }
+        });
 
         View view_root = inflater.inflate(R.layout.page_root, null);
         View view_picture = inflater.inflate(R.layout.page_picture, null);
@@ -88,6 +121,7 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
         viewPager.setOnPageChangeListener(this);
         viewPager.setCurrentItem(1);
 
+//        EventBus.getDefault().post(new MyEvent("myevent"));
 
         return view;
     }
@@ -152,25 +186,12 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button:
-                EventBus.getDefault().post(new MyEvent("myevent"));
 
-                AudioInterface audioInterface = new AudioInterface(getActivity());
-                audioInterface.getAudioByKey("dialogsound", new ResponseCallback<List<FileInfo>>() {
-                    @Override
-                    public void onResponse(int stateCode, int code, String msg, List<FileInfo> fileInfos) {
-                        if (fileInfos != null) {
-                            System.out.println("audio.list.size:" + fileInfos.size());
-                            searchAdapter.setList(fileInfos);
-                            searchAdapter.notifyDataSetChanged();
-                        }
+    }
 
-                    }
-                });
+    @Override
+    public void onItemSelected(MenuItem item) {
 
-                break;
-        }
     }
 
     class MyPagerAdapter extends PagerAdapter {
@@ -308,6 +329,42 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
             ImageView Img;
             TextView Name;
             TextView Size;
+        }
+    }
+
+    class SearchKeyChange implements TextWatcher{
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() > 0) {
+                AudioInterface audioInterface = new AudioInterface(getActivity());
+                audioInterface.getAudioByKey("dialogsound", new ResponseCallback<List<FileInfo>>() {
+                    @Override
+                    public void onResponse(int stateCode, int code, String msg, List<FileInfo> fileInfos) {
+                        if (fileInfos != null) {
+                            searchAdapter.setList(null);
+                            searchAdapter.setList(fileInfos);
+                            searchAdapter.notifyDataSetChanged();
+                        }else{
+                            searchAdapter.setList(null);
+                            searchAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+            } else {
+                searchAdapter.setList(null);
+                searchAdapter.notifyDataSetChanged();
+            }
         }
     }
 
