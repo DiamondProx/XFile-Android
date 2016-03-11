@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
+import com.huangjiang.message.UdpClient;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
@@ -58,6 +60,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     private TextView device_name;
 
     ColorStateList gray_color, blue_color, green_color;
+
+    Button btn_share;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +127,9 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
         rdb_home.setChecked(true);
 
+        btn_share=(Button)findViewById(R.id.btn_share);
+        btn_share.setOnClickListener(this);
+
     }
 
 
@@ -150,6 +157,9 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
             case R.id.edit_user_layout:
                 Intent intent = new Intent(HomeActivity.this, UserCenterActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.btn_share:
+                UdpClient.start();
                 break;
             default:
                 break;
