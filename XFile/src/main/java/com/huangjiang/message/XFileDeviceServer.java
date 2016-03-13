@@ -11,13 +11,11 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 
 /**
- * UDP服务器.寻找,发现设备
+ * 发现设备服务器
  */
-public class UdpServer {
-
+public class XFileDeviceServer {
 
     public static void start() {
-
 
         new Thread(new Runnable() {
             @Override
@@ -43,7 +41,5 @@ public class UdpServer {
                 }
             }
         }).start();
-
-
     }
 }

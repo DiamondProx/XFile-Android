@@ -25,7 +25,7 @@ import android.widget.TextView;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
-import com.huangjiang.message.UdpClient;
+import com.huangjiang.message.DeviceClient;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
@@ -159,7 +159,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 startActivity(intent);
                 break;
             case R.id.btn_share:
-                UdpClient.start();
+                new DeviceClient(HomeActivity.this).start();
                 break;
             default:
                 break;
