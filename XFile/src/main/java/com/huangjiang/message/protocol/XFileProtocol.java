@@ -13,13 +13,18 @@ public final class XFileProtocol {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required bytes ip = 1;</code>
+     * <code>required string ip = 1;</code>
      */
     boolean hasIp();
     /**
-     * <code>required bytes ip = 1;</code>
+     * <code>required string ip = 1;</code>
      */
-    com.google.protobuf.ByteString getIp();
+    String getIp();
+    /**
+     * <code>required string ip = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getIpBytes();
 
     /**
      * <code>required uint32 port = 2;</code>
@@ -83,8 +88,9 @@ public final class XFileProtocol {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              ip_ = input.readBytes();
+              ip_ = bs;
               break;
             }
             case 16: {
@@ -133,18 +139,45 @@ public final class XFileProtocol {
 
     private int bitField0_;
     public static final int IP_FIELD_NUMBER = 1;
-    private com.google.protobuf.ByteString ip_;
+    private Object ip_;
     /**
-     * <code>required bytes ip = 1;</code>
+     * <code>required string ip = 1;</code>
      */
     public boolean hasIp() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required bytes ip = 1;</code>
+     * <code>required string ip = 1;</code>
      */
-    public com.google.protobuf.ByteString getIp() {
-      return ip_;
+    public String getIp() {
+      Object ref = ip_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          ip_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string ip = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getIpBytes() {
+      Object ref = ip_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        ip_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int PORT_FIELD_NUMBER = 2;
@@ -163,7 +196,7 @@ public final class XFileProtocol {
     }
 
     private void initFields() {
-      ip_ = com.google.protobuf.ByteString.EMPTY;
+      ip_ = "";
       port_ = 0;
     }
     private byte memoizedIsInitialized = -1;
@@ -188,7 +221,7 @@ public final class XFileProtocol {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, ip_);
+        output.writeBytes(1, getIpBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeUInt32(2, port_);
@@ -204,7 +237,7 @@ public final class XFileProtocol {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, ip_);
+          .computeBytesSize(1, getIpBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
@@ -327,7 +360,7 @@ public final class XFileProtocol {
 
       public Builder clear() {
         super.clear();
-        ip_ = com.google.protobuf.ByteString.EMPTY;
+        ip_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
         port_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -384,7 +417,9 @@ public final class XFileProtocol {
       public Builder mergeFrom(Bonjour other) {
         if (other == Bonjour.getDefaultInstance()) return this;
         if (other.hasIp()) {
-          setIp(other.getIp());
+          bitField0_ |= 0x00000001;
+          ip_ = other.ip_;
+          onChanged();
         }
         if (other.hasPort()) {
           setPort(other.getPort());
@@ -424,23 +459,51 @@ public final class XFileProtocol {
       }
       private int bitField0_;
 
-      private com.google.protobuf.ByteString ip_ = com.google.protobuf.ByteString.EMPTY;
+      private Object ip_ = "";
       /**
-       * <code>required bytes ip = 1;</code>
+       * <code>required string ip = 1;</code>
        */
       public boolean hasIp() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required bytes ip = 1;</code>
+       * <code>required string ip = 1;</code>
        */
-      public com.google.protobuf.ByteString getIp() {
-        return ip_;
+      public String getIp() {
+        Object ref = ip_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            ip_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
       /**
-       * <code>required bytes ip = 1;</code>
+       * <code>required string ip = 1;</code>
        */
-      public Builder setIp(com.google.protobuf.ByteString value) {
+      public com.google.protobuf.ByteString
+          getIpBytes() {
+        Object ref = ip_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          ip_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string ip = 1;</code>
+       */
+      public Builder setIp(
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -450,11 +513,24 @@ public final class XFileProtocol {
         return this;
       }
       /**
-       * <code>required bytes ip = 1;</code>
+       * <code>required string ip = 1;</code>
        */
       public Builder clearIp() {
         bitField0_ = (bitField0_ & ~0x00000001);
         ip_ = getDefaultInstance().getIp();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string ip = 1;</code>
+       */
+      public Builder setIpBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        ip_ = value;
         onChanged();
         return this;
       }
@@ -507,13 +583,18 @@ public final class XFileProtocol {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required bytes ip = 1;</code>
+     * <code>required string ip = 1;</code>
      */
     boolean hasIp();
     /**
-     * <code>required bytes ip = 1;</code>
+     * <code>required string ip = 1;</code>
      */
-    com.google.protobuf.ByteString getIp();
+    String getIp();
+    /**
+     * <code>required string ip = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getIpBytes();
 
     /**
      * <code>required uint32 port = 2;</code>
@@ -591,8 +672,9 @@ public final class XFileProtocol {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              ip_ = input.readBytes();
+              ip_ = bs;
               break;
             }
             case 16: {
@@ -647,18 +729,45 @@ public final class XFileProtocol {
 
     private int bitField0_;
     public static final int IP_FIELD_NUMBER = 1;
-    private com.google.protobuf.ByteString ip_;
+    private Object ip_;
     /**
-     * <code>required bytes ip = 1;</code>
+     * <code>required string ip = 1;</code>
      */
     public boolean hasIp() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required bytes ip = 1;</code>
+     * <code>required string ip = 1;</code>
      */
-    public com.google.protobuf.ByteString getIp() {
-      return ip_;
+    public String getIp() {
+      Object ref = ip_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          ip_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string ip = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getIpBytes() {
+      Object ref = ip_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        ip_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int PORT_FIELD_NUMBER = 2;
@@ -719,7 +828,7 @@ public final class XFileProtocol {
     }
 
     private void initFields() {
-      ip_ = com.google.protobuf.ByteString.EMPTY;
+      ip_ = "";
       port_ = 0;
       name_ = "";
     }
@@ -749,7 +858,7 @@ public final class XFileProtocol {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, ip_);
+        output.writeBytes(1, getIpBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeUInt32(2, port_);
@@ -768,7 +877,7 @@ public final class XFileProtocol {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, ip_);
+          .computeBytesSize(1, getIpBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
@@ -895,7 +1004,7 @@ public final class XFileProtocol {
 
       public Builder clear() {
         super.clear();
-        ip_ = com.google.protobuf.ByteString.EMPTY;
+        ip_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
         port_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -958,7 +1067,9 @@ public final class XFileProtocol {
       public Builder mergeFrom(Echo other) {
         if (other == Echo.getDefaultInstance()) return this;
         if (other.hasIp()) {
-          setIp(other.getIp());
+          bitField0_ |= 0x00000001;
+          ip_ = other.ip_;
+          onChanged();
         }
         if (other.hasPort()) {
           setPort(other.getPort());
@@ -1007,23 +1118,51 @@ public final class XFileProtocol {
       }
       private int bitField0_;
 
-      private com.google.protobuf.ByteString ip_ = com.google.protobuf.ByteString.EMPTY;
+      private Object ip_ = "";
       /**
-       * <code>required bytes ip = 1;</code>
+       * <code>required string ip = 1;</code>
        */
       public boolean hasIp() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required bytes ip = 1;</code>
+       * <code>required string ip = 1;</code>
        */
-      public com.google.protobuf.ByteString getIp() {
-        return ip_;
+      public String getIp() {
+        Object ref = ip_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            ip_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
       /**
-       * <code>required bytes ip = 1;</code>
+       * <code>required string ip = 1;</code>
        */
-      public Builder setIp(com.google.protobuf.ByteString value) {
+      public com.google.protobuf.ByteString
+          getIpBytes() {
+        Object ref = ip_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          ip_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string ip = 1;</code>
+       */
+      public Builder setIp(
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -1033,11 +1172,24 @@ public final class XFileProtocol {
         return this;
       }
       /**
-       * <code>required bytes ip = 1;</code>
+       * <code>required string ip = 1;</code>
        */
       public Builder clearIp() {
         bitField0_ = (bitField0_ & ~0x00000001);
         ip_ = getDefaultInstance().getIp();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string ip = 1;</code>
+       */
+      public Builder setIpBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        ip_ = value;
         onChanged();
         return this;
       }
@@ -1181,8 +1333,8 @@ public final class XFileProtocol {
   static {
     String[] descriptorData = {
       "\n\023XFileProtocol.proto\022\037com.huangjiang.me" +
-      "ssage.protocol\"#\n\007Bonjour\022\n\n\002ip\030\001 \002(\014\022\014\n" +
-      "\004port\030\002 \002(\r\".\n\004Echo\022\n\n\002ip\030\001 \002(\014\022\014\n\004port\030" +
+      "ssage.protocol\"#\n\007Bonjour\022\n\n\002ip\030\001 \002(\t\022\014\n" +
+      "\004port\030\002 \002(\r\".\n\004Echo\022\n\n\002ip\030\001 \002(\t\022\014\n\004port\030" +
       "\002 \002(\r\022\014\n\004name\030\003 \002(\tB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =

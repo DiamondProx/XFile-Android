@@ -1,11 +1,16 @@
 package com.huangjiang.message;
 
+import java.io.RandomAccessFile;
+
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
@@ -14,6 +19,13 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
  * 发现设备服务器
  */
 public class XFileDeviceServer {
+
+    private static Channel mServerChannel;
+
+
+    public static Channel getServerChannel() {
+        return mServerChannel;
+    }
 
     public static void start() {
 
@@ -34,12 +46,13 @@ public class XFileDeviceServer {
                                     ch.pipeline().addLast(new UdpServerHandler());
                                 }
                             });
-
                     b.bind(8081).sync().channel().closeFuture().await();
                 } catch (Exception e) {
                     System.out.println("exception:" + e.getMessage());
                 }
             }
         }).start();
+
+
     }
 }

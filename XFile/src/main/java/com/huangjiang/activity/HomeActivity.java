@@ -21,15 +21,34 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.protobuf.ByteString;
+import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.message.DeviceClient;
+import com.huangjiang.message.Header;
+import com.huangjiang.message.event.DeviceInfoEvent;
+import com.huangjiang.message.protocol.XFileProtocol;
+import com.huangjiang.utils.IPv4Util;
+import com.huangjiang.utils.Logger;
+import com.huangjiang.utils.NetStateUtil;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.io.RandomAccessFile;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.FileRegion;
+import io.netty.channel.socket.DatagramPacket;
 
 
 public class HomeActivity extends FragmentActivity implements OnClickListener, OnCheckedChangeListener {
@@ -67,6 +86,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        EventBus.getDefault().register(this);
         initializeView();
         initData();
     }
@@ -127,7 +147,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
         rdb_home.setChecked(true);
 
-        btn_share=(Button)findViewById(R.id.btn_share);
+        btn_share = (Button) findViewById(R.id.btn_share);
         btn_share.setOnClickListener(this);
 
     }
@@ -159,13 +179,37 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 startActivity(intent);
                 break;
             case R.id.btn_share:
-                new DeviceClient(HomeActivity.this).start();
+                sendBonjour();
                 break;
             default:
                 break;
         }
 
     }
+
+    // 发送广播发现设备
+    void sendBonjour() {
+        if (DeviceClient.getInstance().getChannel() != null) {
+            try {
+                Channel channel = DeviceClient.getInstance().getChannel();
+                Header header = new Header();
+                header.setCommandId(SysConstant.CMD_Bonjour);
+                String ip = NetStateUtil.getIPv4(HomeActivity.this);
+                XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
+                bonjour.setIp(ip);
+                bonjour.setPort(8081);
+                byte[] body = bonjour.build().toByteArray();
+                header.setLength(SysConstant.HEADER_LENGTH + body.length);
+                byte[] data = new byte[SysConstant.HEADER_LENGTH + body.length];
+                System.arraycopy(header.toByteArray(), 0, data, 0, SysConstant.HEADER_LENGTH);
+                System.arraycopy(body, 0, data, SysConstant.HEADER_LENGTH, body.length);
+                channel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), new InetSocketAddress(SysConstant.BROADCASE_ADDRESS, SysConstant.BROADCASE_PORT))).sync();
+            } catch (Exception e) {
+                Logger.getLogger(HomeActivity.class).d("sendBonjourMessage", e.getMessage());
+            }
+        }
+    }
+
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkId) {
@@ -264,6 +308,22 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         tvCountNumber.setText(String.format(getString(R.string.count_number), "0"));
         tvFileNumber.setText(String.format(getString(R.string.file_total_b), "0.00"));
         device_name.setText(android.os.Build.MODEL);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onEventMainThread(DeviceInfoEvent event) {
+        if (event != null) {
+            //Toast.makeText(HomeActivity.this, "FindDevice.Ip:" + event.getName(), Toast.LENGTH_SHORT).show();
+            System.out.println("device.Ip:"+event.getName());
+        }
+
+
     }
 
 }

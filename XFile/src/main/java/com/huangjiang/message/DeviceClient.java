@@ -41,12 +41,50 @@ import io.netty.util.CharsetUtil;
  */
 public class DeviceClient {
 
-    private Context mContext;
 
-    public DeviceClient(Context context) {
-        this.mContext = context;
+
+
+    private Channel mChannel;
+
+    private static DeviceClient single = null;
+
+    public static DeviceClient getInstance() {
+        if (single == null) {
+            single = new DeviceClient();
+        }
+        return single;
     }
 
+    public void initDeviceClient() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                EventLoopGroup group = new NioEventLoopGroup();
+                try {
+                    Bootstrap b = new Bootstrap();
+                    b.group(group).channel(NioDatagramChannel.class).option(ChannelOption.SO_BROADCAST, true)
+                            .handler(new ChannelInitializer<NioDatagramChannel>() {
+                                @Override
+                                protected void initChannel(NioDatagramChannel ch) throws Exception {
+                                    ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+                                    ch.pipeline().addLast(new ProtobufDecoder(Device.Location.getDefaultInstance()));
+                                    ch.pipeline().addLast(new ProtobufEncoder());
+                                    ch.pipeline().addLast(new UdpClientDeviceHandler());
+                                }
+                            });
+
+                    Channel ch = b.bind(0).sync().channel();
+                    mChannel = ch;
+                } catch (Exception e) {
+                    group.shutdownGracefully();
+                }
+            }
+        }).start();
+    }
+
+    public Channel getChannel() {
+        return mChannel;
+    }
 
     public void start() {
         new Thread(new Runnable() {
@@ -68,16 +106,16 @@ public class DeviceClient {
 
                     Channel ch = b.bind(0).sync().channel();
 
-                    Header header = new Header();
-                    header.setCommandId(SysConstant.CMD_Bonjour);
-
-                    String ip = NetStateUtil.getIPv4(mContext);
-                    byte[] ipbs = IPv4Util.ipToBytesByInet(ip);
-
-                    XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
-                    ByteString byteString = ByteString.copyFrom(ipbs);
-                    bonjour.setIp(byteString);
-                    bonjour.setPort(8081);
+//                    Header header = new Header();
+//                    header.setCommandId(SysConstant.CMD_Bonjour);
+//
+//                    String ip = NetStateUtil.getIPv4(mContext);
+//                    byte[] ipbs = IPv4Util.ipToBytesByInet(ip);
+//
+//                    XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
+//                    ByteString byteString = ByteString.copyFrom(ipbs);
+//                    bonjour.setIp(byteString);
+//                    bonjour.setPort(8081);
 
 //                    Device.Location.Builder builder = Device.Location.newBuilder();
 //                    builder.setCmd(100);
@@ -90,17 +128,17 @@ public class DeviceClient {
 //                    ch.connect(new InetSocketAddress("255.255.255.255", 8081));
 //                    ch.writeAndFlush(builder.build()).sync();
 //                    byte[] data = builder.build().toByteArray();
-                    byte[] body = bonjour.build().toByteArray();
-                    byte[] data = new byte[SysConstant.HEADER_LENGTH + body.length];
-                    System.arraycopy(header.toByteArray(), 0, data, 0, SysConstant.HEADER_LENGTH);
-                    System.arraycopy(body, 0, data, SysConstant.HEADER_LENGTH, body.length);
-
-                    ch.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), new InetSocketAddress("255.255.255.255", 8081))).sync();
-
-
-                    if (!ch.closeFuture().await(15000)) {
-                        System.out.println("search timeout");
-                    }
+//                    byte[] body = bonjour.build().toByteArray();
+//                    byte[] data = new byte[SysConstant.HEADER_LENGTH + body.length];
+//                    System.arraycopy(header.toByteArray(), 0, data, 0, SysConstant.HEADER_LENGTH);
+//                    System.arraycopy(body, 0, data, SysConstant.HEADER_LENGTH, body.length);
+//
+//                    ch.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), new InetSocketAddress("255.255.255.255", 8081))).sync();
+//
+//
+//                    if (!ch.closeFuture().await(15000)) {
+//                        System.out.println("search timeout");
+//                    }
                 } catch (Exception e) {
                     group.shutdownGracefully();
                 }

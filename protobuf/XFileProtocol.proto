@@ -1,0 +1,12 @@
+package com.huangjiang.message.protocol;
+option optimize_for = SPEED;
+
+message Bonjour {
+  required string ip = 1;
+  required uint32 port = 2;
+}  
+message Echo {
+  required string ip = 1;
+  required uint32 port = 2;
+  required string name = 3;
+}  
