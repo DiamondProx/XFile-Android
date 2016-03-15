@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +30,7 @@ import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.message.DeviceClient;
+import com.huangjiang.message.FileClient;
 import com.huangjiang.message.Header;
 import com.huangjiang.message.event.DeviceInfoEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
@@ -40,11 +42,13 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.io.RandomAccessFile;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.FileRegion;
@@ -179,7 +183,10 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 startActivity(intent);
                 break;
             case R.id.btn_share:
-                sendBonjour();
+//                sendBonjour();
+                tranferFile();
+//                testReadFile();
+//                sendFile();
                 break;
             default:
                 break;
@@ -207,6 +214,58 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
             } catch (Exception e) {
                 Logger.getLogger(HomeActivity.class).d("sendBonjourMessage", e.getMessage());
             }
+        }
+    }
+
+    void tranferFile() {
+        FileClient client = new FileClient();
+        client.connect();
+//        byte[] req = "t".getBytes();
+//        ByteBuf byteBuf = Unpooled.buffer(req.length);
+//        byteBuf.writeBytes(req);
+//        client.write(byteBuf);
+    }
+
+    void testReadFile() {
+        //MappedByteBuffer
+        //RandomAccessFile
+        try {
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                File path = Environment.getExternalStorageDirectory();
+                String sendTextPath = path.getAbsolutePath() + "/send.txt";
+                File sendFile = new File(sendTextPath);
+                System.out.println("*****length:" + sendFile.length());
+                if (sendFile.exists()) {
+                    RandomAccessFile rafi = new RandomAccessFile(sendTextPath, "r");
+                    byte[] readData = new byte[19];
+//                    rafi.seek(2);
+//                    rafi.read(readData);
+//                    rafi.readFully(readData);
+                    rafi.read(readData, 1, 2);
+                    String str = new String(readData, "UTF-8");
+                    System.out.println("*****readData:" + str);
+                }
+                System.out.println("*****sdPath:" + path.getAbsolutePath());
+            }
+        } catch (Exception e) {
+            System.out.println("*****testReadFile.error:" + e.getMessage());
+        }
+
+
+    }
+
+    void sendFile() {
+        try {
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                File path = Environment.getExternalStorageDirectory();
+                File sendFile = new File( path.getAbsolutePath() + "/send.txt");
+                System.out.println("*****length:" + sendFile.length());
+                if (sendFile.exists()) {
+
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("*****sendFile.error:" + e.getMessage());
         }
     }
 
@@ -320,7 +379,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     public void onEventMainThread(DeviceInfoEvent event) {
         if (event != null) {
             //Toast.makeText(HomeActivity.this, "FindDevice.Ip:" + event.getName(), Toast.LENGTH_SHORT).show();
-            System.out.println("device.Ip:"+event.getName());
+            System.out.println("device.Ip:" + event.getName());
         }
 
 

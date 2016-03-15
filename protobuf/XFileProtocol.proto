@@ -9,4 +9,14 @@ message Echo {
   required string ip = 1;
   required uint32 port = 2;
   required string name = 3;
-}  
+}
+message File{
+  required string name = 1;
+  required string md5 = 2;
+  required bytes data = 3;
+  required uint32 readindex = 4;
+  required uint32 writeindex = 5;
+  required string seqnum = 6;
+  required uint32 length = 7;
+
+}

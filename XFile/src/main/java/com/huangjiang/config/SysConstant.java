@@ -11,13 +11,19 @@ public class SysConstant {
 
     public static final short CMD_ECHO = 0x02;//服务器应答
 
+    public static final short CMD_TRANSER_FILE_SEND = 0x03;//发送文件
+
+    public static final short CMD_TRANSER_FILE_REC = 0x04;//接收文件
+
     public static final String BROADCASE_ADDRESS = "255.255.255.255";//广播地址
 
     public static final int BROADCASE_PORT = 8081;// 发现设备服务器端口
 
     public static final int MESSAGE_PORT = 9091;// 消息服务器端口
 
-    public static final int FILE_SERVER_PORT = 9092;// 文件服务器端口
+    public static final int FILE_SERVER_PORT = 9095;// 文件服务器端口
+
+    public static final int FILE_SEGMENT_SIZE = 10;// 分段文件大小
 
 
 }

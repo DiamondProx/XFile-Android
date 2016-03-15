@@ -4,9 +4,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.huangjiang.message.DeviceClient;
-import com.huangjiang.message.XFileDeviceServer;
-
-import java.nio.ByteBuffer;
+import com.huangjiang.message.DeviceServer;
+import com.huangjiang.message.FileServer;
 
 public class XFileApplication extends Application {
 
@@ -21,8 +20,12 @@ public class XFileApplication extends Application {
     }
 
     void initMessageService() {
-        XFileDeviceServer.start();
-        DeviceClient.getInstance().initDeviceClient();
+        // 启动文件服务器
+        FileServer.getInstance().start();
+        // 启动发现设备服务器
+        //DeviceServer.start();
+        // 启动发现设备客户端
+        //DeviceClient.getInstance().initDeviceClient();
     }
 
 }

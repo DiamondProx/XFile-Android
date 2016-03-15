@@ -1313,6 +1313,1167 @@ public final class XFileProtocol {
     // @@protoc_insertion_point(class_scope:com.huangjiang.message.protocol.Echo)
   }
 
+  public interface FileOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.huangjiang.message.protocol.File)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required string name = 1;</code>
+     */
+    boolean hasName();
+    /**
+     * <code>required string name = 1;</code>
+     */
+    String getName();
+    /**
+     * <code>required string name = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>required string md5 = 2;</code>
+     */
+    boolean hasMd5();
+    /**
+     * <code>required string md5 = 2;</code>
+     */
+    String getMd5();
+    /**
+     * <code>required string md5 = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getMd5Bytes();
+
+    /**
+     * <code>required bytes data = 3;</code>
+     */
+    boolean hasData();
+    /**
+     * <code>required bytes data = 3;</code>
+     */
+    com.google.protobuf.ByteString getData();
+
+    /**
+     * <code>required uint32 readindex = 4;</code>
+     */
+    boolean hasReadindex();
+    /**
+     * <code>required uint32 readindex = 4;</code>
+     */
+    int getReadindex();
+
+    /**
+     * <code>required uint32 writeindex = 5;</code>
+     */
+    boolean hasWriteindex();
+    /**
+     * <code>required uint32 writeindex = 5;</code>
+     */
+    int getWriteindex();
+
+    /**
+     * <code>required string seqnum = 6;</code>
+     */
+    boolean hasSeqnum();
+    /**
+     * <code>required string seqnum = 6;</code>
+     */
+    String getSeqnum();
+    /**
+     * <code>required string seqnum = 6;</code>
+     */
+    com.google.protobuf.ByteString
+        getSeqnumBytes();
+
+    /**
+     * <code>required uint32 length = 7;</code>
+     */
+    boolean hasLength();
+    /**
+     * <code>required uint32 length = 7;</code>
+     */
+    int getLength();
+  }
+  /**
+   * Protobuf type {@code com.huangjiang.message.protocol.File}
+   */
+  public static final class File extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:com.huangjiang.message.protocol.File)
+      FileOrBuilder {
+    // Use File.newBuilder() to construct.
+    private File(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private File(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final File defaultInstance;
+    public static File getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public File getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private File(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              name_ = bs;
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              md5_ = bs;
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              data_ = input.readBytes();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              readindex_ = input.readUInt32();
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000010;
+              writeindex_ = input.readUInt32();
+              break;
+            }
+            case 50: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000020;
+              seqnum_ = bs;
+              break;
+            }
+            case 56: {
+              bitField0_ |= 0x00000040;
+              length_ = input.readUInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return XFileProtocol.internal_static_com_huangjiang_message_protocol_File_descriptor;
+    }
+
+    protected FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return XFileProtocol.internal_static_com_huangjiang_message_protocol_File_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              File.class, Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<File> PARSER =
+        new com.google.protobuf.AbstractParser<File>() {
+      public File parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new File(input, extensionRegistry);
+      }
+    };
+
+    @Override
+    public com.google.protobuf.Parser<File> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int NAME_FIELD_NUMBER = 1;
+    private Object name_;
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public boolean hasName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public String getName() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          name_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MD5_FIELD_NUMBER = 2;
+    private Object md5_;
+    /**
+     * <code>required string md5 = 2;</code>
+     */
+    public boolean hasMd5() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required string md5 = 2;</code>
+     */
+    public String getMd5() {
+      Object ref = md5_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          md5_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string md5 = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMd5Bytes() {
+      Object ref = md5_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        md5_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DATA_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString data_;
+    /**
+     * <code>required bytes data = 3;</code>
+     */
+    public boolean hasData() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required bytes data = 3;</code>
+     */
+    public com.google.protobuf.ByteString getData() {
+      return data_;
+    }
+
+    public static final int READINDEX_FIELD_NUMBER = 4;
+    private int readindex_;
+    /**
+     * <code>required uint32 readindex = 4;</code>
+     */
+    public boolean hasReadindex() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>required uint32 readindex = 4;</code>
+     */
+    public int getReadindex() {
+      return readindex_;
+    }
+
+    public static final int WRITEINDEX_FIELD_NUMBER = 5;
+    private int writeindex_;
+    /**
+     * <code>required uint32 writeindex = 5;</code>
+     */
+    public boolean hasWriteindex() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>required uint32 writeindex = 5;</code>
+     */
+    public int getWriteindex() {
+      return writeindex_;
+    }
+
+    public static final int SEQNUM_FIELD_NUMBER = 6;
+    private Object seqnum_;
+    /**
+     * <code>required string seqnum = 6;</code>
+     */
+    public boolean hasSeqnum() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>required string seqnum = 6;</code>
+     */
+    public String getSeqnum() {
+      Object ref = seqnum_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          seqnum_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string seqnum = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getSeqnumBytes() {
+      Object ref = seqnum_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        seqnum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LENGTH_FIELD_NUMBER = 7;
+    private int length_;
+    /**
+     * <code>required uint32 length = 7;</code>
+     */
+    public boolean hasLength() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>required uint32 length = 7;</code>
+     */
+    public int getLength() {
+      return length_;
+    }
+
+    private void initFields() {
+      name_ = "";
+      md5_ = "";
+      data_ = com.google.protobuf.ByteString.EMPTY;
+      readindex_ = 0;
+      writeindex_ = 0;
+      seqnum_ = "";
+      length_ = 0;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasMd5()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasData()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasReadindex()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasWriteindex()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasSeqnum()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasLength()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getMd5Bytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, data_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeUInt32(4, readindex_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeUInt32(5, writeindex_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(6, getSeqnumBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeUInt32(7, length_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getMd5Bytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, data_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(4, readindex_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(5, writeindex_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getSeqnumBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(7, length_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @Override
+    protected Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static File parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static File parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static File parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static File parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static File parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static File parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static File parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static File parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static File parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static File parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(File prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @Override
+    protected Builder newBuilderForType(
+        BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.huangjiang.message.protocol.File}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.huangjiang.message.protocol.File)
+        FileOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return XFileProtocol.internal_static_com_huangjiang_message_protocol_File_descriptor;
+      }
+
+      protected FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return XFileProtocol.internal_static_com_huangjiang_message_protocol_File_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                File.class, Builder.class);
+      }
+
+      // Construct using com.huangjiang.message.protocol.XFileProtocol.File.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        name_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        md5_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        data_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        readindex_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        writeindex_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        seqnum_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
+        length_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000040);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return XFileProtocol.internal_static_com_huangjiang_message_protocol_File_descriptor;
+      }
+
+      public File getDefaultInstanceForType() {
+        return File.getDefaultInstance();
+      }
+
+      public File build() {
+        File result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public File buildPartial() {
+        File result = new File(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.name_ = name_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.md5_ = md5_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.data_ = data_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.readindex_ = readindex_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.writeindex_ = writeindex_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.seqnum_ = seqnum_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.length_ = length_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof File) {
+          return mergeFrom((File)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(File other) {
+        if (other == File.getDefaultInstance()) return this;
+        if (other.hasName()) {
+          bitField0_ |= 0x00000001;
+          name_ = other.name_;
+          onChanged();
+        }
+        if (other.hasMd5()) {
+          bitField0_ |= 0x00000002;
+          md5_ = other.md5_;
+          onChanged();
+        }
+        if (other.hasData()) {
+          setData(other.getData());
+        }
+        if (other.hasReadindex()) {
+          setReadindex(other.getReadindex());
+        }
+        if (other.hasWriteindex()) {
+          setWriteindex(other.getWriteindex());
+        }
+        if (other.hasSeqnum()) {
+          bitField0_ |= 0x00000020;
+          seqnum_ = other.seqnum_;
+          onChanged();
+        }
+        if (other.hasLength()) {
+          setLength(other.getLength());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasName()) {
+          
+          return false;
+        }
+        if (!hasMd5()) {
+          
+          return false;
+        }
+        if (!hasData()) {
+          
+          return false;
+        }
+        if (!hasReadindex()) {
+          
+          return false;
+        }
+        if (!hasWriteindex()) {
+          
+          return false;
+        }
+        if (!hasSeqnum()) {
+          
+          return false;
+        }
+        if (!hasLength()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        File parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (File) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private Object name_ = "";
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public boolean hasName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public String getName() {
+        Object ref = name_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder setName(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder clearName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private Object md5_ = "";
+      /**
+       * <code>required string md5 = 2;</code>
+       */
+      public boolean hasMd5() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required string md5 = 2;</code>
+       */
+      public String getMd5() {
+        Object ref = md5_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            md5_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string md5 = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMd5Bytes() {
+        Object ref = md5_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          md5_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string md5 = 2;</code>
+       */
+      public Builder setMd5(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        md5_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string md5 = 2;</code>
+       */
+      public Builder clearMd5() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        md5_ = getDefaultInstance().getMd5();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string md5 = 2;</code>
+       */
+      public Builder setMd5Bytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        md5_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>required bytes data = 3;</code>
+       */
+      public boolean hasData() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required bytes data = 3;</code>
+       */
+      public com.google.protobuf.ByteString getData() {
+        return data_;
+      }
+      /**
+       * <code>required bytes data = 3;</code>
+       */
+      public Builder setData(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        data_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bytes data = 3;</code>
+       */
+      public Builder clearData() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+
+      private int readindex_ ;
+      /**
+       * <code>required uint32 readindex = 4;</code>
+       */
+      public boolean hasReadindex() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required uint32 readindex = 4;</code>
+       */
+      public int getReadindex() {
+        return readindex_;
+      }
+      /**
+       * <code>required uint32 readindex = 4;</code>
+       */
+      public Builder setReadindex(int value) {
+        bitField0_ |= 0x00000008;
+        readindex_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required uint32 readindex = 4;</code>
+       */
+      public Builder clearReadindex() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        readindex_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int writeindex_ ;
+      /**
+       * <code>required uint32 writeindex = 5;</code>
+       */
+      public boolean hasWriteindex() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>required uint32 writeindex = 5;</code>
+       */
+      public int getWriteindex() {
+        return writeindex_;
+      }
+      /**
+       * <code>required uint32 writeindex = 5;</code>
+       */
+      public Builder setWriteindex(int value) {
+        bitField0_ |= 0x00000010;
+        writeindex_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required uint32 writeindex = 5;</code>
+       */
+      public Builder clearWriteindex() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        writeindex_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private Object seqnum_ = "";
+      /**
+       * <code>required string seqnum = 6;</code>
+       */
+      public boolean hasSeqnum() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>required string seqnum = 6;</code>
+       */
+      public String getSeqnum() {
+        Object ref = seqnum_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            seqnum_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string seqnum = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getSeqnumBytes() {
+        Object ref = seqnum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          seqnum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string seqnum = 6;</code>
+       */
+      public Builder setSeqnum(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        seqnum_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string seqnum = 6;</code>
+       */
+      public Builder clearSeqnum() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        seqnum_ = getDefaultInstance().getSeqnum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string seqnum = 6;</code>
+       */
+      public Builder setSeqnumBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        seqnum_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int length_ ;
+      /**
+       * <code>required uint32 length = 7;</code>
+       */
+      public boolean hasLength() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>required uint32 length = 7;</code>
+       */
+      public int getLength() {
+        return length_;
+      }
+      /**
+       * <code>required uint32 length = 7;</code>
+       */
+      public Builder setLength(int value) {
+        bitField0_ |= 0x00000040;
+        length_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required uint32 length = 7;</code>
+       */
+      public Builder clearLength() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        length_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:com.huangjiang.message.protocol.File)
+    }
+
+    static {
+      defaultInstance = new File(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:com.huangjiang.message.protocol.File)
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_huangjiang_message_protocol_Bonjour_descriptor;
   private static
@@ -1323,6 +2484,11 @@ public final class XFileProtocol {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_huangjiang_message_protocol_Echo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_huangjiang_message_protocol_File_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_huangjiang_message_protocol_File_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1335,7 +2501,10 @@ public final class XFileProtocol {
       "\n\023XFileProtocol.proto\022\037com.huangjiang.me" +
       "ssage.protocol\"#\n\007Bonjour\022\n\n\002ip\030\001 \002(\t\022\014\n" +
       "\004port\030\002 \002(\r\".\n\004Echo\022\n\n\002ip\030\001 \002(\t\022\014\n\004port\030" +
-      "\002 \002(\r\022\014\n\004name\030\003 \002(\tB\002H\001"
+      "\002 \002(\r\022\014\n\004name\030\003 \002(\t\"v\n\004File\022\014\n\004name\030\001 \002(" +
+      "\t\022\013\n\003md5\030\002 \002(\t\022\014\n\004data\030\003 \002(\014\022\021\n\treadinde" +
+      "x\030\004 \002(\r\022\022\n\nwriteindex\030\005 \002(\r\022\016\n\006seqnum\030\006 " +
+      "\002(\t\022\016\n\006length\030\007 \002(\rB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1361,6 +2530,12 @@ public final class XFileProtocol {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_huangjiang_message_protocol_Echo_descriptor,
         new String[] { "Ip", "Port", "Name", });
+    internal_static_com_huangjiang_message_protocol_File_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_com_huangjiang_message_protocol_File_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_com_huangjiang_message_protocol_File_descriptor,
+        new String[] { "Name", "Md5", "Data", "Readindex", "Writeindex", "Seqnum", "Length", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
