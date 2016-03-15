@@ -20,3 +20,8 @@ message File{
   required uint32 length = 7;
 
 }
+message Chat{
+ required string content = 1;
+ required uint32 messagetype = 2;
+ required string from = 3;
+}

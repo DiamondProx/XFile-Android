@@ -36,10 +36,86 @@ public class FileClientHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        super.channelRead(ctx, msg);
         System.out.println("*****channelRead.Client");
-//        ByteBuf byteBuf = (ByteBuf) msg;
-//        System.out.println("*****channelRead:" + byteBuf.toString());
+        ByteBuf byteBuf = (ByteBuf) msg;
+        if (byteBuf != null) {
+            ByteBuf headBuf = byteBuf.readBytes(SysConstant.HEADER_LENGTH);
+            byte[] headArray = headBuf.array();
+            Header header = new Header(headArray);
+            switch (header.getCommandId()) {
+                case SysConstant.CMD_TRANSER_FILE_REC:
+                    continueSendFile(ctx, header, byteBuf);
+                    break;
+            }
+        }
+    }
+
+    void continueSendFile(ChannelHandlerContext ctx, Header header, ByteBuf bf) {
+        try {
+            System.out.println("*****继续发-3");
+            int lenght = header.getLength();
+            ByteBuf byteBuf = bf.readBytes(lenght - SysConstant.HEADER_LENGTH);
+            byte[] body = new byte[lenght - SysConstant.HEADER_LENGTH];
+            byteBuf.readBytes(body);
+            XFileProtocol.File file = XFileProtocol.File.parseFrom(body);
+
+            System.out.println("*****file.setReadindex-2:"+file.getReadindex());
+
+            RandomAccessFile raf = new RandomAccessFile(Environment.getExternalStorageDirectory() + "/send.txt", "r");
+            raf.seek(file.getReadindex());
+            XFileProtocol.File.Builder fileBuilder = XFileProtocol.File.newBuilder();
+            if (file.getLength() - file.getReadindex() >= SysConstant.FILE_SEGMENT_SIZE) {
+                // 大于一个包以上
+                byte[] fileData = new byte[SysConstant.FILE_SEGMENT_SIZE];
+                raf.read(fileData);
+
+                fileBuilder.setName(file.getName());
+                fileBuilder.setMd5("md4");
+                fileBuilder.setReadindex(file.getReadindex());
+                fileBuilder.setWriteindex(file.getReadindex());
+                fileBuilder.setSeqnum("seqnum002");
+                fileBuilder.setLength((int) file.getLength());
+                ByteString byteString = ByteString.copyFrom(fileData);
+                fileBuilder.setData(byteString);
+
+
+                System.out.println("*****fileBuilder.getReadindex-3:"+fileBuilder.getReadindex());
+
+            } else {
+                // 不足一个数据包
+                byte[] fileData = new byte[file.getLength() - file.getReadindex()];
+                raf.read(fileData);
+
+
+                fileBuilder.setName(file.getName());
+                fileBuilder.setMd5("md4");
+                fileBuilder.setReadindex(file.getReadindex());
+                fileBuilder.setWriteindex(file.getReadindex());
+                fileBuilder.setSeqnum("seqnum003");
+                fileBuilder.setLength((int) file.getLength());
+                ByteString byteString = ByteString.copyFrom(fileData);
+                fileBuilder.setData(byteString);
+
+                System.out.println("*****fileBuilder.getReadindex-4:"+fileBuilder.getReadindex());
+
+            }
+
+
+            Header sendHeader = new Header();
+            sendHeader.setCommandId(SysConstant.CMD_TRANSER_FILE_SEND);
+            byte[] bodyData = fileBuilder.build().toByteArray();
+            sendHeader.setLength(SysConstant.HEADER_LENGTH + bodyData.length);
+
+            ByteBuf sendBuf = Unpooled.buffer(SysConstant.HEADER_LENGTH + bodyData.length);
+            sendBuf.writeBytes(sendHeader.toByteArray());
+            sendBuf.writeBytes(bodyData);
+
+            ctx.writeAndFlush(sendBuf);
+
+
+        } catch (Exception e) {
+            System.out.println("*****RecvFile:" + e.getMessage());
+        }
     }
 
 
@@ -79,13 +155,15 @@ public class FileClientHandler extends ChannelHandlerAdapter {
 
                     Header header = new Header();
                     header.setCommandId(SysConstant.CMD_TRANSER_FILE_SEND);
-                    header.setLength(SysConstant.HEADER_LENGTH + fileBuilder.getLength());
+                    byte[] bodyData = fileBuilder.build().toByteArray();
+                    header.setLength(SysConstant.HEADER_LENGTH + bodyData.length);
 
                     ByteBuf byteBuf = Unpooled.buffer(SysConstant.HEADER_LENGTH + fileBuilder.getLength());
                     byteBuf.writeBytes(header.toByteArray());
-                    byteBuf.writeBytes(fileBuilder.build().toByteArray());
+                    byteBuf.writeBytes(bodyData);
 
                     ctx.writeAndFlush(byteBuf);
+
 
                 }
             }
@@ -93,4 +171,6 @@ public class FileClientHandler extends ChannelHandlerAdapter {
             System.out.println("*****sendFile.error:" + e.getMessage());
         }
     }
+
+
 }
