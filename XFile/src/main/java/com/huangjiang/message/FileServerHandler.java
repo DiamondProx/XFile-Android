@@ -67,12 +67,12 @@ public class FileServerHandler extends ChannelHandlerAdapter {
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 
                 // 保存文件
-                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/save.txt");
+                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/save.mp3");
                 if (!file.exists()) {
                     file.createNewFile();
                 }
                 byte[] content = requestFile.getData().toByteArray();
-                RandomAccessFile rf = new RandomAccessFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "/save.txt", "rw");
+                RandomAccessFile rf = new RandomAccessFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "/save.mp3", "rw");
                 rf.seek(requestFile.getReadindex());
                 rf.write(content);
                 rf.close();

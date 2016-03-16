@@ -32,6 +32,7 @@ import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.message.DeviceClient;
 import com.huangjiang.message.FileClient;
 import com.huangjiang.message.Header;
+import com.huangjiang.message.MessageClient;
 import com.huangjiang.message.event.DeviceInfoEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.IPv4Util;
@@ -184,9 +185,10 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 break;
             case R.id.btn_share:
 //                sendBonjour();
-                tranferFile();
+//                tranferFile();
 //                testReadFile();
 //                sendFile();
+                sendMessage();
                 break;
             default:
                 break;
@@ -225,6 +227,12 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 //        byteBuf.writeBytes(req);
 //        client.write(byteBuf);
     }
+
+    void sendMessage(){
+        MessageClient client=new MessageClient();
+        client.connect();
+    }
+
 
     void testReadFile() {
         //MappedByteBuffer
@@ -268,6 +276,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
             System.out.println("*****sendFile.error:" + e.getMessage());
         }
     }
+
+
 
 
     @Override

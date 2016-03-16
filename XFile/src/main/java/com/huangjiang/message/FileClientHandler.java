@@ -61,7 +61,7 @@ public class FileClientHandler extends ChannelHandlerAdapter {
 
             System.out.println("*****file.setReadindex-2:"+file.getReadindex());
 
-            RandomAccessFile raf = new RandomAccessFile(Environment.getExternalStorageDirectory() + "/send.txt", "r");
+            RandomAccessFile raf = new RandomAccessFile(Environment.getExternalStorageDirectory() + "/doufu.mp3", "r");
             raf.seek(file.getReadindex());
             XFileProtocol.File.Builder fileBuilder = XFileProtocol.File.newBuilder();
             if (file.getLength() - file.getReadindex() >= SysConstant.FILE_SEGMENT_SIZE) {
@@ -123,7 +123,7 @@ public class FileClientHandler extends ChannelHandlerAdapter {
         try {
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 File path = Environment.getExternalStorageDirectory();
-                File sendFile = new File(path.getAbsolutePath() + "/send.txt");
+                File sendFile = new File(path.getAbsolutePath() + "/doufu.mp3");
 
                 System.out.println("*****length:" + sendFile.length());
                 if (sendFile.exists()) {
