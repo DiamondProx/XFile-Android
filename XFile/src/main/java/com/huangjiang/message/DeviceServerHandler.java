@@ -1,11 +1,10 @@
 package com.huangjiang.message;
 
-import com.google.protobuf.ByteString;
 import com.huangjiang.XFileApplication;
 import com.huangjiang.config.SysConstant;
+import com.huangjiang.message.base.Header;
 import com.huangjiang.message.event.DeviceInfoEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
-import com.huangjiang.utils.IPv4Util;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.NetStateUtil;
 
@@ -22,7 +21,7 @@ import io.netty.channel.socket.DatagramPacket;
 /**
  *
  */
-public class UdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+public class DeviceServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
     @Override
     protected void messageReceived(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
@@ -65,7 +64,7 @@ public class UdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket
             System.arraycopy(body, 0, data, SysConstant.HEADER_LENGTH, body.length);
             ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), new InetSocketAddress(remoteIp, remotePort))).sync();
         } catch (Exception e) {
-            Logger.getLogger(UdpServerHandler.class).d("sendEcho", e.getMessage());
+            Logger.getLogger(DeviceServerHandler.class).d("sendEcho", e.getMessage());
         }
 
     }
@@ -81,7 +80,7 @@ public class UdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket
             EventBus.getDefault().post(event);
 
         } catch (Exception e) {
-            Logger.getLogger(UdpServerHandler.class).d("recEcho", e.getMessage());
+            Logger.getLogger(DeviceServerHandler.class).d("recEcho", e.getMessage());
         }
     }
 

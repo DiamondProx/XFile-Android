@@ -1,10 +1,8 @@
-package com.huangjiang.message;
+package com.huangjiang.message.base;
 
 
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.utils.Logger;
-
-import java.nio.ByteBuffer;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

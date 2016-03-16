@@ -1,5 +1,7 @@
 package com.huangjiang.message;
 
+import com.huangjiang.message.protocol.XFileProtocol;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -37,9 +39,9 @@ public class DeviceServer {
                                 @Override
                                 protected void initChannel(NioDatagramChannel ch) throws Exception {
                                     ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
-                                    ch.pipeline().addLast(new ProtobufDecoder(Device.Location.getDefaultInstance()));
+                                    ch.pipeline().addLast(new ProtobufDecoder(XFileProtocol.File.getDefaultInstance()));
                                     ch.pipeline().addLast(new ProtobufEncoder());
-                                    ch.pipeline().addLast(new UdpServerHandler());
+                                    ch.pipeline().addLast(new DeviceServerHandler());
                                 }
                             });
                     b.bind(8081).sync().channel().closeFuture().await();

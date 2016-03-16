@@ -1,6 +1,7 @@
 package com.huangjiang.message;
 
 import com.huangjiang.config.SysConstant;
+import com.huangjiang.message.base.Header;
 import com.huangjiang.message.protocol.XFileProtocol;
 
 import io.netty.buffer.ByteBuf;

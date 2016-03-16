@@ -22,20 +22,17 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.protobuf.ByteString;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.message.DeviceClient;
 import com.huangjiang.message.FileClient;
-import com.huangjiang.message.Header;
+import com.huangjiang.message.base.Header;
 import com.huangjiang.message.MessageClient;
 import com.huangjiang.message.event.DeviceInfoEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
-import com.huangjiang.utils.IPv4Util;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.NetStateUtil;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -49,10 +46,8 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
-import io.netty.channel.FileRegion;
 import io.netty.channel.socket.DatagramPacket;
 
 

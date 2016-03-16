@@ -1,4 +1,4 @@
-package com.huangjiang.message;
+package com.huangjiang.message.base;
 
 
 

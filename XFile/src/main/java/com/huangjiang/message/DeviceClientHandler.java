@@ -1,6 +1,7 @@
 package com.huangjiang.message;
 
 import com.huangjiang.config.SysConstant;
+import com.huangjiang.message.base.Header;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,7 +11,7 @@ import io.netty.channel.socket.DatagramPacket;
 /**
  * Created by huangjiang on 2016/3/14.
  */
-public class DeviceHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+public class DeviceClientHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
 
     @Override

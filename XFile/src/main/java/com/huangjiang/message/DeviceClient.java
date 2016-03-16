@@ -67,9 +67,9 @@ public class DeviceClient {
                                 @Override
                                 protected void initChannel(NioDatagramChannel ch) throws Exception {
                                     ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
-                                    ch.pipeline().addLast(new ProtobufDecoder(Device.Location.getDefaultInstance()));
+                                    ch.pipeline().addLast(new ProtobufDecoder(XFileProtocol.File.getDefaultInstance()));
                                     ch.pipeline().addLast(new ProtobufEncoder());
-                                    ch.pipeline().addLast(new UdpClientDeviceHandler());
+                                    ch.pipeline().addLast(new DeviceClientHandler());
                                 }
                             });
 
@@ -98,9 +98,9 @@ public class DeviceClient {
                                 @Override
                                 protected void initChannel(NioDatagramChannel ch) throws Exception {
                                     ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
-                                    ch.pipeline().addLast(new ProtobufDecoder(Device.Location.getDefaultInstance()));
+                                    ch.pipeline().addLast(new ProtobufDecoder(XFileProtocol.File.getDefaultInstance()));
                                     ch.pipeline().addLast(new ProtobufEncoder());
-                                    ch.pipeline().addLast(new UdpClientDeviceHandler());
+                                    ch.pipeline().addLast(new DeviceClientHandler());
                                 }
                             });
 
