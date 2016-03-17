@@ -86,7 +86,6 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        EventBus.getDefault().register(this);
         initializeView();
         initData();
     }
@@ -183,7 +182,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 //                tranferFile();
 //                testReadFile();
 //                sendFile();
-                sendMessage();
+//                sendMessage();
+                showConnect();
                 break;
             default:
                 break;
@@ -223,8 +223,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 //        client.write(byteBuf);
     }
 
-    void sendMessage(){
-        MessageClient client=new MessageClient();
+    void sendMessage() {
+        MessageClient client = new MessageClient();
         client.connect();
     }
 
@@ -261,7 +261,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         try {
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 File path = Environment.getExternalStorageDirectory();
-                File sendFile = new File( path.getAbsolutePath() + "/send.txt");
+                File sendFile = new File(path.getAbsolutePath() + "/send.txt");
                 System.out.println("*****length:" + sendFile.length());
                 if (sendFile.exists()) {
 
@@ -272,7 +272,10 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         }
     }
 
-
+    void showConnect() {
+        Intent connectActivity = new Intent(HomeActivity.this, ConnectActivity.class);
+        startActivity(connectActivity);
+    }
 
 
     @Override
@@ -377,17 +380,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe
-    public void onEventMainThread(DeviceInfoEvent event) {
-        if (event != null) {
-            //Toast.makeText(HomeActivity.this, "FindDevice.Ip:" + event.getName(), Toast.LENGTH_SHORT).show();
-            System.out.println("device.Ip:" + event.getName());
-        }
 
-
-    }
 
 }

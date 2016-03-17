@@ -13,11 +13,11 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-<application
+    <application
         android:name="com.huangjiang.XFileApplication"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
@@ -44,8 +44,8 @@
             android:label="@string/title_activity_help" />
         <activity
             android:name="com.huangjiang.activity.FeedBackActivity"
-            android:windowSoftInputMode="stateVisible"
-            android:label="@string/title_activity_feed_back" />
+            android:label="@string/title_activity_feed_back"
+            android:windowSoftInputMode="stateVisible" />
         <activity
             android:name="com.huangjiang.activity.VersionFeedBackActivity"
             android:label="@string/title_activity_version" />
@@ -60,7 +60,10 @@
             android:label="@string/title_activity_share_app" />
         <activity
             android:name="com.huangjiang.activity.FindBluetoothActivity"
-            android:label="@string/title_activity_find_bluethooth"></activity>
+            android:label="@string/title_activity_find_bluethooth" />
+        <activity android:name="com.huangjiang.activity.ConnectActivity"
+            android:theme="@style/Theme.Translucent"
+            ></activity>
     </application>
 
 </manifest>

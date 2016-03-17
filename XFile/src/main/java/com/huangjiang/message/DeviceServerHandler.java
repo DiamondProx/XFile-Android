@@ -46,6 +46,8 @@ public class DeviceServerHandler extends SimpleChannelInboundHandler<DatagramPac
     void sendEcho(ChannelHandlerContext ctx, ByteBuf byteBuf, Header inHeader) {
 
         try {
+            long threadId=Thread.currentThread().getId();
+            System.out.println("*****currentThreadId111111:"+threadId);
             byte[] bonjourData = byteBuf.readBytes(inHeader.getLength() - SysConstant.HEADER_LENGTH).array();
             XFileProtocol.Bonjour bonjour = XFileProtocol.Bonjour.parseFrom(bonjourData);
             String remoteIp = bonjour.getIp().toString();
@@ -71,13 +73,15 @@ public class DeviceServerHandler extends SimpleChannelInboundHandler<DatagramPac
 
     void recEcho(ChannelHandlerContext ctx, ByteBuf byteBuf, Header inHeader) {
         try {
+            long threadId=Thread.currentThread().getId();
+            System.out.println("*****currentThreadId222222:"+threadId);
             byte[] echoData = byteBuf.readBytes(inHeader.getLength() - SysConstant.HEADER_LENGTH).array();
             XFileProtocol.Echo echo = XFileProtocol.Echo.parseFrom(echoData);
             DeviceInfoEvent event = new DeviceInfoEvent();
             event.setIp(echo.getIp());
             event.setName(echo.getName());
             event.setPort(echo.getPort());
-            EventBus.getDefault().post(event);
+            EventBus.getDefault().postSticky(event);
 
         } catch (Exception e) {
             Logger.getLogger(DeviceServerHandler.class).d("recEcho", e.getMessage());

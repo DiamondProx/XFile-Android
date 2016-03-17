@@ -34,5 +34,8 @@
     <color name="tab_green">#60D4B2</color>
     <color name="tab_green_select">#68E2BE</color>
 
+    <color name="translucent_background">#80000000</color>
+    <color name="orange">#FFBD5F</color>
+
 
 </resources>

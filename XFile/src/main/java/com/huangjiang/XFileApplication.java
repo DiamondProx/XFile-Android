@@ -24,11 +24,11 @@ public class XFileApplication extends Application {
         // 启动文件服务器
 //        FileServer.getInstance().start();
         // 启动发现设备服务器
-        //DeviceServer.start();
+        DeviceServer.start();
         // 启动发现设备客户端
-        //DeviceClient.getInstance().initDeviceClient();
+        DeviceClient.getInstance().initDeviceClient();
         // 启动消息服务器
-        MessageServer.getInstance().start();
+//        MessageServer.getInstance().start();
     }
 
 }
