@@ -2,19 +2,21 @@ package com.huangjiang.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.huangjiang.business.model.StorageRootInfo;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.message.DeviceClient;
@@ -36,16 +38,38 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.DatagramPacket;
 
-public class ConnectActivity extends Activity implements View.OnClickListener {
+public class ConnectActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
-    ImageView close1, refresh;
-    Button search_join, search_cancel, search_back;
-    LinearLayout layout1, layout2, layout3, layout4;
+    ImageView close1, refresh1, refresh2, iv_connecting;
+    Button search_join, search_cancel, search_back, connect_back, connecting_cancel;
+    LinearLayout layout1, layout2, layout3, layout4, layout5;
 
     int scan_time = 5000;//设备扫描时间
     ListView lv_device;
     ScanDeviceAdapter deviceAdapter;
+    private AnimationDrawable animationDrawable;
 
+
+    Handler ScanDeviceHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            int scanCount = msg.what;
+            if (scanCount > 0) {
+                // 显示设备信息
+                layout1.setVisibility(View.INVISIBLE);
+                layout2.setVisibility(View.INVISIBLE);
+                layout3.setVisibility(View.INVISIBLE);
+                layout4.setVisibility(View.VISIBLE);
+                deviceAdapter.notifyDataSetChanged();
+            } else {
+                // 没找到设备
+                layout1.setVisibility(View.INVISIBLE);
+                layout2.setVisibility(View.INVISIBLE);
+                layout3.setVisibility(View.VISIBLE);
+                layout4.setVisibility(View.INVISIBLE);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,15 +94,27 @@ public class ConnectActivity extends Activity implements View.OnClickListener {
         search_cancel.setOnClickListener(this);
         search_back = (Button) findViewById(R.id.search_back);
         search_back.setOnClickListener(this);
-        refresh = (ImageView) findViewById(R.id.refresh);
-        refresh.setOnClickListener(this);
+        connect_back = (Button) findViewById(R.id.connect_back);
+        connect_back.setOnClickListener(this);
+        connecting_cancel = (Button) findViewById(R.id.connecting_cancel);
+        connecting_cancel.setOnClickListener(this);
+
+        refresh1 = (ImageView) findViewById(R.id.refresh);
+        refresh1.setOnClickListener(this);
+        refresh2 = (ImageView) findViewById(R.id.refresh2);
+        refresh2.setOnClickListener(this);
         layout1 = (LinearLayout) findViewById(R.id.layout1);
         layout2 = (LinearLayout) findViewById(R.id.layout2);
         layout3 = (LinearLayout) findViewById(R.id.layout3);
         layout4 = (LinearLayout) findViewById(R.id.layout4);
+        layout5 = (LinearLayout) findViewById(R.id.layout5);
         lv_device = (ListView) findViewById(R.id.lv_device);
         deviceAdapter = new ScanDeviceAdapter(ConnectActivity.this);
         lv_device.setAdapter(deviceAdapter);
+        lv_device.setOnItemClickListener(this);
+        iv_connecting = (ImageView) findViewById(R.id.iv_connecting);
+        iv_connecting.setImageResource(R.drawable.progress_connect);
+        animationDrawable = (AnimationDrawable) iv_connecting.getDrawable();
 
     }
 
@@ -89,32 +125,47 @@ public class ConnectActivity extends Activity implements View.OnClickListener {
                 finish();
                 break;
             case R.id.search_join:
-                layout1.setVisibility(View.INVISIBLE);
-                layout2.setVisibility(View.VISIBLE);
-                layout3.setVisibility(View.INVISIBLE);
                 scanningDevice();
                 break;
             case R.id.search_cancel:
-                layout1.setVisibility(View.VISIBLE);
-                layout2.setVisibility(View.INVISIBLE);
-                layout3.setVisibility(View.VISIBLE);
+                scanCancel();
                 break;
             case R.id.search_back:
-                layout1.setVisibility(View.INVISIBLE);
-                layout2.setVisibility(View.VISIBLE);
-                layout3.setVisibility(View.INVISIBLE);
+                backFirstView();
                 break;
             case R.id.refresh:
-                layout1.setVisibility(View.VISIBLE);
-                layout2.setVisibility(View.INVISIBLE);
-                layout3.setVisibility(View.INVISIBLE);
+                scanningDevice();
+                break;
+            case R.id.refresh2:
+                scanningDevice();
+                break;
+            case R.id.connect_back:
+                backFirstView();
+                break;
+            case R.id.connecting_cancel:
+                cancelConnect();
                 break;
         }
     }
 
+    void backFirstView() {
+        layout1.setVisibility(View.VISIBLE);
+        layout2.setVisibility(View.INVISIBLE);
+        layout3.setVisibility(View.INVISIBLE);
+        layout4.setVisibility(View.INVISIBLE);
+        layout5.setVisibility(View.INVISIBLE);
+    }
+
+    // 开始扫描设备
     void scanningDevice() {
         if (DeviceClient.getInstance().getChannel() != null) {
             try {
+                deviceAdapter.clearDevices();
+                layout1.setVisibility(View.INVISIBLE);
+                layout2.setVisibility(View.VISIBLE);
+                layout3.setVisibility(View.INVISIBLE);
+                layout4.setVisibility(View.INVISIBLE);
+                layout5.setVisibility(View.INVISIBLE);
                 Channel channel = DeviceClient.getInstance().getChannel();
                 Header header = new Header();
                 header.setCommandId(SysConstant.CMD_Bonjour);
@@ -128,21 +179,66 @@ public class ConnectActivity extends Activity implements View.OnClickListener {
                 System.arraycopy(header.toByteArray(), 0, data, 0, SysConstant.HEADER_LENGTH);
                 System.arraycopy(body, 0, data, SysConstant.HEADER_LENGTH, body.length);
                 channel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), new InetSocketAddress(SysConstant.BROADCASE_ADDRESS, SysConstant.BROADCASE_PORT))).sync();
+                ScanDeviceHandler.postDelayed(scanRunnable, scan_time);
+
             } catch (Exception e) {
                 Logger.getLogger(HomeActivity.class).d("sendBonjourMessage", e.getMessage());
             }
         }
     }
 
+    void connectDevice() {
+        layout1.setVisibility(View.INVISIBLE);
+        layout2.setVisibility(View.INVISIBLE);
+        layout3.setVisibility(View.INVISIBLE);
+        layout4.setVisibility(View.INVISIBLE);
+        layout5.setVisibility(View.VISIBLE);
+
+        animationDrawable.start();
+
+    }
+
+    void cancelConnect() {
+        layout1.setVisibility(View.VISIBLE);
+        layout2.setVisibility(View.INVISIBLE);
+        layout3.setVisibility(View.INVISIBLE);
+        layout4.setVisibility(View.INVISIBLE);
+        layout5.setVisibility(View.INVISIBLE);
+        animationDrawable.stop();
+    }
+
+    Runnable scanRunnable = new Runnable() {
+        @Override
+        public void run() {
+            int scanCount = deviceAdapter.getCount();
+            ScanDeviceHandler.sendEmptyMessage(scanCount);
+        }
+    };
+
+    void scanCancel() {
+        try {
+            layout1.setVisibility(View.VISIBLE);
+            layout2.setVisibility(View.INVISIBLE);
+            layout3.setVisibility(View.INVISIBLE);
+            layout4.setVisibility(View.INVISIBLE);
+            layout5.setVisibility(View.INVISIBLE);
+            ScanDeviceHandler.removeCallbacks(scanRunnable);
+        } catch (Exception e) {
+            Logger.getLogger(HomeActivity.class).d("scanCancel", e.getMessage());
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DeviceInfoEvent event) {
         if (event != null) {
-            Toast.makeText(ConnectActivity.this, "FindDevice.Ip:" + event.getName(), Toast.LENGTH_SHORT).show();
-            System.out.println("*****device.Ip:" + event.getName());
-            long threadId = Thread.currentThread().getId();
-            System.out.println("*****currentThreadId33333:" + threadId);
+            deviceAdapter.addDevice(event);
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        connectDevice();
+
     }
 
     class ScanDeviceAdapter extends BaseAdapter {
@@ -153,6 +249,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener {
 
         public ScanDeviceAdapter(Context context) {
             inflater = LayoutInflater.from(context);
+            mList = new ArrayList<>();
         }
 
         @Override
@@ -176,7 +273,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener {
             if (convertView == null) {
 
                 holder = new ViewHolder();
-                convertView = inflater.inflate(R.layout.listview_storage_root, null);
+                convertView = inflater.inflate(R.layout.listview_scan_device, null);
                 holder.name = (TextView) convertView.findViewById(R.id.device_name);
                 convertView.setTag(holder);
 
