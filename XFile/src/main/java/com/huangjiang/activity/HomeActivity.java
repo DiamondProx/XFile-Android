@@ -201,7 +201,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 String ip = NetStateUtil.getIPv4(HomeActivity.this);
                 XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
                 bonjour.setIp(ip);
-                bonjour.setPort(8081);
+                bonjour.setPort(SysConstant.BROADCASE_PORT);
                 byte[] body = bonjour.build().toByteArray();
                 header.setLength(SysConstant.HEADER_LENGTH + body.length);
                 byte[] data = new byte[SysConstant.HEADER_LENGTH + body.length];

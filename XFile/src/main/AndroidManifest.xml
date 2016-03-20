@@ -64,6 +64,8 @@
         <activity android:name="com.huangjiang.activity.ConnectActivity"
             android:theme="@style/Theme.Translucent"
             ></activity>
+
+        <service android:name="com.huangjiang.service.IMService"/>
     </application>
 
 </manifest>

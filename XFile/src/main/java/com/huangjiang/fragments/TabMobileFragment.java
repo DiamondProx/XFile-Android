@@ -1,18 +1,12 @@
 package com.huangjiang.fragments;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -29,23 +23,21 @@ import android.widget.TextView;
 import com.huangjiang.adapter.StorageRootAdapter;
 import com.huangjiang.business.audio.AudioInterface;
 import com.huangjiang.business.model.FileInfo;
-import com.huangjiang.business.model.VideoInfo;
-import com.huangjiang.core.ResponseCallback;
-import com.huangjiang.manager.event.MyEvent;
 import com.huangjiang.business.model.StorageRootInfo;
+import com.huangjiang.core.ResponseCallback;
+import com.huangjiang.filetransfer.R;
 import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.AppBrowserControl;
 import com.huangjiang.view.FileBrowserControl;
 import com.huangjiang.view.FileBrowserControl.FileBrowserListener;
 import com.huangjiang.view.MenuItem;
-import com.huangjiang.view.OperateMenu;
 import com.huangjiang.view.PictureBrowserControl;
-
-import com.huangjiang.filetransfer.R;
 import com.huangjiang.view.PopupMenu;
 import com.huangjiang.view.TabBar;
 
-import org.greenrobot.eventbus.EventBus;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TabMobileFragment extends Fragment implements OnPageChangeListener, OnItemClickListener, FileBrowserListener, TabBar.OnTabListener, View.OnClickListener ,PopupMenu.OnItemSelectedListener {
 

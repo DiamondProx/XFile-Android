@@ -306,20 +306,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             adpater.notifyDataSetChanged();
         }
     }
-    public void onEventPostThread(MyEvent event)
-    {
 
-    }
-
-    public void onEventBackgroundThread(MyEvent event)
-    {
-
-    }
-
-    public void onEventAsync(MyEvent event)
-    {
-
-    }
 
 
     @Override

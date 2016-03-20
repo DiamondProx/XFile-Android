@@ -28,8 +28,8 @@ public class MessageServerHandler  extends ChannelHandlerAdapter {
                     break;
             }
         }
-
     }
+
 
     void recvMessage(ChannelHandlerContext ctx, Header header, ByteBuf bf) {
         try {
@@ -63,4 +63,7 @@ public class MessageServerHandler  extends ChannelHandlerAdapter {
             System.out.println("*****recvMessage.error:" + e.getMessage());
         }
     }
+
+
+
 }

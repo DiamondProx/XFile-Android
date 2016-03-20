@@ -101,7 +101,6 @@ public class Header {
         this.commandId = byteBuf.readShort();
         this.seqnum = byteBuf.readShort();
         byteBuf.discardReadBytes();
-
     }
 
 }

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
+import com.huangjiang.manager.IMDeviceServerManager;
 import com.huangjiang.message.DeviceClient;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.message.event.DeviceInfoEvent;
@@ -158,34 +159,21 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
     // 开始扫描设备
     void scanningDevice() {
-        if (DeviceClient.getInstance().getChannel() != null) {
-            try {
-                deviceAdapter.clearDevices();
-                layout1.setVisibility(View.INVISIBLE);
-                layout2.setVisibility(View.VISIBLE);
-                layout3.setVisibility(View.INVISIBLE);
-                layout4.setVisibility(View.INVISIBLE);
-                layout5.setVisibility(View.INVISIBLE);
-                Channel channel = DeviceClient.getInstance().getChannel();
-                Header header = new Header();
-                header.setCommandId(SysConstant.CMD_Bonjour);
-                String ip = NetStateUtil.getIPv4(ConnectActivity.this);
-                XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
-                bonjour.setIp(ip);
-                bonjour.setPort(8081);
-                byte[] body = bonjour.build().toByteArray();
-                header.setLength(SysConstant.HEADER_LENGTH + body.length);
-                byte[] data = new byte[SysConstant.HEADER_LENGTH + body.length];
-                System.arraycopy(header.toByteArray(), 0, data, 0, SysConstant.HEADER_LENGTH);
-                System.arraycopy(body, 0, data, SysConstant.HEADER_LENGTH, body.length);
-                channel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), new InetSocketAddress(SysConstant.BROADCASE_ADDRESS, SysConstant.BROADCASE_PORT))).sync();
-                ScanDeviceHandler.postDelayed(scanRunnable, scan_time);
 
-            } catch (Exception e) {
-                Logger.getLogger(HomeActivity.class).d("sendBonjourMessage", e.getMessage());
-            }
+
+        if (IMDeviceServerManager.getInstance() != null) {
+            String ipAddress = NetStateUtil.getIPv4(ConnectActivity.this);
+            IMDeviceServerManager.getInstance().DeviceBroCast(ipAddress, SysConstant.BROADCASE_PORT);
+            ScanDeviceHandler.postDelayed(scanRunnable, scan_time);
+            deviceAdapter.clearDevices();
+            layout1.setVisibility(View.INVISIBLE);
+            layout2.setVisibility(View.VISIBLE);
+            layout3.setVisibility(View.INVISIBLE);
+            layout4.setVisibility(View.INVISIBLE);
+            layout5.setVisibility(View.INVISIBLE);
         }
     }
+
 
     void connectDevice() {
         layout1.setVisibility(View.INVISIBLE);
@@ -193,7 +181,6 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         layout3.setVisibility(View.INVISIBLE);
         layout4.setVisibility(View.INVISIBLE);
         layout5.setVisibility(View.VISIBLE);
-
         animationDrawable.start();
 
     }
