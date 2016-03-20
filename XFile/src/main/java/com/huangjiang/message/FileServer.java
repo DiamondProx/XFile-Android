@@ -14,13 +14,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 /**
  * 文件服务器
  */
-public class FileServer {
+public class FileServer extends Thread{
 
-    private ServerChannel mServerChannel;
 
-    public ServerChannel getServerChannel() {
-        return mServerChannel;
-    }
 
     private static FileServer instant = null;
 

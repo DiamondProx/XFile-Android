@@ -26,7 +26,7 @@ public class XFileApplication extends Application {
         // 启动发现设备客户端
 //        DeviceClient.getInstance().initDeviceClient();
         // 启动消息服务器
-//        MessageServer.getInstance().start();
+//        MessageServerThread.getInstance().start();
 
 
     }

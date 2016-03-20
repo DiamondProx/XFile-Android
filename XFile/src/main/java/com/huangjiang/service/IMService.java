@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.huangjiang.manager.IMDeviceServerManager;
+import com.huangjiang.manager.IMFileServerManager;
+import com.huangjiang.manager.IMMessageServerManager;
 
 /**
  *
@@ -14,9 +16,12 @@ import com.huangjiang.manager.IMDeviceServerManager;
 public class IMService extends Service {
 
     private IMDeviceServerManager deviceServerMgr = IMDeviceServerManager.getInstance();
+    private IMMessageServerManager messageServerManager = IMMessageServerManager.getInstance();
+    private IMFileServerManager fileServerManager = IMFileServerManager.getInstance();
 
-
-    /**binder*/
+    /**
+     * binder
+     */
     private IMServiceBinder binder = new IMServiceBinder();
 
     public class IMServiceBinder extends Binder {
@@ -40,6 +45,8 @@ public class IMService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         deviceServerMgr.start();
+        messageServerManager.start();
+        fileServerManager.start();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -47,5 +54,7 @@ public class IMService extends Service {
     public void onDestroy() {
         super.onDestroy();
         deviceServerMgr.stop();
+        messageServerManager.stop();
+        fileServerManager.stop();
     }
 }
