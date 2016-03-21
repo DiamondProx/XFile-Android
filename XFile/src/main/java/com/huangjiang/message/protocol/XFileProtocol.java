@@ -1355,45 +1355,22 @@ public final class XFileProtocol {
     com.google.protobuf.ByteString getData();
 
     /**
-     * <code>required uint32 readindex = 4;</code>
+     * <code>required int64 position = 4;</code>
      */
-    boolean hasReadindex();
+    boolean hasPosition();
     /**
-     * <code>required uint32 readindex = 4;</code>
+     * <code>required int64 position = 4;</code>
      */
-    int getReadindex();
+    long getPosition();
 
     /**
-     * <code>required uint32 writeindex = 5;</code>
-     */
-    boolean hasWriteindex();
-    /**
-     * <code>required uint32 writeindex = 5;</code>
-     */
-    int getWriteindex();
-
-    /**
-     * <code>required string seqnum = 6;</code>
-     */
-    boolean hasSeqnum();
-    /**
-     * <code>required string seqnum = 6;</code>
-     */
-    String getSeqnum();
-    /**
-     * <code>required string seqnum = 6;</code>
-     */
-    com.google.protobuf.ByteString
-        getSeqnumBytes();
-
-    /**
-     * <code>required uint32 length = 7;</code>
+     * <code>required int64 length = 5;</code>
      */
     boolean hasLength();
     /**
-     * <code>required uint32 length = 7;</code>
+     * <code>required int64 length = 5;</code>
      */
-    int getLength();
+    long getLength();
   }
   /**
    * Protobuf type {@code com.huangjiang.message.protocol.File}
@@ -1466,23 +1443,12 @@ public final class XFileProtocol {
             }
             case 32: {
               bitField0_ |= 0x00000008;
-              readindex_ = input.readUInt32();
+              position_ = input.readInt64();
               break;
             }
             case 40: {
               bitField0_ |= 0x00000010;
-              writeindex_ = input.readUInt32();
-              break;
-            }
-            case 50: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000020;
-              seqnum_ = bs;
-              break;
-            }
-            case 56: {
-              bitField0_ |= 0x00000040;
-              length_ = input.readUInt32();
+              length_ = input.readInt64();
               break;
             }
           }
@@ -1624,90 +1590,33 @@ public final class XFileProtocol {
       return data_;
     }
 
-    public static final int READINDEX_FIELD_NUMBER = 4;
-    private int readindex_;
+    public static final int POSITION_FIELD_NUMBER = 4;
+    private long position_;
     /**
-     * <code>required uint32 readindex = 4;</code>
+     * <code>required int64 position = 4;</code>
      */
-    public boolean hasReadindex() {
+    public boolean hasPosition() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required uint32 readindex = 4;</code>
+     * <code>required int64 position = 4;</code>
      */
-    public int getReadindex() {
-      return readindex_;
+    public long getPosition() {
+      return position_;
     }
 
-    public static final int WRITEINDEX_FIELD_NUMBER = 5;
-    private int writeindex_;
+    public static final int LENGTH_FIELD_NUMBER = 5;
+    private long length_;
     /**
-     * <code>required uint32 writeindex = 5;</code>
+     * <code>required int64 length = 5;</code>
      */
-    public boolean hasWriteindex() {
+    public boolean hasLength() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>required uint32 writeindex = 5;</code>
+     * <code>required int64 length = 5;</code>
      */
-    public int getWriteindex() {
-      return writeindex_;
-    }
-
-    public static final int SEQNUM_FIELD_NUMBER = 6;
-    private Object seqnum_;
-    /**
-     * <code>required string seqnum = 6;</code>
-     */
-    public boolean hasSeqnum() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>required string seqnum = 6;</code>
-     */
-    public String getSeqnum() {
-      Object ref = seqnum_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          seqnum_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string seqnum = 6;</code>
-     */
-    public com.google.protobuf.ByteString
-        getSeqnumBytes() {
-      Object ref = seqnum_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
-        seqnum_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int LENGTH_FIELD_NUMBER = 7;
-    private int length_;
-    /**
-     * <code>required uint32 length = 7;</code>
-     */
-    public boolean hasLength() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>required uint32 length = 7;</code>
-     */
-    public int getLength() {
+    public long getLength() {
       return length_;
     }
 
@@ -1715,10 +1624,8 @@ public final class XFileProtocol {
       name_ = "";
       md5_ = "";
       data_ = com.google.protobuf.ByteString.EMPTY;
-      readindex_ = 0;
-      writeindex_ = 0;
-      seqnum_ = "";
-      length_ = 0;
+      position_ = 0L;
+      length_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1738,15 +1645,7 @@ public final class XFileProtocol {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasReadindex()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasWriteindex()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasSeqnum()) {
+      if (!hasPosition()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1771,16 +1670,10 @@ public final class XFileProtocol {
         output.writeBytes(3, data_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeUInt32(4, readindex_);
+        output.writeInt64(4, position_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeUInt32(5, writeindex_);
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBytes(6, getSeqnumBytes());
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeUInt32(7, length_);
+        output.writeInt64(5, length_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1805,19 +1698,11 @@ public final class XFileProtocol {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(4, readindex_);
+          .computeInt64Size(4, position_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(5, writeindex_);
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(6, getSeqnumBytes());
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(7, length_);
+          .computeInt64Size(5, length_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1942,14 +1827,10 @@ public final class XFileProtocol {
         bitField0_ = (bitField0_ & ~0x00000002);
         data_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000004);
-        readindex_ = 0;
+        position_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000008);
-        writeindex_ = 0;
+        length_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000010);
-        seqnum_ = "";
-        bitField0_ = (bitField0_ & ~0x00000020);
-        length_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
 
@@ -1993,17 +1874,9 @@ public final class XFileProtocol {
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.readindex_ = readindex_;
+        result.position_ = position_;
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
-        }
-        result.writeindex_ = writeindex_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
-        result.seqnum_ = seqnum_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
         }
         result.length_ = length_;
         result.bitField0_ = to_bitField0_;
@@ -2035,16 +1908,8 @@ public final class XFileProtocol {
         if (other.hasData()) {
           setData(other.getData());
         }
-        if (other.hasReadindex()) {
-          setReadindex(other.getReadindex());
-        }
-        if (other.hasWriteindex()) {
-          setWriteindex(other.getWriteindex());
-        }
-        if (other.hasSeqnum()) {
-          bitField0_ |= 0x00000020;
-          seqnum_ = other.seqnum_;
-          onChanged();
+        if (other.hasPosition()) {
+          setPosition(other.getPosition());
         }
         if (other.hasLength()) {
           setLength(other.getLength());
@@ -2066,15 +1931,7 @@ public final class XFileProtocol {
           
           return false;
         }
-        if (!hasReadindex()) {
-          
-          return false;
-        }
-        if (!hasWriteindex()) {
-          
-          return false;
-        }
-        if (!hasSeqnum()) {
+        if (!hasPosition()) {
           
           return false;
         }
@@ -2291,174 +2148,66 @@ public final class XFileProtocol {
         return this;
       }
 
-      private int readindex_ ;
+      private long position_ ;
       /**
-       * <code>required uint32 readindex = 4;</code>
+       * <code>required int64 position = 4;</code>
        */
-      public boolean hasReadindex() {
+      public boolean hasPosition() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required uint32 readindex = 4;</code>
+       * <code>required int64 position = 4;</code>
        */
-      public int getReadindex() {
-        return readindex_;
+      public long getPosition() {
+        return position_;
       }
       /**
-       * <code>required uint32 readindex = 4;</code>
+       * <code>required int64 position = 4;</code>
        */
-      public Builder setReadindex(int value) {
+      public Builder setPosition(long value) {
         bitField0_ |= 0x00000008;
-        readindex_ = value;
+        position_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required uint32 readindex = 4;</code>
+       * <code>required int64 position = 4;</code>
        */
-      public Builder clearReadindex() {
+      public Builder clearPosition() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        readindex_ = 0;
+        position_ = 0L;
         onChanged();
         return this;
       }
 
-      private int writeindex_ ;
+      private long length_ ;
       /**
-       * <code>required uint32 writeindex = 5;</code>
+       * <code>required int64 length = 5;</code>
        */
-      public boolean hasWriteindex() {
+      public boolean hasLength() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>required uint32 writeindex = 5;</code>
+       * <code>required int64 length = 5;</code>
        */
-      public int getWriteindex() {
-        return writeindex_;
-      }
-      /**
-       * <code>required uint32 writeindex = 5;</code>
-       */
-      public Builder setWriteindex(int value) {
-        bitField0_ |= 0x00000010;
-        writeindex_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required uint32 writeindex = 5;</code>
-       */
-      public Builder clearWriteindex() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        writeindex_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private Object seqnum_ = "";
-      /**
-       * <code>required string seqnum = 6;</code>
-       */
-      public boolean hasSeqnum() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>required string seqnum = 6;</code>
-       */
-      public String getSeqnum() {
-        Object ref = seqnum_;
-        if (!(ref instanceof String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            seqnum_ = s;
-          }
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      /**
-       * <code>required string seqnum = 6;</code>
-       */
-      public com.google.protobuf.ByteString
-          getSeqnumBytes() {
-        Object ref = seqnum_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
-          seqnum_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string seqnum = 6;</code>
-       */
-      public Builder setSeqnum(
-          String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
-        seqnum_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string seqnum = 6;</code>
-       */
-      public Builder clearSeqnum() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        seqnum_ = getDefaultInstance().getSeqnum();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string seqnum = 6;</code>
-       */
-      public Builder setSeqnumBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
-        seqnum_ = value;
-        onChanged();
-        return this;
-      }
-
-      private int length_ ;
-      /**
-       * <code>required uint32 length = 7;</code>
-       */
-      public boolean hasLength() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>required uint32 length = 7;</code>
-       */
-      public int getLength() {
+      public long getLength() {
         return length_;
       }
       /**
-       * <code>required uint32 length = 7;</code>
+       * <code>required int64 length = 5;</code>
        */
-      public Builder setLength(int value) {
-        bitField0_ |= 0x00000040;
+      public Builder setLength(long value) {
+        bitField0_ |= 0x00000010;
         length_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required uint32 length = 7;</code>
+       * <code>required int64 length = 5;</code>
        */
       public Builder clearLength() {
-        bitField0_ = (bitField0_ & ~0x00000040);
-        length_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        length_ = 0L;
         onChanged();
         return this;
       }
@@ -3241,12 +2990,11 @@ public final class XFileProtocol {
       "\n\023XFileProtocol.proto\022\037com.huangjiang.me" +
       "ssage.protocol\"#\n\007Bonjour\022\n\n\002ip\030\001 \002(\t\022\014\n" +
       "\004port\030\002 \002(\r\".\n\004Echo\022\n\n\002ip\030\001 \002(\t\022\014\n\004port\030" +
-      "\002 \002(\r\022\014\n\004name\030\003 \002(\t\"v\n\004File\022\014\n\004name\030\001 \002(" +
-      "\t\022\013\n\003md5\030\002 \002(\t\022\014\n\004data\030\003 \002(\014\022\021\n\treadinde" +
-      "x\030\004 \002(\r\022\022\n\nwriteindex\030\005 \002(\r\022\016\n\006seqnum\030\006 " +
-      "\002(\t\022\016\n\006length\030\007 \002(\r\":\n\004Chat\022\017\n\007content\030\001" +
-      " \002(\t\022\023\n\013messagetype\030\002 \002(\r\022\014\n\004from\030\003 \002(\tB" +
-      "\002H\001"
+      "\002 \002(\r\022\014\n\004name\030\003 \002(\t\"Q\n\004File\022\014\n\004name\030\001 \002(" +
+      "\t\022\013\n\003md5\030\002 \002(\t\022\014\n\004data\030\003 \002(\014\022\020\n\010position" +
+      "\030\004 \002(\003\022\016\n\006length\030\005 \002(\003\":\n\004Chat\022\017\n\007conten" +
+      "t\030\001 \002(\t\022\023\n\013messagetype\030\002 \002(\r\022\014\n\004from\030\003 \002" +
+      "(\tB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3277,7 +3025,7 @@ public final class XFileProtocol {
     internal_static_com_huangjiang_message_protocol_File_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_huangjiang_message_protocol_File_descriptor,
-        new String[] { "Name", "Md5", "Data", "Readindex", "Writeindex", "Seqnum", "Length", });
+        new String[] { "Name", "Md5", "Data", "Position", "Length", });
     internal_static_com_huangjiang_message_protocol_Chat_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_com_huangjiang_message_protocol_Chat_fieldAccessorTable = new

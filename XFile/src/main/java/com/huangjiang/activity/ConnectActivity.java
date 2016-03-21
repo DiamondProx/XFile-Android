@@ -20,10 +20,7 @@ import android.widget.TextView;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMDeviceServerManager;
-import com.huangjiang.message.DeviceClient;
-import com.huangjiang.message.base.Header;
 import com.huangjiang.message.event.DeviceInfoEvent;
-import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.NetStateUtil;
 
@@ -31,13 +28,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.channel.socket.DatagramPacket;
 
 public class ConnectActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
 

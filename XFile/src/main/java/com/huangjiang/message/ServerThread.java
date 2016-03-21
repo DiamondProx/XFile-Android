@@ -1,34 +1,36 @@
 package com.huangjiang.message;
 
-import android.os.Looper;
-
-import com.huangjiang.config.SysConstant;
+import com.google.protobuf.GeneratedMessage;
+import com.huangjiang.message.base.Header;
 import com.huangjiang.utils.Logger;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.ServerChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 /**
  * 消息服务器
  */
-public class MessageServerThread extends Thread {
+public class ServerThread<T extends ChannelHandlerAdapter> extends Thread {
 
-    private Logger logger = Logger.getLogger(MessageServerThread.class);
+    private Logger logger = Logger.getLogger(ServerThread.class);
     private int port;
     EventLoopGroup bossGroup = null;
     EventLoopGroup workGroup = null;
     ServerBootstrap serverBootstrap = null;
     ChannelFuture channelFuture = null;
     Channel channel = null;
+    T handler = null;
 
-    public MessageServerThread(int port) {
+    public ServerThread(int port, T handler) {
         this.port = port;
+        this.handler = handler;
     }
 
     @Override
@@ -43,10 +45,10 @@ public class MessageServerThread extends Thread {
             serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(bossGroup, workGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new MessageServerHandler());
+                    .childHandler(handler);
             channelFuture = serverBootstrap.bind(port).sync();
             channel = channelFuture.channel();
-            channel.closeFuture().wait();
+            channel.closeFuture().sync();
         } catch (Exception e) {
             e.printStackTrace();
             logger.d(e.getMessage());
@@ -59,6 +61,15 @@ public class MessageServerThread extends Thread {
     public void stopServer() {
         if (channel != null) {
             channel.close();
+        }
+    }
+
+    public void sendMessage(GeneratedMessage msg, Header header) {
+        if (channel != null) {
+            ByteBuf byteBuf = Unpooled.buffer(header.getLength());
+            byteBuf.writeBytes(header.toByteArray());
+            byteBuf.writeBytes(msg.toByteArray());
+            channel.writeAndFlush(byteBuf);
         }
     }
 

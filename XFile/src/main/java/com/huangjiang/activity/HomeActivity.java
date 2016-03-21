@@ -27,28 +27,22 @@ import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
-import com.huangjiang.message.DeviceClient;
-import com.huangjiang.message.FileClient;
-import com.huangjiang.message.base.Header;
-import com.huangjiang.message.MessageClient;
-import com.huangjiang.message.event.DeviceInfoEvent;
+import com.huangjiang.manager.IMFileClientManager;
+import com.huangjiang.manager.IMFileManager;
+import com.huangjiang.manager.IMMessageClientManager;
+import com.huangjiang.manager.event.ConnectSuccessEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
-import com.huangjiang.utils.Logger;
-import com.huangjiang.utils.NetStateUtil;
+import com.huangjiang.service.IMService;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.channel.socket.DatagramPacket;
 
 
 public class HomeActivity extends FragmentActivity implements OnClickListener, OnCheckedChangeListener {
@@ -86,6 +80,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        EventBus.getDefault().register(this);
         initializeView();
         initData();
     }
@@ -183,7 +178,9 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 //                testReadFile();
 //                sendFile();
 //                sendMessage();
-                showConnect();
+//                showConnect();
+//                testConnect();
+                testFile();
                 break;
             default:
                 break;
@@ -193,30 +190,30 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
     // 发送广播发现设备
     void sendBonjour() {
-        if (DeviceClient.getInstance().getChannel() != null) {
-            try {
-                Channel channel = DeviceClient.getInstance().getChannel();
-                Header header = new Header();
-                header.setCommandId(SysConstant.CMD_Bonjour);
-                String ip = NetStateUtil.getIPv4(HomeActivity.this);
-                XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
-                bonjour.setIp(ip);
-                bonjour.setPort(SysConstant.BROADCASE_PORT);
-                byte[] body = bonjour.build().toByteArray();
-                header.setLength(SysConstant.HEADER_LENGTH + body.length);
-                byte[] data = new byte[SysConstant.HEADER_LENGTH + body.length];
-                System.arraycopy(header.toByteArray(), 0, data, 0, SysConstant.HEADER_LENGTH);
-                System.arraycopy(body, 0, data, SysConstant.HEADER_LENGTH, body.length);
-                channel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), new InetSocketAddress(SysConstant.BROADCASE_ADDRESS, SysConstant.BROADCASE_PORT))).sync();
-            } catch (Exception e) {
-                Logger.getLogger(HomeActivity.class).d("sendBonjourMessage", e.getMessage());
-            }
-        }
+//        if (DeviceClient.getInstance().getChannel() != null) {
+//            try {
+//                Channel channel = DeviceClient.getInstance().getChannel();
+//                Header header = new Header();
+//                header.setCommandId(SysConstant.CMD_Bonjour);
+//                String ip = NetStateUtil.getIPv4(HomeActivity.this);
+//                XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
+//                bonjour.setIp(ip);
+//                bonjour.setPort(SysConstant.BROADCASE_PORT);
+//                byte[] body = bonjour.build().toByteArray();
+//                header.setLength(SysConstant.HEADER_LENGTH + body.length);
+//                byte[] data = new byte[SysConstant.HEADER_LENGTH + body.length];
+//                System.arraycopy(header.toByteArray(), 0, data, 0, SysConstant.HEADER_LENGTH);
+//                System.arraycopy(body, 0, data, SysConstant.HEADER_LENGTH, body.length);
+//                channel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), new InetSocketAddress(SysConstant.BROADCASE_ADDRESS, SysConstant.BROADCASE_PORT))).sync();
+//            } catch (Exception e) {
+//                Logger.getLogger(HomeActivity.class).d("sendBonjourMessage", e.getMessage());
+//            }
+//        }
     }
 
     void tranferFile() {
-        FileClient client = new FileClient();
-        client.connect();
+//        FileClient client = new FileClient();
+//        client.connect();
 //        byte[] req = "t".getBytes();
 //        ByteBuf byteBuf = Unpooled.buffer(req.length);
 //        byteBuf.writeBytes(req);
@@ -224,8 +221,21 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     }
 
     void sendMessage() {
-        MessageClient client = new MessageClient();
-        client.connect();
+//        MessageClient client = new MessageClient();
+//        client.connect();
+    }
+
+    void testConnect(){
+        IMMessageClientManager messageClientManager = IMMessageClientManager.getInstance();
+        messageClientManager.setHost("127.0.0.1");
+        messageClientManager.setPort(SysConstant.MESSAGE_PORT);
+        messageClientManager.start();
+    }
+    void testFile(){
+        IMFileClientManager fileClientManager=IMFileClientManager.getInstance();
+        fileClientManager.setHost("127.0.0.1");
+        fileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
+        fileClientManager.start();
     }
 
 
@@ -380,7 +390,40 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
+        stopService(new Intent(HomeActivity.this, IMService.class));
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(ConnectSuccessEvent event) {
+        if (event != null && IMMessageClientManager.getInstance() != null) {
+            System.out.println("*****connect.ip:" + event.getIpAddress());
+            // 发送消息
+//            XFileProtocol.Chat.Builder chatBuilder = XFileProtocol.Chat.newBuilder();
+//            chatBuilder.setContent("hi,im client");
+//            chatBuilder.setFrom("client");
+//            chatBuilder.setMessagetype(1);
+//            IMMessageClientManager.getInstance().sendMessage(chatBuilder.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_SEND_MESSAGE);
+            // 发送文件
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    File sendFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/doufu.mp3");
+                    if (sendFile.exists()) {
+                        IMFileManager.getInstance().sendFile(sendFile);
+                    }
+                }
+            }).start();
+
+
+
+
+
+
+        }
+    }
+
 
 
 

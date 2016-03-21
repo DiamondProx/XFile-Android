@@ -27,7 +27,7 @@ public class FileInfo implements Comparable<FileInfo> {
     /**
      * 文件大小
      */
-    private int size;
+    private long size;
     /**
      * 描述
      */
@@ -52,11 +52,21 @@ public class FileInfo implements Comparable<FileInfo> {
      */
     private String totalTimeStr;
 
-    public int getFileLength() {
+    /*
+     * 文件MD5值
+     */
+    private String md5;
+
+    /*
+     * 文件定位
+     */
+    private long postion;
+
+    public long getFileLength() {
         return size;
     }
 
-    public void setFileLength(int fileLength) {
+    public void setFileLength(long fileLength) {
         this.size = fileLength;
     }
 
@@ -157,6 +167,22 @@ public class FileInfo implements Comparable<FileInfo> {
 
     public void setTotalTimeStr(String totalTimeStr) {
         this.totalTimeStr = totalTimeStr;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
+    }
+
+    public long getPostion() {
+        return postion;
+    }
+
+    public void setPostion(long postion) {
+        this.postion = postion;
     }
 
 

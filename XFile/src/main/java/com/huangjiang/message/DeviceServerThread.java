@@ -53,7 +53,8 @@ public class DeviceServerThread extends Thread {
                         }
                     });
             mServerChannel = mBootstarp.bind(SysConstant.BROADCASE_PORT).sync().channel();
-            mServerChannel.closeFuture().wait();
+            mServerChannel.closeFuture().sync();
+
         } catch (Exception e) {
             e.printStackTrace();
             logger.e(e.getMessage());

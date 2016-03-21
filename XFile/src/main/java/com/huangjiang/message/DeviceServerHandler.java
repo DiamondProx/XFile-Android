@@ -20,9 +20,11 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 
 /**
- *  发现设备消息处理
+ * 发现设备消息处理
  */
 public class DeviceServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+
+    private Logger logger = Logger.getLogger(DeviceServerHandler.class);
 
     @Override
     protected void messageReceived(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
@@ -34,5 +36,6 @@ public class DeviceServerHandler extends SimpleChannelInboundHandler<DatagramPac
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         super.exceptionCaught(ctx, cause);
+        logger.e(cause.getMessage());
     }
 }
