@@ -25,7 +25,7 @@ public class SysConstant {
 
     public static final int FILE_SERVER_PORT = 9098;// 文件服务器端口
 
-    public static final int FILE_SEGMENT_SIZE = 1024 * 10;// 分段文件大小
+    public static final int FILE_SEGMENT_SIZE = 950;// 分段文件大小
 
     public static final short SERVICE_DEFAULT = 0x99;// 保留服务号
 

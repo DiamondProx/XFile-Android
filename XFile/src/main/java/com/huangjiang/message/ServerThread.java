@@ -10,6 +10,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -56,6 +57,7 @@ public class ServerThread<T extends ChannelHandlerAdapter> extends Thread {
             bossGroup.shutdownGracefully();
             workGroup.shutdownGracefully();
         }
+
     }
 
     public void stopServer() {
@@ -64,12 +66,13 @@ public class ServerThread<T extends ChannelHandlerAdapter> extends Thread {
         }
     }
 
-    public void sendMessage(GeneratedMessage msg, Header header) {
-        if (channel != null) {
+    public void sendMessage(ChannelHandlerContext ctx, GeneratedMessage msg, Header header) {
+        if (channel != null && channel.isWritable()) {
             ByteBuf byteBuf = Unpooled.buffer(header.getLength());
             byteBuf.writeBytes(header.toByteArray());
             byteBuf.writeBytes(msg.toByteArray());
-            channel.writeAndFlush(byteBuf);
+
+            ctx.writeAndFlush(byteBuf);
         }
     }
 

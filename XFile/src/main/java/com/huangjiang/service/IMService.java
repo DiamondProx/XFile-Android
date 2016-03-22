@@ -20,8 +20,8 @@ public class IMService extends Service {
     private IMDeviceServerManager deviceServerMgr = IMDeviceServerManager.getInstance();
     private IMMessageServerManager messageServerManager = IMMessageServerManager.getInstance();
     private IMMessageClientManager messageClientManager = IMMessageClientManager.getInstance();
-//    private IMFileServerManager fileServerManager = IMFileServerManager.getInstance();
-//    private IMFileClientManager fileClientManager = IMFileClientManager.getInstance();
+    private IMFileServerManager fileServerManager = IMFileServerManager.getInstance();
+    private IMFileClientManager fileClientManager = IMFileClientManager.getInstance();
 
 
     /**
@@ -51,7 +51,7 @@ public class IMService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         deviceServerMgr.start();
         messageServerManager.start();
-//        fileServerManager.start();
+        fileServerManager.start();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -61,7 +61,7 @@ public class IMService extends Service {
         deviceServerMgr.stop();
         messageServerManager.stop();
         messageClientManager.stop();
-//        fileServerManager.stop();
-//        fileClientManager.stop();
+        fileServerManager.stop();
+        fileClientManager.stop();
     }
 }

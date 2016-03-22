@@ -52,7 +52,7 @@ public class ClientThread<T extends ChannelHandlerAdapter> extends Thread {
             eventLoopGroup = new NioEventLoopGroup();
             bootstrap = new Bootstrap();
             bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
-                    .option(ChannelOption.TCP_NODELAY, true)
+                    .option(ChannelOption.AUTO_READ, true)
                     .handler(handler);
             channel = bootstrap.connect(host, port).channel();
             channel.closeFuture().sync();

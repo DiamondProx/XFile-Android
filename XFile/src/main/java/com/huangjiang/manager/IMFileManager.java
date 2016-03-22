@@ -86,7 +86,7 @@ public class IMFileManager extends IMManager {
             fileBuilder.setLength(sendFile.getFileLength());
             ByteString byteString = ByteString.copyFrom(sendData);
             fileBuilder.setData(byteString);
-
+            System.out.println("*****开始发送文件:" + System.currentTimeMillis());
             imFileClientManager.sendMessage(fileBuilder.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_SEND);
 
 
@@ -146,13 +146,15 @@ public class IMFileManager extends IMManager {
         try {
             int lenght = header.getLength();
             ByteBuf byteBuf = bf.readBytes(lenght - SysConstant.HEADER_LENGTH);
-            byte[] body = new byte[lenght - SysConstant.HEADER_LENGTH];
-            byteBuf.readBytes(body);
+//            byte[] body = new byte[lenght - SysConstant.HEADER_LENGTH];
+//            byteBuf.readBytes(body);
+            ByteBuf readByteBuf = byteBuf.readBytes(lenght - SysConstant.HEADER_LENGTH);
+            byte[] body = readByteBuf.array();
             XFileProtocol.File file = XFileProtocol.File.parseFrom(body);
-            System.out.println("*****file.Name:" + file.getName());
-            System.out.println("*****file.MD5:" + file.getMd5());
-            String content = new String(file.getData().toByteArray(), "UTF-8");
-            System.out.println("*****file.Data:" + content);
+//            System.out.println("*****file.Name:" + file.getName());
+//            System.out.println("*****file.MD5:" + file.getMd5());
+//            String content = new String(file.getData().toByteArray(), "UTF-8");
+//            System.out.println("*****file.Data:" + content);
             saveFile(ctx, file);
         } catch (Exception e) {
             System.out.println("*****RecvFile:" + e.getMessage());
@@ -181,15 +183,15 @@ public class IMFileManager extends IMManager {
                 XFileProtocol.File.Builder respFile = XFileProtocol.File.newBuilder();
                 respFile.setName(requestFile.getName());
                 respFile.setLength(requestFile.getLength());
-                respFile.setMd5("md5");
+                respFile.setMd5(requestFile.getMd5());
                 respFile.setPosition(requestFile.getPosition() + ((long) content.length));
                 respFile.setData(ByteString.copyFrom("1".getBytes()));
 
 
-                imFileServerManager.sendMessage(respFile.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_REC);
+                imFileServerManager.sendMessage(ctx, respFile.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_REC);
 
             } else {
-                System.out.println("*****文件发送完毕");
+                System.out.println("*****文件发送完毕:" + System.currentTimeMillis());
             }
 
 

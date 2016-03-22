@@ -18,7 +18,6 @@ public class IMFileClientManager extends IMManager {
 
     private Logger logger = Logger.getLogger(IMMessageClientManager.class);
 
-    private IMFileManager imFileManager = IMFileManager.getInstance();
 
     private static IMFileClientManager inst = null;
 
@@ -72,7 +71,7 @@ public class IMFileClientManager extends IMManager {
         int commandId = header.getCommandId();
         switch (commandId) {
             case SysConstant.CMD_TRANSER_FILE_REC:
-                imFileManager.continueSendFile(header, byteBuf);
+                IMFileManager.getInstance().continueSendFile(header, byteBuf);
                 break;
 
         }

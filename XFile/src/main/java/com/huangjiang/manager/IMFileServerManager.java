@@ -18,8 +18,6 @@ public class IMFileServerManager extends IMManager {
 
     private Logger logger = Logger.getLogger(IMMessageServerManager.class);
 
-    private IMFileManager imFileManager = IMFileManager.getInstance();
-
 
     private static IMFileServerManager inst = null;
 
@@ -52,19 +50,19 @@ public class IMFileServerManager extends IMManager {
         int commandId = header.getCommandId();
         switch (commandId) {
             case SysConstant.CMD_TRANSER_FILE_SEND:
-                imFileManager.recvFile(ctx, header, byteBuf);
+                IMFileManager.getInstance().recvFile(ctx, header, byteBuf);
                 break;
 
         }
     }
 
-    public void sendMessage(GeneratedMessage msg, short serviceId, short commandId) {
+    public void sendMessage(ChannelHandlerContext ctx, GeneratedMessage msg, short serviceId, short commandId) {
         try {
             Header header = new Header();
             header.setCommandId(commandId);
             header.setServiceId(serviceId);
             header.setLength(SysConstant.HEADER_LENGTH + msg.getSerializedSize());
-            messageServerThread.sendMessage(msg, header);
+            messageServerThread.sendMessage(ctx, msg, header);
         } catch (Exception e) {
             e.printStackTrace();
             logger.e(e.getMessage());
