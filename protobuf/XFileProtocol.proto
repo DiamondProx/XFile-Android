@@ -23,3 +23,9 @@ message Chat{
  required uint32 messagetype = 2;
  required string from = 3;
 }
+message ShakeHand{
+ required int64 step = 1;
+ optional bool verify = 2 [ default = false ];
+ optional string password = 3;
+ optional string token = 4;
+}
