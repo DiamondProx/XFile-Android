@@ -3,10 +3,14 @@ package com.huangjiang.manager;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.huangjiang.config.SysConstant;
+import com.huangjiang.manager.event.ClientFileSocketEvent;
+import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.ClientFileHandler;
 import com.huangjiang.message.ClientThread;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.utils.Logger;
+
+import org.greenrobot.eventbus.EventBus;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,7 +18,7 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * 文件管理客户端
  */
-public class IMFileClientManager extends IMManager {
+public class IMFileClientManager extends IMManager implements ClientThread.OnClientListener {
 
     private Logger logger = Logger.getLogger(IMMessageClientManager.class);
 
@@ -22,6 +26,10 @@ public class IMFileClientManager extends IMManager {
     private static IMFileClientManager inst = null;
 
     private ClientThread fileClientThread = null;
+
+    private String host;
+
+    private int port;
 
     public static IMFileClientManager getInstance() {
         if (inst == null) {
@@ -31,20 +39,20 @@ public class IMFileClientManager extends IMManager {
     }
 
     public IMFileClientManager() {
-        fileClientThread = new ClientThread(new ClientFileHandler());
+
     }
 
     public void setHost(String host) {
-        fileClientThread.setHost(host);
+        this.host = host;
     }
 
     public void setPort(int port) {
-        fileClientThread.setPort(port);
+        this.port = port;
     }
 
     @Override
     public void start() {
-        fileClientThread.start();
+        startClient();
     }
 
     @Override
@@ -52,13 +60,26 @@ public class IMFileClientManager extends IMManager {
 
     }
 
-    public void sendMessage(GeneratedMessage msg, short serviceId, short commandId) {
+    void startClient() {
+        if (fileClientThread != null) {
+            fileClientThread.closeConnect();
+            fileClientThread = null;
+        }
+        fileClientThread = new ClientThread(new ClientFileHandler());
+        fileClientThread.setOnClientListener(this);
+        fileClientThread.setHost(this.host);
+        fileClientThread.setPort(this.port);
+        fileClientThread.start();
+    }
+
+
+    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg) {
         try {
             Header header = new Header();
             header.setCommandId(commandId);
             header.setServiceId(serviceId);
             header.setLength(SysConstant.HEADER_LENGTH + msg.getSerializedSize());
-            fileClientThread.sendMessage(msg, header);
+            fileClientThread.sendMessage(header, msg);
         } catch (Exception e) {
             e.printStackTrace();
             logger.e(e.getMessage());
@@ -75,5 +96,15 @@ public class IMFileClientManager extends IMManager {
                 break;
 
         }
+    }
+
+    @Override
+    public void connectSuccess() {
+
+    }
+
+    @Override
+    public void connectFailure() {
+        EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.CONNECT_FAILE));
     }
 }

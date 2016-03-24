@@ -233,7 +233,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     }
     void testFile(){
         IMFileClientManager fileClientManager=IMFileClientManager.getInstance();
-        fileClientManager.setHost("127.0.0.1");
+        fileClientManager.setHost("172.16.166.70");
         fileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
         fileClientManager.start();
     }
@@ -406,15 +406,15 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 //            IMMessageClientManager.getInstance().sendMessage(chatBuilder.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_SEND_MESSAGE);
             // 发送文件
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    File sendFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/doufu.mp3");
-                    if (sendFile.exists()) {
-                        IMFileManager.getInstance().sendFile(sendFile);
-                    }
-                }
-            }).start();
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    File sendFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/doufu.mp3");
+//                    if (sendFile.exists()) {
+//                        IMFileManager.getInstance().sendFile(sendFile);
+//                    }
+//                }
+//            }).start();
 
 
 

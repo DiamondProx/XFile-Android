@@ -14,6 +14,12 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
 
     private Logger logger = Logger.getLogger(ServerMessageHandler.class);
 
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg != null && msg instanceof ByteBuf && IMMessageServerManager.getInstance() != null) {
@@ -25,5 +31,10 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         super.exceptionCaught(ctx, cause);
         logger.e(cause.getMessage());
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        super.channelReadComplete(ctx);
     }
 }

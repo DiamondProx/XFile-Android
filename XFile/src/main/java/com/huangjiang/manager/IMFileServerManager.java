@@ -18,7 +18,6 @@ public class IMFileServerManager extends IMManager {
 
     private Logger logger = Logger.getLogger(IMMessageServerManager.class);
 
-
     private static IMFileServerManager inst = null;
 
     private ServerThread messageServerThread = null;
@@ -62,7 +61,7 @@ public class IMFileServerManager extends IMManager {
             header.setCommandId(commandId);
             header.setServiceId(serviceId);
             header.setLength(SysConstant.HEADER_LENGTH + msg.getSerializedSize());
-            messageServerThread.sendMessage(ctx, msg, header);
+            messageServerThread.sendMessage(ctx, header, msg);
         } catch (Exception e) {
             e.printStackTrace();
             logger.e(e.getMessage());

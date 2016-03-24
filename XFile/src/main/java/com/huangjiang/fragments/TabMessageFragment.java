@@ -16,13 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.huangjiang.manager.event.MyEvent;
-import com.huangjiang.filetransfer.R;
 import com.huangjiang.business.model.TransferMessageInfo;
+import com.huangjiang.filetransfer.R;
 import com.huangjiang.view.TabBar;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -294,18 +292,18 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
     }
 
-    @Subscribe
-    public void onEventMainThread(MyEvent event) {
-        if (event != null) {
-            TransferMessageInfo message = new TransferMessageInfo();
-            message.setMessageType(1);
-            message.setFrom("R815T");
-            message.setFileName("event.apkkkkkkk");
-            message.setFileSize("682kb");
-            listMessage.add(message);
-            adpater.notifyDataSetChanged();
-        }
-    }
+//    @Subscribe
+//    public void onEventMainThread(MyEvent event) {
+//        if (event != null) {
+//            TransferMessageInfo message = new TransferMessageInfo();
+//            message.setMessageType(1);
+//            message.setFrom("R815T");
+//            message.setFileName("event.apkkkkkkk");
+//            message.setFileSize("682kb");
+//            listMessage.add(message);
+//            adpater.notifyDataSetChanged();
+//        }
+//    }
 
 
 

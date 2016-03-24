@@ -1,13 +1,17 @@
 package com.huangjiang.message;
 
 import com.google.protobuf.GeneratedMessage;
+import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.utils.Logger;
+
+import org.greenrobot.eventbus.EventBus;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -23,7 +27,7 @@ import io.netty.handler.codec.LineBasedFrameDecoder;
 /**
  * 消息客户端
  */
-public class ClientThread<T extends ChannelHandlerAdapter> extends Thread {
+public class ClientThread extends Thread {
 
     private Logger logger = Logger.getLogger(ClientThread.class);
 
@@ -32,8 +36,14 @@ public class ClientThread<T extends ChannelHandlerAdapter> extends Thread {
     String host;
     int port;
     Channel channel;
-    T handler = null;
+    ChannelFuture channelFuture;
+    ChannelHandlerAdapter handler = null;
 
+    OnClientListener onClientListener;
+
+    public void setOnClientListener(OnClientListener onClientListener) {
+        this.onClientListener = onClientListener;
+    }
 
     public void setPort(int port) {
         this.port = port;
@@ -43,7 +53,7 @@ public class ClientThread<T extends ChannelHandlerAdapter> extends Thread {
         this.host = host;
     }
 
-    public ClientThread(T handler) {
+    public ClientThread(ChannelHandlerAdapter handler) {
         super();
         this.handler = handler;
     }
@@ -59,6 +69,7 @@ public class ClientThread<T extends ChannelHandlerAdapter> extends Thread {
             bootstrap = new Bootstrap();
             bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
                     .option(ChannelOption.AUTO_READ, true)
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
@@ -68,30 +79,48 @@ public class ClientThread<T extends ChannelHandlerAdapter> extends Thread {
                             pipeline.addLast(handler);
                         }
                     });
-            channel = bootstrap.connect(host, port).channel();
-            channel.closeFuture().sync();
+            channelFuture = bootstrap.connect(host, port);
+            if (channelFuture.isSuccess()) {
+                channel = channelFuture.channel();
+                if (onClientListener != null) {
+                    onClientListener.connectSuccess();
+                }
+                channel.closeFuture().sync();
+            } else {
+                if (onClientListener != null) {
+                    onClientListener.connectFailure();
+                }
+                logger.d("*****Client File Connect Fail");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.d(e.getMessage());
         } finally {
             eventLoopGroup.shutdownGracefully();
         }
-
     }
 
     public void closeConnect() {
         if (channel != null) {
             channel.close();
+            channel = null;
         }
     }
 
-    public void sendMessage(GeneratedMessage msg, Header header) {
+    public void sendMessage(Header header, GeneratedMessage msg) {
         if (channel != null) {
             ByteBuf byteBuf = Unpooled.buffer(header.getLength());
             byteBuf.writeBytes(header.toByteArray());
             byteBuf.writeBytes(msg.toByteArray());
             channel.writeAndFlush(byteBuf);
         }
+    }
+
+    public interface OnClientListener {
+
+        void connectSuccess();
+
+        void connectFailure();
     }
 
 

@@ -3,6 +3,7 @@ package com.huangjiang.message.base;
 
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.utils.Logger;
+import com.huangjiang.utils.SequenceNumberMaker;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,7 +36,7 @@ public class Header {
 
         commandId = 0;
 
-        seqnum = 0;
+        seqnum = SequenceNumberMaker.getInstance().make();
 
     }
 

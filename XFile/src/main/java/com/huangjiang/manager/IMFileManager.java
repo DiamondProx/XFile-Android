@@ -87,7 +87,7 @@ public class IMFileManager extends IMManager {
             ByteString byteString = ByteString.copyFrom(sendData);
             fileBuilder.setData(byteString);
             System.out.println("*****开始发送文件:" + System.currentTimeMillis());
-            imFileClientManager.sendMessage(fileBuilder.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_SEND);
+            imFileClientManager.sendMessage(SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_SEND, fileBuilder.build());
 
 
         } catch (Exception e) {
@@ -131,7 +131,7 @@ public class IMFileManager extends IMManager {
                 ByteString byteString = ByteString.copyFrom(fileData);
                 fileBuilder.setData(byteString);
             }
-            imFileClientManager.sendMessage(fileBuilder.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_SEND);
+            imFileClientManager.sendMessage(SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_SEND, fileBuilder.build());
 
 
         } catch (Exception e) {

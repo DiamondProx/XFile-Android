@@ -24,7 +24,7 @@ import io.netty.handler.codec.LineBasedFrameDecoder;
 /**
  * 消息服务器
  */
-public class ServerThread<T extends ChannelHandlerAdapter> extends Thread {
+public class ServerThread extends Thread {
 
     private Logger logger = Logger.getLogger(ServerThread.class);
     private int port;
@@ -33,9 +33,9 @@ public class ServerThread<T extends ChannelHandlerAdapter> extends Thread {
     ServerBootstrap serverBootstrap = null;
     ChannelFuture channelFuture = null;
     Channel channel = null;
-    T handler = null;
+    ChannelHandlerAdapter handler = null;
 
-    public ServerThread(int port, T handler) {
+    public ServerThread(int port, ChannelHandlerAdapter handler) {
         this.port = port;
         this.handler = handler;
     }
@@ -77,15 +77,15 @@ public class ServerThread<T extends ChannelHandlerAdapter> extends Thread {
     public void stopServer() {
         if (channel != null) {
             channel.close();
+            channel = null;
         }
     }
 
-    public void sendMessage(ChannelHandlerContext ctx, GeneratedMessage msg, Header header) {
+    public void sendMessage(ChannelHandlerContext ctx, Header header, GeneratedMessage msg) {
         if (channel != null && channel.isWritable()) {
             ByteBuf byteBuf = Unpooled.buffer(header.getLength());
             byteBuf.writeBytes(header.toByteArray());
             byteBuf.writeBytes(msg.toByteArray());
-
             ctx.writeAndFlush(byteBuf);
         }
     }
