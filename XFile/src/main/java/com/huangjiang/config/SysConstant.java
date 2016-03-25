@@ -35,5 +35,7 @@ public class SysConstant {
 
     public static final String PASS_WORD = "123456";// 后台密码
 
+    public static final String TOKEN = "token";// 测试token
+
 
 }

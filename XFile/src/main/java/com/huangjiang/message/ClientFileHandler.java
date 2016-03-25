@@ -23,12 +23,7 @@ public class ClientFileHandler extends ChannelHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.e("****ClientFileChannelActive");
-        if (ctx.channel().isWritable() && ctx.channel().isWritable()) {
-            ConnectSuccessEvent event = new ConnectSuccessEvent();
-            event.setIpAddress(ctx.channel().remoteAddress().toString());
-            event.setPort(0);
-            EventBus.getDefault().post(event);
-        }
+        IMFileClientManager.getInstance().shakeHand(ctx);
     }
 
     @Override

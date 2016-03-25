@@ -3,11 +3,15 @@ package com.huangjiang.manager;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.huangjiang.config.SysConstant;
+import com.huangjiang.manager.callback.FileClientListenerQueue;
+import com.huangjiang.manager.callback.MessageClientListenerQueue;
+import com.huangjiang.manager.callback.Packetlistener;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.ClientFileHandler;
 import com.huangjiang.message.ClientThread;
 import com.huangjiang.message.base.Header;
+import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,6 +34,10 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
     private String host;
 
     private int port;
+
+    private String token;
+
+    private FileClientListenerQueue listenerQueue = FileClientListenerQueue.instance();
 
     public static IMFileClientManager getInstance() {
         if (inst == null) {
@@ -57,14 +65,11 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
 
     @Override
     public void stop() {
-
+        stopClient();
     }
 
     void startClient() {
-        if (fileClientThread != null) {
-            fileClientThread.closeConnect();
-            fileClientThread = null;
-        }
+        stopClient();
         fileClientThread = new ClientThread(new ClientFileHandler());
         fileClientThread.setOnClientListener(this);
         fileClientThread.setHost(this.host);
@@ -72,17 +77,29 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
         fileClientThread.start();
     }
 
+    void stopClient() {
+        if (fileClientThread != null) {
+            fileClientThread.closeConnect();
+            fileClientThread = null;
+        }
+    }
+
 
     public void sendMessage(short serviceId, short commandId, GeneratedMessage msg) {
-        try {
+        sendMessage(serviceId, commandId, msg, null);
+    }
+
+    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener) {
+        if (fileClientThread != null) {
             Header header = new Header();
             header.setCommandId(commandId);
             header.setServiceId(serviceId);
             header.setLength(SysConstant.HEADER_LENGTH + msg.getSerializedSize());
+            if (packetlistener != null) {
+                short seqnum = header.getSeqnum();
+                listenerQueue.push(seqnum, packetlistener);
+            }
             fileClientThread.sendMessage(header, msg);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.e(e.getMessage());
         }
     }
 
@@ -106,5 +123,59 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
     @Override
     public void connectFailure() {
         EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.CONNECT_FAILE));
+    }
+
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+
+    public void shakeHand(final ChannelHandlerContext ctx) {
+        XFileProtocol.ShakeHand.Builder shakeHand = XFileProtocol.ShakeHand.newBuilder();
+        shakeHand.setStep(1);// 直接验证token
+        shakeHand.setToken(this.token);
+        short cid = SysConstant.CMD_SHAKE_HAND;
+        short sid = SysConstant.SERVICE_DEFAULT;
+        sendMessage(sid, cid, shakeHand.build(), new Packetlistener() {
+            @Override
+            public void onSuccess(Object response) {
+                if (response == null) {
+                    return;
+                }
+                byte[] rsp = (byte[]) response;
+                try {
+                    XFileProtocol.ShakeHand shakeHand = XFileProtocol.ShakeHand.parseFrom(rsp);
+                    if (shakeHand.getStep() == 1 && shakeHand.getResult()) {
+                        // 服务器文件端口连接成功
+                        EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_SUCCESS));
+                    } else if (shakeHand.getStep() == 1 && !shakeHand.getResult()) {
+                        // 连接失败
+                        ctx.close();
+                        EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
+                    }
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFaild() {
+                ctx.close();
+                EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
+            }
+
+            @Override
+            public void onTimeout() {
+                ctx.close();
+                EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
+            }
+        });
+
+
     }
 }

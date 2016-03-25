@@ -22,6 +22,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
@@ -30,7 +31,9 @@ import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.manager.IMFileClientManager;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.IMMessageClientManager;
+import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.ConnectSuccessEvent;
+import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.service.IMService;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -179,8 +182,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 //                sendFile();
 //                sendMessage();
 //                showConnect();
-//                testConnect();
-                testFile();
+                testConnect();
+//                testFile();
                 break;
             default:
                 break;
@@ -225,15 +228,16 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 //        client.connect();
     }
 
-    void testConnect(){
+    void testConnect() {
         IMMessageClientManager messageClientManager = IMMessageClientManager.getInstance();
-        messageClientManager.setHost("127.0.0.1");
+        messageClientManager.setHost("127.16.88.208");
         messageClientManager.setPort(SysConstant.MESSAGE_PORT);
         messageClientManager.start();
     }
-    void testFile(){
-        IMFileClientManager fileClientManager=IMFileClientManager.getInstance();
-        fileClientManager.setHost("172.16.166.70");
+
+    void testFile() {
+        IMFileClientManager fileClientManager = IMFileClientManager.getInstance();
+        fileClientManager.setHost("127.0.0.1");
         fileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
         fileClientManager.start();
     }
@@ -395,6 +399,17 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(ClientFileSocketEvent event) {
+
+        if (event.getEvent() == SocketEvent.SHAKE_INPUT_PASSWORD) {
+            Toast.makeText(HomeActivity.this, "要求输入密码", Toast.LENGTH_SHORT).show();
+            IMMessageClientManager.getInstance().sendShakeHandStepT("123456");
+        } else if (event.getEvent() == SocketEvent.SHAKE_HAND_SUCCESS) {
+            Toast.makeText(HomeActivity.this, "验证成功", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ConnectSuccessEvent event) {
         if (event != null && IMMessageClientManager.getInstance() != null) {
             System.out.println("*****connect.ip:" + event.getIpAddress());
@@ -417,14 +432,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 //            }).start();
 
 
-
-
-
-
         }
     }
-
-
 
 
 }

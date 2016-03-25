@@ -188,7 +188,7 @@ public class IMFileManager extends IMManager {
                 respFile.setData(ByteString.copyFrom("1".getBytes()));
 
 
-                imFileServerManager.sendMessage(ctx, respFile.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_REC);
+                //imFileServerManager.sendMessage(ctx, respFile.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_REC);
 
             } else {
                 System.out.println("*****文件发送完毕:" + System.currentTimeMillis());

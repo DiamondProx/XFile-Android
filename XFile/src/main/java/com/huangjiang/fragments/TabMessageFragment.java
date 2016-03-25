@@ -89,7 +89,6 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
         testMessageData();
 
-        EventBus.getDefault().register(this);
 
 
 
@@ -98,7 +97,6 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
     @Override
     public void onDestroy() {
-        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 

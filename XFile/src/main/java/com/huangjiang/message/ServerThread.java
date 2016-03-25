@@ -75,14 +75,14 @@ public class ServerThread extends Thread {
     }
 
     public void stopServer() {
-        if (channel != null) {
-            channel.close();
+        if (channelFuture.channel() != null) {
+            channelFuture.channel().close();
             channel = null;
         }
     }
 
     public void sendMessage(ChannelHandlerContext ctx, Header header, GeneratedMessage msg) {
-        if (channel != null && channel.isWritable()) {
+        if (ctx != null && ctx.channel().isWritable()) {
             ByteBuf byteBuf = Unpooled.buffer(header.getLength());
             byteBuf.writeBytes(header.toByteArray());
             byteBuf.writeBytes(msg.toByteArray());

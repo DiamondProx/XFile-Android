@@ -85,7 +85,7 @@ public class ClientThread extends Thread {
                 if (onClientListener != null) {
                     onClientListener.connectSuccess();
                 }
-                channel.closeFuture().sync();
+                channelFuture.channel().closeFuture().sync();
             } else {
                 if (onClientListener != null) {
                     onClientListener.connectFailure();
@@ -108,11 +108,11 @@ public class ClientThread extends Thread {
     }
 
     public void sendMessage(Header header, GeneratedMessage msg) {
-        if (channel != null) {
+        if (channelFuture.channel() != null && channelFuture.channel().isWritable()) {
             ByteBuf byteBuf = Unpooled.buffer(header.getLength());
             byteBuf.writeBytes(header.toByteArray());
             byteBuf.writeBytes(msg.toByteArray());
-            channel.writeAndFlush(byteBuf);
+            channelFuture.channel().writeAndFlush(byteBuf);
         }
     }
 

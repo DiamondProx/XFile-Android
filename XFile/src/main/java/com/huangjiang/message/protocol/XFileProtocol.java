@@ -2963,13 +2963,13 @@ public final class XFileProtocol {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required int64 step = 1;</code>
+     * <code>required uint32 step = 1;</code>
      */
     boolean hasStep();
     /**
-     * <code>required int64 step = 1;</code>
+     * <code>required uint32 step = 1;</code>
      */
-    long getStep();
+    int getStep();
 
     /**
      * <code>optional bool verify = 2 [default = false];</code>
@@ -3007,6 +3007,15 @@ public final class XFileProtocol {
      */
     com.google.protobuf.ByteString
         getTokenBytes();
+
+    /**
+     * <code>optional bool result = 5;</code>
+     */
+    boolean hasResult();
+    /**
+     * <code>optional bool result = 5;</code>
+     */
+    boolean getResult();
   }
   /**
    * Protobuf type {@code com.huangjiang.message.protocol.ShakeHand}
@@ -3062,7 +3071,7 @@ public final class XFileProtocol {
             }
             case 8: {
               bitField0_ |= 0x00000001;
-              step_ = input.readInt64();
+              step_ = input.readUInt32();
               break;
             }
             case 16: {
@@ -3080,6 +3089,11 @@ public final class XFileProtocol {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000008;
               token_ = bs;
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000010;
+              result_ = input.readBool();
               break;
             }
           }
@@ -3123,17 +3137,17 @@ public final class XFileProtocol {
 
     private int bitField0_;
     public static final int STEP_FIELD_NUMBER = 1;
-    private long step_;
+    private int step_;
     /**
-     * <code>required int64 step = 1;</code>
+     * <code>required uint32 step = 1;</code>
      */
     public boolean hasStep() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required int64 step = 1;</code>
+     * <code>required uint32 step = 1;</code>
      */
-    public long getStep() {
+    public int getStep() {
       return step_;
     }
 
@@ -3236,11 +3250,27 @@ public final class XFileProtocol {
       }
     }
 
+    public static final int RESULT_FIELD_NUMBER = 5;
+    private boolean result_;
+    /**
+     * <code>optional bool result = 5;</code>
+     */
+    public boolean hasResult() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional bool result = 5;</code>
+     */
+    public boolean getResult() {
+      return result_;
+    }
+
     private void initFields() {
-      step_ = 0L;
+      step_ = 0;
       verify_ = false;
       password_ = "";
       token_ = "";
+      result_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3260,7 +3290,7 @@ public final class XFileProtocol {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt64(1, step_);
+        output.writeUInt32(1, step_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBool(2, verify_);
@@ -3270,6 +3300,9 @@ public final class XFileProtocol {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeBytes(4, getTokenBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBool(5, result_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3282,7 +3315,7 @@ public final class XFileProtocol {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, step_);
+          .computeUInt32Size(1, step_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
@@ -3295,6 +3328,10 @@ public final class XFileProtocol {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(4, getTokenBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, result_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3413,7 +3450,7 @@ public final class XFileProtocol {
 
       public Builder clear() {
         super.clear();
-        step_ = 0L;
+        step_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
         verify_ = false;
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -3421,6 +3458,8 @@ public final class XFileProtocol {
         bitField0_ = (bitField0_ & ~0x00000004);
         token_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
+        result_ = false;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -3465,6 +3504,10 @@ public final class XFileProtocol {
           to_bitField0_ |= 0x00000008;
         }
         result.token_ = token_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.result_ = result_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3497,6 +3540,9 @@ public final class XFileProtocol {
           token_ = other.token_;
           onChanged();
         }
+        if (other.hasResult()) {
+          setResult(other.getResult());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -3528,34 +3574,34 @@ public final class XFileProtocol {
       }
       private int bitField0_;
 
-      private long step_ ;
+      private int step_ ;
       /**
-       * <code>required int64 step = 1;</code>
+       * <code>required uint32 step = 1;</code>
        */
       public boolean hasStep() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required int64 step = 1;</code>
+       * <code>required uint32 step = 1;</code>
        */
-      public long getStep() {
+      public int getStep() {
         return step_;
       }
       /**
-       * <code>required int64 step = 1;</code>
+       * <code>required uint32 step = 1;</code>
        */
-      public Builder setStep(long value) {
+      public Builder setStep(int value) {
         bitField0_ |= 0x00000001;
         step_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int64 step = 1;</code>
+       * <code>required uint32 step = 1;</code>
        */
       public Builder clearStep() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        step_ = 0L;
+        step_ = 0;
         onChanged();
         return this;
       }
@@ -3744,6 +3790,38 @@ public final class XFileProtocol {
         return this;
       }
 
+      private boolean result_ ;
+      /**
+       * <code>optional bool result = 5;</code>
+       */
+      public boolean hasResult() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional bool result = 5;</code>
+       */
+      public boolean getResult() {
+        return result_;
+      }
+      /**
+       * <code>optional bool result = 5;</code>
+       */
+      public Builder setResult(boolean value) {
+        bitField0_ |= 0x00000010;
+        result_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool result = 5;</code>
+       */
+      public Builder clearResult() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        result_ = false;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:com.huangjiang.message.protocol.ShakeHand)
     }
 
@@ -3796,9 +3874,9 @@ public final class XFileProtocol {
       "\t\022\013\n\003md5\030\002 \002(\t\022\014\n\004data\030\003 \002(\014\022\020\n\010position" +
       "\030\004 \002(\003\022\016\n\006length\030\005 \002(\003\":\n\004Chat\022\017\n\007conten" +
       "t\030\001 \002(\t\022\023\n\013messagetype\030\002 \002(\r\022\014\n\004from\030\003 \002" +
-      "(\t\"Q\n\tShakeHand\022\014\n\004step\030\001 \002(\003\022\025\n\006verify\030" +
+      "(\t\"a\n\tShakeHand\022\014\n\004step\030\001 \002(\r\022\025\n\006verify\030" +
       "\002 \001(\010:\005false\022\020\n\010password\030\003 \001(\t\022\r\n\005token\030" +
-      "\004 \001(\tB\002H\001"
+      "\004 \001(\t\022\016\n\006result\030\005 \001(\010B\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3841,7 +3919,7 @@ public final class XFileProtocol {
     internal_static_com_huangjiang_message_protocol_ShakeHand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_huangjiang_message_protocol_ShakeHand_descriptor,
-        new String[] { "Step", "Verify", "Password", "Token", });
+        new String[] { "Step", "Verify", "Password", "Token", "Result", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -7,8 +7,17 @@ public class ClientFileSocketEvent {
 
     private SocketEvent event;
 
+
+
     public ClientFileSocketEvent(SocketEvent event) {
         this.event = event;
     }
-    
+
+    public SocketEvent getEvent() {
+        return event;
+    }
+
+    public void setEvent(SocketEvent event) {
+        this.event = event;
+    }
 }

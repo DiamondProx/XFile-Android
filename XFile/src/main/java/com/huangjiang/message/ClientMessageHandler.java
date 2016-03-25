@@ -21,10 +21,8 @@ public class ClientMessageHandler extends ChannelHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.e("****ClientMessageChannelActive");
-        if (ctx.channel().isWritable() && ctx.channel().isWritable()) {
-            // 请求确认连接
-            IMMessageClientManager.getInstance().sendShakeHand();
-        }
+        // 请求确认连接
+        IMMessageClientManager.getInstance().sendShakeHand(ctx);
     }
 
     @Override
