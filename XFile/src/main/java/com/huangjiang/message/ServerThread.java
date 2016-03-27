@@ -9,17 +9,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.LineBasedFrameDecoder;
 
 /**
  * 消息服务器
@@ -33,11 +26,11 @@ public class ServerThread extends Thread {
     ServerBootstrap serverBootstrap = null;
     ChannelFuture channelFuture = null;
     Channel channel = null;
-    ChannelHandlerAdapter handler = null;
+    final XFileChannelInitializer.InitialType initialType ;
 
-    public ServerThread(int port, ChannelHandlerAdapter handler) {
+    public ServerThread(int port, XFileChannelInitializer.InitialType initialType) {
         this.port = port;
-        this.handler = handler;
+        this.initialType = initialType;
     }
 
     @Override
@@ -52,21 +45,13 @@ public class ServerThread extends Thread {
             serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(bossGroup, workGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
-                            ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new LengthFieldPrepender(4));
-                            pipeline.addLast(new LengthFieldBasedFrameDecoder(1024 * 1024 * 2, 0, 4, 0, 4));
-                            pipeline.addLast(handler);
-                        }
-                    });
+                    .childHandler(new XFileChannelInitializer(initialType));
             channelFuture = serverBootstrap.bind(port).sync();
             channel = channelFuture.channel();
             channel.closeFuture().sync();
         } catch (Exception e) {
             e.printStackTrace();
-            logger.d(e.getMessage());
+            logger.d("**********121212"+e.getMessage());
         } finally {
             bossGroup.shutdownGracefully();
             workGroup.shutdownGracefully();

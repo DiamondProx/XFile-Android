@@ -27,6 +27,7 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        logger.e("****ServerMessageChannelRead");
         IMMessageServerManager imMessageServerManager = IMMessageServerManager.getInstance();
         if (imMessageServerManager.getAuthChannelHandlerContext() != null) {
             // 连接已经认证,判断是否是认证连接
@@ -43,17 +44,18 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         super.exceptionCaught(ctx, cause);
+        ctx.close();
         logger.e(cause.getMessage());
         logger.e("****ServerMessageExceptionCaught");
     }
 
-//    @Override
-//    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-//        super.channelReadComplete(ctx);
-//        logger.e("****ServerMessageChannelReadComplete");
-//        IMMessageServerManager imMessageServerManager = IMMessageServerManager.getInstance();
-//        if (imMessageServerManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imMessageServerManager.getAuthChannelHandlerContext().channel().id())) {
-//            EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
-//        }
-//    }
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        super.channelReadComplete(ctx);
+        logger.e("****ServerMessageChannelReadComplete");
+        IMMessageServerManager imMessageServerManager = IMMessageServerManager.getInstance();
+        if (imMessageServerManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imMessageServerManager.getAuthChannelHandlerContext().channel().id())) {
+            EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
+        }
+    }
 }

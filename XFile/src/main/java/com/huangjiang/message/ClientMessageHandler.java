@@ -20,13 +20,17 @@ public class ClientMessageHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
         logger.e("****ClientMessageChannelActive");
         // 请求确认连接
+        Thread.sleep(2000);
         IMMessageClientManager.getInstance().sendShakeHand(ctx);
+        logger.e("****ClientMessageChannelActive-sendSuccess");
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        logger.e("****ClientMessageChannelRead");
         if (msg instanceof ByteBuf) {
             IMMessageClientManager.getInstance().packetDispatch((ByteBuf) msg);
         }
@@ -44,6 +48,6 @@ public class ClientMessageHandler extends ChannelHandlerAdapter {
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         super.channelReadComplete(ctx);
         EventBus.getDefault().post(new ClientMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
-        logger.e("****ClientFileChannelReadComplete");
+        logger.e("****ClientMessageChannelReadComplete");
     }
 }

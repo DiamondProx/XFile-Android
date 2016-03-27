@@ -11,6 +11,7 @@ import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.ClientFileHandler;
 import com.huangjiang.message.ClientMessageHandler;
 import com.huangjiang.message.ClientThread;
+import com.huangjiang.message.XFileChannelInitializer;
 import com.huangjiang.message.base.DataBuffer;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.message.protocol.XFileProtocol;
@@ -73,7 +74,7 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
     void startClient() {
         stopClient();
         listenerQueue.onStart();
-        messageClientThread = new ClientThread(new ClientMessageHandler());
+        messageClientThread = new ClientThread(XFileChannelInitializer.InitialType.CLIENTMESSAGEHANDLER);
         messageClientThread.setOnClientListener(this);
         messageClientThread.setHost(this.host);
         messageClientThread.setPort(this.port);

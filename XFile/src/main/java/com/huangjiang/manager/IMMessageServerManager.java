@@ -3,22 +3,16 @@ package com.huangjiang.manager;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.huangjiang.config.SysConstant;
-import com.huangjiang.manager.callback.MessageClientListenerQueue;
 import com.huangjiang.manager.callback.MessageServerListenerQueue;
 import com.huangjiang.manager.callback.Packetlistener;
-import com.huangjiang.manager.event.ServerMessageSocketEvent;
-import com.huangjiang.manager.event.SocketEvent;
-import com.huangjiang.message.ServerMessageHandler;
+import com.huangjiang.message.XFileChannelInitializer;
 import com.huangjiang.message.ServerThread;
 import com.huangjiang.message.base.DataBuffer;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
 
-import org.greenrobot.eventbus.EventBus;
-
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -63,7 +57,7 @@ public class IMMessageServerManager extends IMManager {
     void startServer() {
         stopServer();
         listenerQueue.onStart();
-        messageServerThread = new ServerThread(SysConstant.MESSAGE_PORT, new ServerMessageHandler());
+        messageServerThread = new ServerThread(SysConstant.MESSAGE_PORT, XFileChannelInitializer.InitialType.SERVERMESSAGEHANDLER);
         messageServerThread.start();
     }
 
@@ -159,7 +153,7 @@ public class IMMessageServerManager extends IMManager {
                         rspShakeHand.setToken(SysConstant.TOKEN);
                         short sid = SysConstant.SERVICE_DEFAULT;
                         short cid = SysConstant.CMD_SHAKE_HAND;
-                        sendMessage(sid, cid, rspShakeHand.build());
+                        sendMessage(ctx,sid, cid, rspShakeHand.build(),null);
 
                     }
                     break;

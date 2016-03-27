@@ -4,11 +4,10 @@ import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.manager.callback.FileServerListenerQueue;
-import com.huangjiang.manager.callback.MessageServerListenerQueue;
 import com.huangjiang.manager.callback.Packetlistener;
 import com.huangjiang.manager.event.ServerMessageSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
-import com.huangjiang.message.ServerFileHandler;
+import com.huangjiang.message.XFileChannelInitializer;
 import com.huangjiang.message.ServerThread;
 import com.huangjiang.message.base.DataBuffer;
 import com.huangjiang.message.base.Header;
@@ -64,7 +63,7 @@ public class IMFileServerManager extends IMManager {
     void startFileServer() {
         stopFileServer();
         listenerQueue.onStart();
-        messageServerThread = new ServerThread(SysConstant.FILE_SERVER_PORT, new ServerFileHandler());
+        messageServerThread = new ServerThread(SysConstant.FILE_SERVER_PORT, XFileChannelInitializer.InitialType.SERVERFILEHANDLER);
         messageServerThread.start();
     }
 

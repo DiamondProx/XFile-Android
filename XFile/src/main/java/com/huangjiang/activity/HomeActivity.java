@@ -230,7 +230,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
     void testConnect() {
         IMMessageClientManager messageClientManager = IMMessageClientManager.getInstance();
-        messageClientManager.setHost("127.16.88.208");
+        messageClientManager.setHost("192.168.192.103");
         messageClientManager.setPort(SysConstant.MESSAGE_PORT);
         messageClientManager.start();
     }

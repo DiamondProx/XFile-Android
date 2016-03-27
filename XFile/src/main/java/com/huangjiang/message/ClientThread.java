@@ -37,7 +37,7 @@ public class ClientThread extends Thread {
     int port;
     Channel channel;
     ChannelFuture channelFuture;
-    ChannelHandlerAdapter handler = null;
+    XFileChannelInitializer.InitialType initialType;
 
     OnClientListener onClientListener;
 
@@ -53,9 +53,9 @@ public class ClientThread extends Thread {
         this.host = host;
     }
 
-    public ClientThread(ChannelHandlerAdapter handler) {
+    public ClientThread(XFileChannelInitializer.InitialType initialType) {
         super();
-        this.handler = handler;
+        this.initialType = initialType;
     }
 
     @Override
@@ -68,18 +68,10 @@ public class ClientThread extends Thread {
             eventLoopGroup = new NioEventLoopGroup();
             bootstrap = new Bootstrap();
             bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
-                    .option(ChannelOption.AUTO_READ, true)
+//                    .option(ChannelOption.AUTO_READ, true)
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
-                            ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new LengthFieldPrepender(4));
-                            pipeline.addLast(new LengthFieldBasedFrameDecoder(1024 * 1024 * 2, 0, 4, 0, 4));
-                            pipeline.addLast(handler);
-                        }
-                    });
-            channelFuture = bootstrap.connect(host, port);
+                    .handler(new XFileChannelInitializer(this.initialType));
+            channelFuture = bootstrap.connect(host, port).sync();
             if (channelFuture.isSuccess()) {
                 channel = channelFuture.channel();
                 if (onClientListener != null) {
@@ -101,9 +93,8 @@ public class ClientThread extends Thread {
     }
 
     public void closeConnect() {
-        if (channel != null) {
-            channel.close();
-            channel = null;
+        if (channelFuture.channel() != null) {
+            channelFuture.channel().close();
         }
     }
 
