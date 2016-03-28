@@ -28,7 +28,7 @@ public class ClientFileHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg != null && msg instanceof ByteBuf && IMMessageServerManager.getInstance() != null) {
+        if (msg instanceof ByteBuf) {
             IMFileClientManager.getInstance().packetDispatch(ctx, (ByteBuf) msg);
         }
     }
@@ -44,7 +44,7 @@ public class ClientFileHandler extends ChannelHandlerAdapter {
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         super.channelReadComplete(ctx);
-        EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.CONNECT_CLOSE));
+//        EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.CONNECT_CLOSE));
         logger.e("****ClientFileChannelReadComplete");
     }
 }

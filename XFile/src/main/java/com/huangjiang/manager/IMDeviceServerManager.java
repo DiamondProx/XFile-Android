@@ -13,6 +13,9 @@ import com.huangjiang.utils.NetStateUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -25,6 +28,9 @@ public class IMDeviceServerManager extends IMManager {
     private static IMDeviceServerManager inst = null;
 
     private DeviceServerThread mDeviceServerThread = null;
+
+    private String ip;
+    private int port;
 
     public static IMDeviceServerManager getInstance() {
         if (inst == null) {
@@ -83,14 +89,16 @@ public class IMDeviceServerManager extends IMManager {
         String localIp = NetStateUtil.getIPv4(XFileApplication.context);
         XFileProtocol.Echo.Builder msg = XFileProtocol.Echo.newBuilder();
         msg.setIp(localIp);
-        msg.setPort(SysConstant.BROADCASE_PORT);
+        // 发送本机服务绑定的文件端口,服务端口
+        msg.setMessagePort(SysConstant.MESSAGE_PORT);
+        msg.setFilePort(SysConstant.FILE_SERVER_PORT);
         msg.setName(android.os.Build.MODEL);
         short serviceId = 0;
         short commandId = SysConstant.CMD_ECHO;
         sendMessage(msg.build(), serviceId, commandId, remoteIp, remotePort);
 
-
     }
+
 
     void rspEcho(ByteBuf byteBuf, Header header) throws InvalidProtocolBufferException {
         // 读取到其他远程地址
@@ -99,7 +107,8 @@ public class IMDeviceServerManager extends IMManager {
         DeviceInfoEvent event = new DeviceInfoEvent();
         event.setIp(echo.getIp());
         event.setName(echo.getName());
-        event.setPort(echo.getPort());
+        event.setMessage_port(echo.getMessagePort());
+        event.setFile_port(echo.getFilePort());
         EventBus.getDefault().postSticky(event);
 
     }
@@ -117,10 +126,43 @@ public class IMDeviceServerManager extends IMManager {
 
 
     public void DeviceBroCast(String ipAddress, int port) {
+        logger.e("*****DeviceBroCast");
         XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
         bonjour.setIp(ipAddress);
         bonjour.setPort(port);
         sendMessage(bonjour.build(), SysConstant.CMD_Bonjour, SysConstant.CMD_Bonjour, SysConstant.BROADCASE_ADDRESS, SysConstant.BROADCASE_PORT);
     }
 
+    public void startBrocastService(){
+
+        timer.schedule(timerTask,500,500);
+    }
+    public void cancelBrocastServer(){
+        timer.cancel();
+    }
+
+    Timer timer = new Timer();
+
+    TimerTask timerTask=new TimerTask() {
+        @Override
+        public void run() {
+            DeviceBroCast(ip,port);
+        }
+    };
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 }

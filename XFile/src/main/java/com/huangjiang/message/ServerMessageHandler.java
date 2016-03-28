@@ -55,7 +55,24 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
         logger.e("****ServerMessageChannelReadComplete");
         IMMessageServerManager imMessageServerManager = IMMessageServerManager.getInstance();
         if (imMessageServerManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imMessageServerManager.getAuthChannelHandlerContext().channel().id())) {
-            EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
+//            EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
+        }
+    }
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        super.handlerAdded(ctx);
+        logger.e("****ServerMessageHandlerAdded");
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        super.handlerRemoved(ctx);
+        IMMessageServerManager imMessageServerManager = IMMessageServerManager.getInstance();
+        logger.e("****ServerMessageHandlerRemoved1111");
+        if (imMessageServerManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imMessageServerManager.getAuthChannelHandlerContext().channel().id())) {
+//            EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
+            logger.e("****ServerMessageHandlerRemoved2222");
         }
     }
 }

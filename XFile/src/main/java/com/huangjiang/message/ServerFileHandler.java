@@ -56,7 +56,7 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
         super.channelReadComplete(ctx);
         IMFileServerManager imFileServerManager = IMFileServerManager.getInstance();
         if (imFileServerManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imFileServerManager.getAuthChannelHandlerContext().channel().id())) {
-            EventBus.getDefault().post(new ServerFileSocketEvent(SocketEvent.CONNECT_CLOSE));
+//            EventBus.getDefault().post(new ServerFileSocketEvent(SocketEvent.CONNECT_CLOSE));
         }
         logger.e("****ServerFileChannelReadComplete");
     }

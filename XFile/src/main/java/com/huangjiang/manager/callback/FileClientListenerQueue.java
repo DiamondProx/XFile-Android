@@ -51,7 +51,7 @@ public class FileClientListenerQueue {
                     hasTask = false;
                     startTimer();
                 }
-            }, 5 * 1000);
+            }, 8 * 1000);
         }
     }
 

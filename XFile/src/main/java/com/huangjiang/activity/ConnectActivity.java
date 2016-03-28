@@ -16,10 +16,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMDeviceServerManager;
+import com.huangjiang.manager.IMMessageClientManager;
+import com.huangjiang.manager.event.ClientFileSocketEvent;
+import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.event.DeviceInfoEvent;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.NetStateUtil;
@@ -32,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
+
+    private Logger logger = Logger.getLogger(ConnectActivity.class);
 
     ImageView close1, refresh1, refresh2, iv_connecting;
     Button search_join, search_cancel, search_back, connect_back, connecting_cancel;
@@ -46,6 +52,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     Handler ScanDeviceHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            IMDeviceServerManager.getInstance().cancelBrocastServer();
             int scanCount = msg.what;
             if (scanCount > 0) {
                 // 显示设备信息
@@ -155,7 +162,9 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
         if (IMDeviceServerManager.getInstance() != null) {
             String ipAddress = NetStateUtil.getIPv4(ConnectActivity.this);
-            IMDeviceServerManager.getInstance().DeviceBroCast(ipAddress, SysConstant.BROADCASE_PORT);
+            IMDeviceServerManager.getInstance().setIp(ipAddress);
+            IMDeviceServerManager.getInstance().setPort(SysConstant.BROADCASE_PORT);
+            IMDeviceServerManager.getInstance().startBrocastService();
             ScanDeviceHandler.postDelayed(scanRunnable, scan_time);
             deviceAdapter.clearDevices();
             layout1.setVisibility(View.INVISIBLE);
@@ -167,15 +176,22 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     }
 
 
-    void connectDevice() {
+    void connectDevice(DeviceInfoEvent deviceInfoEvent) {
+
         layout1.setVisibility(View.INVISIBLE);
         layout2.setVisibility(View.INVISIBLE);
         layout3.setVisibility(View.INVISIBLE);
         layout4.setVisibility(View.INVISIBLE);
         layout5.setVisibility(View.VISIBLE);
         animationDrawable.start();
+        // 开始连接服务器
+        IMMessageClientManager messageClientManager = IMMessageClientManager.getInstance();
+        messageClientManager.setHost(deviceInfoEvent.getIp());
+        messageClientManager.setPort(deviceInfoEvent.getMessage_port());
+        messageClientManager.start();
 
     }
+
 
     void cancelConnect() {
         layout1.setVisibility(View.VISIBLE);
@@ -209,14 +225,16 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DeviceInfoEvent event) {
-        if (event != null) {
+        logger.e("*****DeviceBroCast:"+event.getName());
+        if (event != null && !event.getName().equals(android.os.Build.MODEL)) {
             deviceAdapter.addDevice(event);
         }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        connectDevice();
+        DeviceInfoEvent deviceInfoEvent = (DeviceInfoEvent) deviceAdapter.getItem(position);
+        connectDevice(deviceInfoEvent);
 
     }
 
@@ -238,7 +256,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
         @Override
         public Object getItem(int position) {
-            return null;
+            return mList.get(position);
         }
 
         @Override
@@ -285,5 +303,19 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         }
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(ClientFileSocketEvent event) {
+
+        if (event.getEvent() == SocketEvent.SHAKE_INPUT_PASSWORD) {
+
+            IMMessageClientManager.getInstance().sendShakeHandStepT("123456");
+        } else if (event.getEvent() == SocketEvent.SHAKE_HAND_SUCCESS) {
+
+            ConnectActivity.this.finish();
+
+
+        }
+    }
 
 }

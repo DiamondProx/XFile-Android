@@ -1,6 +1,7 @@
 package com.huangjiang.message;
 
 import com.google.protobuf.GeneratedMessage;
+import com.huangjiang.manager.event.ClientMessageSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.utils.Logger;
@@ -35,7 +36,7 @@ public class ClientThread extends Thread {
     Bootstrap bootstrap;
     String host;
     int port;
-    Channel channel;
+    //    Channel channel;
     ChannelFuture channelFuture;
     XFileChannelInitializer.InitialType initialType;
 
@@ -73,7 +74,7 @@ public class ClientThread extends Thread {
                     .handler(new XFileChannelInitializer(this.initialType));
             channelFuture = bootstrap.connect(host, port).sync();
             if (channelFuture.isSuccess()) {
-                channel = channelFuture.channel();
+//                channel = channelFuture.channel();
                 if (onClientListener != null) {
                     onClientListener.connectSuccess();
                 }
@@ -82,24 +83,28 @@ public class ClientThread extends Thread {
                 if (onClientListener != null) {
                     onClientListener.connectFailure();
                 }
-                logger.d("*****Client File Connect Fail");
+                logger.d("*****Client Connect Fail");
             }
         } catch (Exception e) {
             e.printStackTrace();
             logger.d(e.getMessage());
         } finally {
             eventLoopGroup.shutdownGracefully();
+            logger.e("*****Client Close");
+            EventBus.getDefault().post(new ClientMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
         }
     }
 
     public void closeConnect() {
-        if (channelFuture.channel() != null) {
+        if (channelFuture != null && channelFuture.channel() != null && channelFuture.channel().isActive()) {
             channelFuture.channel().close();
+            channelFuture = null;
         }
+
     }
 
     public void sendMessage(Header header, GeneratedMessage msg) {
-        if (channelFuture.channel() != null && channelFuture.channel().isWritable()) {
+        if (channelFuture != null && channelFuture.channel() != null && channelFuture.channel().isWritable()) {
             ByteBuf byteBuf = Unpooled.buffer(header.getLength());
             byteBuf.writeBytes(header.toByteArray());
             byteBuf.writeBytes(msg.toByteArray());

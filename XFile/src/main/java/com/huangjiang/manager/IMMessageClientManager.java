@@ -95,7 +95,9 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
         byte[] body = dataBuffer.getBodyData();
         int commandId = header.getCommandId();
         Packetlistener packetlistener = listenerQueue.pop(header.getSeqnum());
+        logger.e("****ClientMessagePacketDispatch1111");
         if (packetlistener != null) {
+            logger.e("****ClientMessagePacketDispatch2222");
             packetlistener.onSuccess(body);
         }
         switch (commandId) {
@@ -116,8 +118,8 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
             header.setCommandId(commandId);
             header.setServiceId(serviceId);
             if (packetlistener != null) {
-                short seqnum = header.getSeqnum();
-                listenerQueue.push(seqnum, packetlistener);
+                short reqSeqnum = header.getSeqnum();
+                listenerQueue.push(reqSeqnum, packetlistener);
             }
             header.setLength(SysConstant.HEADER_LENGTH + msg.getSerializedSize());
             messageClientThread.sendMessage(header, msg);
@@ -130,7 +132,7 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
         shakeHand.setStep(1);// 握手第一步
         short sid = SysConstant.SERVICE_DEFAULT;
         short cid = SysConstant.CMD_SHAKE_HAND;
-        sendMessage(sid, cid, shakeHand.build(), new Packetlistener() {
+        sendMessage(sid, cid, shakeHand.build(), new Packetlistener(10000) {
             @Override
             public void onSuccess(Object response) {
                 if (response == null) {
@@ -142,8 +144,12 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
                     if (shakeHandRsp.getStep() == 1 && !shakeHandRsp.getVerify()) {
                         // 不需要密码直接连接成功,但是要获取token,用token继续连接文件服务器
                         String token = shakeHandRsp.getToken();
-                        IMFileClientManager.getInstance().setToken(token);
-                        IMFileClientManager.getInstance().startClient();
+                        IMFileClientManager imFileClientManager = IMFileClientManager.getInstance();
+                        imFileClientManager.setHost(host);
+                        // TODO 获取文件端口
+                        imFileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
+                        imFileClientManager.setToken(token);
+                        imFileClientManager.startClient();
                         verify = true;
                     } else if (shakeHandRsp.getStep() == 1 && shakeHandRsp.getVerify()) {
                         // 需要密码，请求输入密码
@@ -157,13 +163,15 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
 
             @Override
             public void onFaild() {
-                ctx.close();
+                //ctx.close();
+                logger.e("****SendShakeHandOnFaild");
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
 
             @Override
             public void onTimeout() {
-                ctx.close();
+                logger.e("****SendShakeHandOnTimeout");
+                //ctx.close();
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
         });
@@ -187,8 +195,12 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
                     if (shakeHandRsp.getStep() == 2 && shakeHandRsp.getResult()) {
                         // 验证成功,用token连接服务器
                         String token = shakeHandRsp.getToken();
-                        IMFileClientManager.getInstance().setToken(token);
-                        IMFileClientManager.getInstance().startClient();
+                        IMFileClientManager imFileClientManager = IMFileClientManager.getInstance();
+                        imFileClientManager.setHost(host);
+                        // TODO 获取文件端口
+                        imFileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
+                        imFileClientManager.setToken(token);
+                        imFileClientManager.startClient();
                         verify = true;
                     } else if (shakeHandRsp.getStep() == 2 && !shakeHandRsp.getResult()) {
                         // 密码验证失败
@@ -213,7 +225,6 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
             }
         });
     }
-
 
 
     @Override

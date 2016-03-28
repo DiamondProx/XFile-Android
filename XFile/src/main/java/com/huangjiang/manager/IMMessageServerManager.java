@@ -98,7 +98,7 @@ public class IMMessageServerManager extends IMManager {
         short commandId = header.getCommandId();
         switch (commandId) {
             case SysConstant.CMD_SHAKE_HAND:
-                ShakeHand(ctx, body);
+                ShakeHand(ctx, body, header.getSeqnum());
                 break;
         }
     }
@@ -128,7 +128,7 @@ public class IMMessageServerManager extends IMManager {
      * @param ctx
      * @param bodyData
      */
-    void ShakeHand(ChannelHandlerContext ctx, byte[] bodyData) {
+    void ShakeHand(ChannelHandlerContext ctx, byte[] bodyData, short reqSeqnum) {
         try {
             XFileProtocol.ShakeHand shakeHand = XFileProtocol.ShakeHand.parseFrom(bodyData);
             int step = shakeHand.getStep();
@@ -142,7 +142,7 @@ public class IMMessageServerManager extends IMManager {
                         rspShakeHand.setVerify(true);
                         short sid = SysConstant.SERVICE_DEFAULT;
                         short cid = SysConstant.CMD_SHAKE_HAND;
-                        sendMessage(ctx, sid, cid, rspShakeHand.build(), null);
+                        sendMessage(ctx, sid, cid, rspShakeHand.build(), null, reqSeqnum);
                     } else {
                         // 保存认证的连接
                         this.setAuthChannelHandlerContext(ctx);
@@ -153,7 +153,9 @@ public class IMMessageServerManager extends IMManager {
                         rspShakeHand.setToken(SysConstant.TOKEN);
                         short sid = SysConstant.SERVICE_DEFAULT;
                         short cid = SysConstant.CMD_SHAKE_HAND;
-                        sendMessage(ctx,sid, cid, rspShakeHand.build(),null);
+                        logger.e("****ServerMessageResponse1111");
+                        sendMessage(ctx, sid, cid, rspShakeHand.build(), null, reqSeqnum);
+                        logger.e("****ServerMessageResponse2222");
 
                     }
                     break;
@@ -179,7 +181,7 @@ public class IMMessageServerManager extends IMManager {
                         rspShakeHand.setResult(false);
                         short sid = SysConstant.SERVICE_DEFAULT;
                         short cid = SysConstant.CMD_SHAKE_HAND;
-                        sendMessage(ctx, sid, cid, rspShakeHand.build(), null);
+                        sendMessage(ctx, sid, cid, rspShakeHand.build(), null, reqSeqnum);
                         ctx.close();
                     }
                     break;
@@ -192,23 +194,25 @@ public class IMMessageServerManager extends IMManager {
 
     }
 
-
     public void sendMessage(short serviceId, short commandId, GeneratedMessage msg) {
-        sendMessage(serviceId, commandId, msg, null);
+        sendMessage(serviceId, commandId, msg, null, (short) 0);
     }
 
-    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener) {
-        sendMessage(AuthChannelHandlerContext, serviceId, commandId, msg, packetlistener);
+    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener, short seqnum) {
+        sendMessage(AuthChannelHandlerContext, serviceId, commandId, msg, packetlistener, seqnum);
     }
 
-    public void sendMessage(ChannelHandlerContext ctx, short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener) {
+    public void sendMessage(ChannelHandlerContext ctx, short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener, short seqnum) {
         if (ctx != null) {
             Header header = new Header();
             header.setCommandId(commandId);
             header.setServiceId(serviceId);
-            if (packetlistener != null) {
-                short seqnum = header.getSeqnum();
-                listenerQueue.push(seqnum, packetlistener);
+            if (seqnum != 0) {
+                header.setSeqnum(seqnum);
+            }
+            if (packetlistener != null && seqnum != 0) {
+                short reqSeqnum = header.getSeqnum();
+                listenerQueue.push(reqSeqnum, packetlistener);
             }
             header.setLength(SysConstant.HEADER_LENGTH + msg.getSerializedSize());
             messageServerThread.sendMessage(ctx, header, msg);

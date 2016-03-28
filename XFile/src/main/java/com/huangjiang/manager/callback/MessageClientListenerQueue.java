@@ -50,7 +50,7 @@ public class MessageClientListenerQueue {
                     hasTask = false;
                     startTimer();
                 }
-            }, 5 * 1000);
+            }, 8 * 1000);
         }
     }
 

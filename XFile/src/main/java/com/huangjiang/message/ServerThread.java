@@ -7,7 +7,6 @@ import com.huangjiang.utils.Logger;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoopGroup;
@@ -25,7 +24,7 @@ public class ServerThread extends Thread {
     EventLoopGroup workGroup = null;
     ServerBootstrap serverBootstrap = null;
     ChannelFuture channelFuture = null;
-    Channel channel = null;
+//    Channel channel = null;
     final XFileChannelInitializer.InitialType initialType ;
 
     public ServerThread(int port, XFileChannelInitializer.InitialType initialType) {
@@ -47,14 +46,14 @@ public class ServerThread extends Thread {
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new XFileChannelInitializer(initialType));
             channelFuture = serverBootstrap.bind(port).sync();
-            channel = channelFuture.channel();
-            channel.closeFuture().sync();
+//            channel = channelFuture.channel();
+            channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             e.printStackTrace();
-            logger.d("**********121212"+e.getMessage());
         } finally {
             bossGroup.shutdownGracefully();
             workGroup.shutdownGracefully();
+            logger.d("*****Server Close");
         }
 
     }
@@ -62,7 +61,7 @@ public class ServerThread extends Thread {
     public void stopServer() {
         if (channelFuture.channel() != null) {
             channelFuture.channel().close();
-            channel = null;
+            channelFuture = null;
         }
     }
 

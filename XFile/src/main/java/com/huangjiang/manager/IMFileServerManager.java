@@ -95,27 +95,30 @@ public class IMFileServerManager extends IMManager {
         short commandId = header.getCommandId();
         switch (commandId) {
             case SysConstant.CMD_SHAKE_HAND:
-                ShakeHand(ctx, body);
+                ShakeHand(ctx, body, header.getSeqnum());
                 break;
         }
     }
 
 
     public void sendMessage(short serviceId, short commandId, GeneratedMessage msg) {
-        sendMessage(serviceId, commandId, msg, null);
+        sendMessage(AuthChannelHandlerContext, serviceId, commandId, msg, null, (short) 0);
     }
 
-    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener) {
-        if (AuthChannelHandlerContext != null) {
+    public void sendMessage(ChannelHandlerContext ctx, short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener, short seqnum) {
+        if (ctx != null) {
             Header header = new Header();
             header.setCommandId(commandId);
             header.setServiceId(serviceId);
-            if (packetlistener != null) {
-                short seqnum = header.getSeqnum();
-                listenerQueue.push(seqnum, packetlistener);
+            if (seqnum != 0) {
+                header.setSeqnum(seqnum);
+            }
+            if (packetlistener != null && seqnum != 0) {
+                short reqSeqnum = header.getSeqnum();
+                listenerQueue.push(reqSeqnum, packetlistener);
             }
             header.setLength(SysConstant.HEADER_LENGTH + msg.getSerializedSize());
-            messageServerThread.sendMessage(AuthChannelHandlerContext, header, msg);
+            messageServerThread.sendMessage(ctx, header, msg);
         }
     }
 
@@ -142,7 +145,7 @@ public class IMFileServerManager extends IMManager {
      * @param ctx
      * @param bodyData
      */
-    void ShakeHand(ChannelHandlerContext ctx, byte[] bodyData) {
+    void ShakeHand(ChannelHandlerContext ctx, byte[] bodyData, short reqSeqnum) {
         try {
             XFileProtocol.ShakeHand shakeHand = XFileProtocol.ShakeHand.parseFrom(bodyData);
             int step = shakeHand.getStep();
@@ -152,15 +155,15 @@ public class IMFileServerManager extends IMManager {
                     // 直接对比token是否正确
                     String token = shakeHand.getToken();
                     if (SysConstant.TOKEN.equals(token)) {
+                        // 保存认证的连接
+                        this.setAuthChannelHandlerContext(ctx);
                         // 连接成功
                         XFileProtocol.ShakeHand.Builder rspShakeHand = XFileProtocol.ShakeHand.newBuilder();
                         rspShakeHand.setStep(1);
                         rspShakeHand.setResult(true);
                         short sid = SysConstant.SERVICE_DEFAULT;
                         short cid = SysConstant.CMD_SHAKE_HAND;
-                        sendMessage(sid, cid, rspShakeHand.build());
-                        // 保存认证的连接
-                        this.setAuthChannelHandlerContext(ctx);
+                        sendMessage(ctx, sid, cid, rspShakeHand.build(), null, reqSeqnum);
                         EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.SHAKE_HAND_SUCCESS));
                     } else {
                         // 连接失败
@@ -169,7 +172,7 @@ public class IMFileServerManager extends IMManager {
                         rspShakeHand.setResult(false);
                         short sid = SysConstant.SERVICE_DEFAULT;
                         short cid = SysConstant.CMD_SHAKE_HAND;
-                        sendMessage(sid, cid, rspShakeHand.build());
+                        sendMessage(ctx, sid, cid, rspShakeHand.build(), null, reqSeqnum);
                     }
                     break;
             }

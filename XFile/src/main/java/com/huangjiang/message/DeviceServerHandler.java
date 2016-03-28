@@ -28,6 +28,7 @@ public class DeviceServerHandler extends SimpleChannelInboundHandler<DatagramPac
 
     @Override
     protected void messageReceived(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
+        logger.e("****DeviceServerHandler-MessageReceived");
         if (msg != null) {
             IMDeviceServerManager.getInstance().packetDispatch(msg.content());
         }

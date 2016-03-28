@@ -597,27 +597,36 @@ public final class XFileProtocol {
         getIpBytes();
 
     /**
-     * <code>required uint32 port = 2;</code>
-     */
-    boolean hasPort();
-    /**
-     * <code>required uint32 port = 2;</code>
-     */
-    int getPort();
-
-    /**
-     * <code>required string name = 3;</code>
+     * <code>required string name = 2;</code>
      */
     boolean hasName();
     /**
-     * <code>required string name = 3;</code>
+     * <code>required string name = 2;</code>
      */
     String getName();
     /**
-     * <code>required string name = 3;</code>
+     * <code>required string name = 2;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
+
+    /**
+     * <code>required uint32 message_port = 3;</code>
+     */
+    boolean hasMessagePort();
+    /**
+     * <code>required uint32 message_port = 3;</code>
+     */
+    int getMessagePort();
+
+    /**
+     * <code>required uint32 file_port = 4;</code>
+     */
+    boolean hasFilePort();
+    /**
+     * <code>required uint32 file_port = 4;</code>
+     */
+    int getFilePort();
   }
   /**
    * Protobuf type {@code com.huangjiang.message.protocol.Echo}
@@ -677,15 +686,20 @@ public final class XFileProtocol {
               ip_ = bs;
               break;
             }
-            case 16: {
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              port_ = input.readUInt32();
+              name_ = bs;
               break;
             }
-            case 26: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+            case 24: {
               bitField0_ |= 0x00000004;
-              name_ = bs;
+              messagePort_ = input.readUInt32();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              filePort_ = input.readUInt32();
               break;
             }
           }
@@ -770,31 +784,16 @@ public final class XFileProtocol {
       }
     }
 
-    public static final int PORT_FIELD_NUMBER = 2;
-    private int port_;
+    public static final int NAME_FIELD_NUMBER = 2;
+    private Object name_;
     /**
-     * <code>required uint32 port = 2;</code>
+     * <code>required string name = 2;</code>
      */
-    public boolean hasPort() {
+    public boolean hasName() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required uint32 port = 2;</code>
-     */
-    public int getPort() {
-      return port_;
-    }
-
-    public static final int NAME_FIELD_NUMBER = 3;
-    private Object name_;
-    /**
-     * <code>required string name = 3;</code>
-     */
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>required string name = 3;</code>
+     * <code>required string name = 2;</code>
      */
     public String getName() {
       Object ref = name_;
@@ -811,7 +810,7 @@ public final class XFileProtocol {
       }
     }
     /**
-     * <code>required string name = 3;</code>
+     * <code>required string name = 2;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -827,10 +826,41 @@ public final class XFileProtocol {
       }
     }
 
+    public static final int MESSAGE_PORT_FIELD_NUMBER = 3;
+    private int messagePort_;
+    /**
+     * <code>required uint32 message_port = 3;</code>
+     */
+    public boolean hasMessagePort() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required uint32 message_port = 3;</code>
+     */
+    public int getMessagePort() {
+      return messagePort_;
+    }
+
+    public static final int FILE_PORT_FIELD_NUMBER = 4;
+    private int filePort_;
+    /**
+     * <code>required uint32 file_port = 4;</code>
+     */
+    public boolean hasFilePort() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>required uint32 file_port = 4;</code>
+     */
+    public int getFilePort() {
+      return filePort_;
+    }
+
     private void initFields() {
       ip_ = "";
-      port_ = 0;
       name_ = "";
+      messagePort_ = 0;
+      filePort_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -842,11 +872,15 @@ public final class XFileProtocol {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasPort()) {
+      if (!hasName()) {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasName()) {
+      if (!hasMessagePort()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasFilePort()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -861,10 +895,13 @@ public final class XFileProtocol {
         output.writeBytes(1, getIpBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeUInt32(2, port_);
+        output.writeBytes(2, getNameBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getNameBytes());
+        output.writeUInt32(3, messagePort_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeUInt32(4, filePort_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -881,11 +918,15 @@ public final class XFileProtocol {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(2, port_);
+          .computeBytesSize(2, getNameBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, getNameBytes());
+          .computeUInt32Size(3, messagePort_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(4, filePort_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1006,10 +1047,12 @@ public final class XFileProtocol {
         super.clear();
         ip_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        port_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
         name_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        messagePort_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
+        filePort_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -1045,11 +1088,15 @@ public final class XFileProtocol {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.port_ = port_;
+        result.name_ = name_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.name_ = name_;
+        result.messagePort_ = messagePort_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.filePort_ = filePort_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1071,13 +1118,16 @@ public final class XFileProtocol {
           ip_ = other.ip_;
           onChanged();
         }
-        if (other.hasPort()) {
-          setPort(other.getPort());
-        }
         if (other.hasName()) {
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000002;
           name_ = other.name_;
           onChanged();
+        }
+        if (other.hasMessagePort()) {
+          setMessagePort(other.getMessagePort());
+        }
+        if (other.hasFilePort()) {
+          setFilePort(other.getFilePort());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -1088,11 +1138,15 @@ public final class XFileProtocol {
           
           return false;
         }
-        if (!hasPort()) {
+        if (!hasName()) {
           
           return false;
         }
-        if (!hasName()) {
+        if (!hasMessagePort()) {
+          
+          return false;
+        }
+        if (!hasFilePort()) {
           
           return false;
         }
@@ -1194,47 +1248,15 @@ public final class XFileProtocol {
         return this;
       }
 
-      private int port_ ;
+      private Object name_ = "";
       /**
-       * <code>required uint32 port = 2;</code>
+       * <code>required string name = 2;</code>
        */
-      public boolean hasPort() {
+      public boolean hasName() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required uint32 port = 2;</code>
-       */
-      public int getPort() {
-        return port_;
-      }
-      /**
-       * <code>required uint32 port = 2;</code>
-       */
-      public Builder setPort(int value) {
-        bitField0_ |= 0x00000002;
-        port_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required uint32 port = 2;</code>
-       */
-      public Builder clearPort() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        port_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private Object name_ = "";
-      /**
-       * <code>required string name = 3;</code>
-       */
-      public boolean hasName() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required string name = 3;</code>
+       * <code>required string name = 2;</code>
        */
       public String getName() {
         Object ref = name_;
@@ -1251,7 +1273,7 @@ public final class XFileProtocol {
         }
       }
       /**
-       * <code>required string name = 3;</code>
+       * <code>required string name = 2;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -1267,37 +1289,101 @@ public final class XFileProtocol {
         }
       }
       /**
-       * <code>required string name = 3;</code>
+       * <code>required string name = 2;</code>
        */
       public Builder setName(
           String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  bitField0_ |= 0x00000002;
         name_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string name = 3;</code>
+       * <code>required string name = 2;</code>
        */
       public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
       /**
-       * <code>required string name = 3;</code>
+       * <code>required string name = 2;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  bitField0_ |= 0x00000002;
         name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int messagePort_ ;
+      /**
+       * <code>required uint32 message_port = 3;</code>
+       */
+      public boolean hasMessagePort() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required uint32 message_port = 3;</code>
+       */
+      public int getMessagePort() {
+        return messagePort_;
+      }
+      /**
+       * <code>required uint32 message_port = 3;</code>
+       */
+      public Builder setMessagePort(int value) {
+        bitField0_ |= 0x00000004;
+        messagePort_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required uint32 message_port = 3;</code>
+       */
+      public Builder clearMessagePort() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        messagePort_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int filePort_ ;
+      /**
+       * <code>required uint32 file_port = 4;</code>
+       */
+      public boolean hasFilePort() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required uint32 file_port = 4;</code>
+       */
+      public int getFilePort() {
+        return filePort_;
+      }
+      /**
+       * <code>required uint32 file_port = 4;</code>
+       */
+      public Builder setFilePort(int value) {
+        bitField0_ |= 0x00000008;
+        filePort_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required uint32 file_port = 4;</code>
+       */
+      public Builder clearFilePort() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        filePort_ = 0;
         onChanged();
         return this;
       }
@@ -3869,14 +3955,15 @@ public final class XFileProtocol {
     String[] descriptorData = {
       "\n\023XFileProtocol.proto\022\037com.huangjiang.me" +
       "ssage.protocol\"#\n\007Bonjour\022\n\n\002ip\030\001 \002(\t\022\014\n" +
-      "\004port\030\002 \002(\r\".\n\004Echo\022\n\n\002ip\030\001 \002(\t\022\014\n\004port\030" +
-      "\002 \002(\r\022\014\n\004name\030\003 \002(\t\"Q\n\004File\022\014\n\004name\030\001 \002(" +
-      "\t\022\013\n\003md5\030\002 \002(\t\022\014\n\004data\030\003 \002(\014\022\020\n\010position" +
-      "\030\004 \002(\003\022\016\n\006length\030\005 \002(\003\":\n\004Chat\022\017\n\007conten" +
-      "t\030\001 \002(\t\022\023\n\013messagetype\030\002 \002(\r\022\014\n\004from\030\003 \002" +
-      "(\t\"a\n\tShakeHand\022\014\n\004step\030\001 \002(\r\022\025\n\006verify\030" +
-      "\002 \001(\010:\005false\022\020\n\010password\030\003 \001(\t\022\r\n\005token\030" +
-      "\004 \001(\t\022\016\n\006result\030\005 \001(\010B\002H\001"
+      "\004port\030\002 \002(\r\"I\n\004Echo\022\n\n\002ip\030\001 \002(\t\022\014\n\004name\030" +
+      "\002 \002(\t\022\024\n\014message_port\030\003 \002(\r\022\021\n\tfile_port" +
+      "\030\004 \002(\r\"Q\n\004File\022\014\n\004name\030\001 \002(\t\022\013\n\003md5\030\002 \002(" +
+      "\t\022\014\n\004data\030\003 \002(\014\022\020\n\010position\030\004 \002(\003\022\016\n\006len" +
+      "gth\030\005 \002(\003\":\n\004Chat\022\017\n\007content\030\001 \002(\t\022\023\n\013me" +
+      "ssagetype\030\002 \002(\r\022\014\n\004from\030\003 \002(\t\"a\n\tShakeHa" +
+      "nd\022\014\n\004step\030\001 \002(\r\022\025\n\006verify\030\002 \001(\010:\005false\022" +
+      "\020\n\010password\030\003 \001(\t\022\r\n\005token\030\004 \001(\t\022\016\n\006resu",
+      "lt\030\005 \001(\010B\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3901,7 +3988,7 @@ public final class XFileProtocol {
     internal_static_com_huangjiang_message_protocol_Echo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_huangjiang_message_protocol_Echo_descriptor,
-        new String[] { "Ip", "Port", "Name", });
+        new String[] { "Ip", "Name", "MessagePort", "FilePort", });
     internal_static_com_huangjiang_message_protocol_File_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_com_huangjiang_message_protocol_File_fieldAccessorTable = new

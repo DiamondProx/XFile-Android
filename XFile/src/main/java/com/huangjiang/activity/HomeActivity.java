@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import com.huangjiang.manager.IMFileClientManager;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.IMMessageClientManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
+import com.huangjiang.manager.event.ClientMessageSocketEvent;
 import com.huangjiang.manager.event.ConnectSuccessEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
@@ -77,7 +79,9 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
     ColorStateList gray_color, blue_color, green_color;
 
-    Button btn_share;
+    Button btn_share, btn_close;
+
+    RelativeLayout top_main_layout, top_connect_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +118,10 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         findViewById(R.id.setting_layout).setOnClickListener(this);
         findViewById(R.id.share_app_layout).setOnClickListener(this);
         findViewById(R.id.share_pc_layout).setOnClickListener(this);
+        top_main_layout = (RelativeLayout) findViewById(R.id.top_main_layout);
+        top_connect_layout = (RelativeLayout) findViewById(R.id.top_connect_layout);
+        btn_close = (Button) findViewById(R.id.btn_close);
+        btn_close.setOnClickListener(this);
         device_name = (TextView) findViewById(R.id.mobile_name);
         tvPersonNumber = (TextView) slidingMenu.findViewById(R.id.person_number);
         tvCountNumber = (TextView) slidingMenu.findViewById(R.id.count_number);
@@ -181,9 +189,12 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 //                testReadFile();
 //                sendFile();
 //                sendMessage();
-//                showConnect();
-                testConnect();
+                showConnect();
+//                testConnect();
 //                testFile();
+                break;
+            case R.id.btn_close:
+                closeConnect();
                 break;
             default:
                 break;
@@ -201,7 +212,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 //                String ip = NetStateUtil.getIPv4(HomeActivity.this);
 //                XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
 //                bonjour.setIp(ip);
-//                bonjour.setPort(SysConstant.BROADCASE_PORT);
+//                bonjour.setBrocast_port(SysConstant.BROADCASE_PORT);
 //                byte[] body = bonjour.build().toByteArray();
 //                header.setLength(SysConstant.HEADER_LENGTH + body.length);
 //                byte[] data = new byte[SysConstant.HEADER_LENGTH + body.length];
@@ -230,7 +241,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
     void testConnect() {
         IMMessageClientManager messageClientManager = IMMessageClientManager.getInstance();
-        messageClientManager.setHost("192.168.192.103");
+        messageClientManager.setHost("172.16.88.208");
         messageClientManager.setPort(SysConstant.MESSAGE_PORT);
         messageClientManager.start();
     }
@@ -240,6 +251,11 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         fileClientManager.setHost("127.0.0.1");
         fileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
         fileClientManager.start();
+    }
+
+    void closeConnect() {
+        IMMessageClientManager.getInstance().stop();
+        IMFileClientManager.getInstance().stop();
     }
 
 
@@ -401,11 +417,39 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ClientFileSocketEvent event) {
 
-        if (event.getEvent() == SocketEvent.SHAKE_INPUT_PASSWORD) {
-            Toast.makeText(HomeActivity.this, "要求输入密码", Toast.LENGTH_SHORT).show();
-            IMMessageClientManager.getInstance().sendShakeHandStepT("123456");
-        } else if (event.getEvent() == SocketEvent.SHAKE_HAND_SUCCESS) {
-            Toast.makeText(HomeActivity.this, "验证成功", Toast.LENGTH_SHORT).show();
+        switch (event.getEvent()) {
+            case SHAKE_HAND_SUCCESS:
+                // 连接成功
+                top_main_layout.setVisibility(View.INVISIBLE);
+                top_connect_layout.setVisibility(View.VISIBLE);
+                Toast.makeText(HomeActivity.this, "连接成功", Toast.LENGTH_SHORT).show();
+                break;
+            case CONNECT_CLOSE:
+                // 连接关闭
+                top_main_layout.setVisibility(View.VISIBLE);
+                top_connect_layout.setVisibility(View.INVISIBLE);
+                Toast.makeText(HomeActivity.this, "关闭连接", Toast.LENGTH_SHORT).show();
+                break;
+            case SHAKE_INPUT_PASSWORD:
+                // 要求输入密码
+                Toast.makeText(HomeActivity.this, "要求输入密码", Toast.LENGTH_SHORT).show();
+                IMMessageClientManager.getInstance().sendShakeHandStepT("123456");
+                break;
+        }
+
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(ClientMessageSocketEvent event) {
+        switch (event.getEvent()) {
+
+            case CONNECT_CLOSE:
+                // 连接关闭
+                top_main_layout.setVisibility(View.VISIBLE);
+                top_connect_layout.setVisibility(View.INVISIBLE);
+                Toast.makeText(HomeActivity.this, "关闭连接", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 

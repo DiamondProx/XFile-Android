@@ -11,6 +11,7 @@ import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.ClientFileHandler;
 import com.huangjiang.message.ClientThread;
 import com.huangjiang.message.XFileChannelInitializer;
+import com.huangjiang.message.base.DataBuffer;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
@@ -105,9 +106,16 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
     }
 
     public void packetDispatch(ChannelHandlerContext ctx, ByteBuf byteBuf) throws InvalidProtocolBufferException {
-        byte[] byteHeader = byteBuf.readBytes(SysConstant.HEADER_LENGTH).array();
-        Header header = new Header(byteHeader);
+        DataBuffer dataBuffer = new DataBuffer(byteBuf);
+        Header header = dataBuffer.getHeader();
+        byte[] body = dataBuffer.getBodyData();
         int commandId = header.getCommandId();
+        Packetlistener packetlistener = listenerQueue.pop(header.getSeqnum());
+        logger.e("****ClientFilePacketDispatch1111");
+        if (packetlistener != null) {
+            logger.e("****ClientFilePacketDispatch2222");
+            packetlistener.onSuccess(body);
+        }
         switch (commandId) {
             case SysConstant.CMD_TRANSER_FILE_REC:
                 IMFileManager.getInstance().continueSendFile(header, byteBuf);
@@ -156,7 +164,7 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
                         EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_SUCCESS));
                     } else if (shakeHand.getStep() == 1 && !shakeHand.getResult()) {
                         // 连接失败
-                        ctx.close();
+//                        ctx.close();
                         EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
                     }
                 } catch (InvalidProtocolBufferException e) {
@@ -166,13 +174,13 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
 
             @Override
             public void onFaild() {
-                ctx.close();
+//                ctx.close();
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
 
             @Override
             public void onTimeout() {
-                ctx.close();
+//                ctx.close();
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
         });
