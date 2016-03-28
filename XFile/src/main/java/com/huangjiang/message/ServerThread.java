@@ -24,8 +24,7 @@ public class ServerThread extends Thread {
     EventLoopGroup workGroup = null;
     ServerBootstrap serverBootstrap = null;
     ChannelFuture channelFuture = null;
-//    Channel channel = null;
-    final XFileChannelInitializer.InitialType initialType ;
+    final XFileChannelInitializer.InitialType initialType;
 
     public ServerThread(int port, XFileChannelInitializer.InitialType initialType) {
         this.port = port;
@@ -46,7 +45,6 @@ public class ServerThread extends Thread {
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new XFileChannelInitializer(initialType));
             channelFuture = serverBootstrap.bind(port).sync();
-//            channel = channelFuture.channel();
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,7 +57,7 @@ public class ServerThread extends Thread {
     }
 
     public void stopServer() {
-        if (channelFuture.channel() != null) {
+        if (channelFuture != null && channelFuture.channel() != null) {
             channelFuture.channel().close();
             channelFuture = null;
         }

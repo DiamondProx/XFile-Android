@@ -10,6 +10,12 @@ public class XFileApplication extends Application {
 
     public static Context context;
 
+    public static int broadcast_port;
+
+    public static int message_port;
+
+    public static int file_port;
+
     @Override
     public void onCreate() {
         super.onCreate();

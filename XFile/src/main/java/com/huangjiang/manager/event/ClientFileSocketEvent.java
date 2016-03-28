@@ -7,8 +7,6 @@ public class ClientFileSocketEvent {
 
     private SocketEvent event;
 
-
-
     public ClientFileSocketEvent(SocketEvent event) {
         this.event = event;
     }

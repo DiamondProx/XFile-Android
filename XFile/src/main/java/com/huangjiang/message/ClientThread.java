@@ -11,19 +11,11 @@ import org.greenrobot.eventbus.EventBus;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.LineBasedFrameDecoder;
 
 /**
  * 消息客户端
@@ -36,7 +28,6 @@ public class ClientThread extends Thread {
     Bootstrap bootstrap;
     String host;
     int port;
-    //    Channel channel;
     ChannelFuture channelFuture;
     XFileChannelInitializer.InitialType initialType;
 
@@ -69,12 +60,10 @@ public class ClientThread extends Thread {
             eventLoopGroup = new NioEventLoopGroup();
             bootstrap = new Bootstrap();
             bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
-//                    .option(ChannelOption.AUTO_READ, true)
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
                     .handler(new XFileChannelInitializer(this.initialType));
             channelFuture = bootstrap.connect(host, port).sync();
             if (channelFuture.isSuccess()) {
-//                channel = channelFuture.channel();
                 if (onClientListener != null) {
                     onClientListener.connectSuccess();
                 }

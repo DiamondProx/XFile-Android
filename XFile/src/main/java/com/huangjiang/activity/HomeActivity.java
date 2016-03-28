@@ -30,13 +30,10 @@ import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.manager.IMFileClientManager;
-import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.IMMessageClientManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.ClientMessageSocketEvent;
 import com.huangjiang.manager.event.ConnectSuccessEvent;
-import com.huangjiang.manager.event.SocketEvent;
-import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.service.IMService;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 

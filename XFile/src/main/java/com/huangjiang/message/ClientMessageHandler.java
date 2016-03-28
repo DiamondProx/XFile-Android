@@ -23,17 +23,13 @@ public class ClientMessageHandler extends ChannelHandlerAdapter {
         super.channelActive(ctx);
         logger.e("****ClientMessageChannelActive");
         // 请求确认连接
-        logger.e("****ClientMessageChannelActive-sendSuccess1111");
         IMMessageClientManager.getInstance().sendShakeHand(ctx);
-        logger.e("****ClientMessageChannelActive-sendSuccess2222");
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         logger.e("****ClientMessageChannelRead");
-        if (msg instanceof ByteBuf) {
-            IMMessageClientManager.getInstance().packetDispatch((ByteBuf) msg);
-        }
+        IMMessageClientManager.getInstance().packetDispatch((ByteBuf) msg);
     }
 
     @Override
@@ -47,7 +43,6 @@ public class ClientMessageHandler extends ChannelHandlerAdapter {
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         super.channelReadComplete(ctx);
-        //EventBus.getDefault().post(new ClientMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
         logger.e("****ClientMessageChannelReadComplete");
     }
 
@@ -55,6 +50,6 @@ public class ClientMessageHandler extends ChannelHandlerAdapter {
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         super.handlerRemoved(ctx);
         logger.e("****ClientMessageHandlerRemoved");
-        //            EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
+        // EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
     }
 }

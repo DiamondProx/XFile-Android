@@ -52,7 +52,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     Handler ScanDeviceHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            IMDeviceServerManager.getInstance().cancelBrocastServer();
+            IMDeviceServerManager.getInstance().cancelBonjour();
             int scanCount = msg.what;
             if (scanCount > 0) {
                 // 显示设备信息
@@ -158,13 +158,8 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
     // 开始扫描设备
     void scanningDevice() {
-
-
         if (IMDeviceServerManager.getInstance() != null) {
-            String ipAddress = NetStateUtil.getIPv4(ConnectActivity.this);
-            IMDeviceServerManager.getInstance().setIp(ipAddress);
-            IMDeviceServerManager.getInstance().setPort(SysConstant.BROADCASE_PORT);
-            IMDeviceServerManager.getInstance().startBrocastService();
+            IMDeviceServerManager.getInstance().startBonjour();
             ScanDeviceHandler.postDelayed(scanRunnable, scan_time);
             deviceAdapter.clearDevices();
             layout1.setVisibility(View.INVISIBLE);
@@ -225,9 +220,11 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DeviceInfoEvent event) {
-        logger.e("*****DeviceBroCast:"+event.getName());
+        logger.e("*****DeviceBroCast:" + event.getName());
         if (event != null && !event.getName().equals(android.os.Build.MODEL)) {
-            deviceAdapter.addDevice(event);
+            if (!deviceAdapter.containDevice(event)) {
+                deviceAdapter.addDevice(event);
+            }
         }
     }
 
@@ -292,6 +289,15 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
             if (mList != null) {
                 mList.add(device);
             }
+        }
+
+        boolean containDevice(DeviceInfoEvent device) {
+            for (DeviceInfoEvent d : mList) {
+                if (d.getName().equals(device.getName())) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         final class ViewHolder {
