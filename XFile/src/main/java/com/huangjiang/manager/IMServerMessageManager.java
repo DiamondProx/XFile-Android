@@ -18,11 +18,11 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * 消息服务管理
  */
-public class IMMessageServerManager extends IMManager {
+public class IMServerMessageManager extends IMBaseManager {
 
-    private Logger logger = Logger.getLogger(IMMessageServerManager.class);
+    private Logger logger = Logger.getLogger(IMServerMessageManager.class);
 
-    private static IMMessageServerManager inst = null;
+    private static IMServerMessageManager inst = null;
 
     private ServerThread messageServerThread = null;
 
@@ -34,14 +34,14 @@ public class IMMessageServerManager extends IMManager {
      */
     private ChannelHandlerContext AuthChannelHandlerContext = null;
 
-    public static IMMessageServerManager getInstance() {
+    public static IMServerMessageManager getInstance() {
         if (inst == null) {
-            inst = new IMMessageServerManager();
+            inst = new IMServerMessageManager();
         }
         return inst;
     }
 
-    public IMMessageServerManager() {
+    public IMServerMessageManager() {
 
     }
 
@@ -166,7 +166,7 @@ public class IMMessageServerManager extends IMManager {
                         // 保存认证的连接
                         this.setAuthChannelHandlerContext(ctx);
                         // 生成服务器生成服务器token通知客户端
-                        IMFileServerManager.getInstance().setToken(SysConstant.TOKEN);
+                        IMServerFileManager.getInstance().setToken(SysConstant.TOKEN);
                         // 发送消息提示客户端
                         XFileProtocol.ShakeHand.Builder rspShakeHand = XFileProtocol.ShakeHand.newBuilder();
                         rspShakeHand.setStep(2);

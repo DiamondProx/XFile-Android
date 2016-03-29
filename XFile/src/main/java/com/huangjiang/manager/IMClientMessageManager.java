@@ -8,8 +8,6 @@ import com.huangjiang.manager.callback.Packetlistener;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.ClientMessageSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
-import com.huangjiang.message.ClientFileHandler;
-import com.huangjiang.message.ClientMessageHandler;
 import com.huangjiang.message.ClientThread;
 import com.huangjiang.message.XFileChannelInitializer;
 import com.huangjiang.message.base.DataBuffer;
@@ -25,12 +23,12 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * 消息客户端管理
  */
-public class IMMessageClientManager extends IMManager implements ClientThread.OnClientListener {
+public class IMClientMessageManager extends IMBaseManager implements ClientThread.OnClientListener {
 
 
-    private Logger logger = Logger.getLogger(IMMessageClientManager.class);
+    private Logger logger = Logger.getLogger(IMClientMessageManager.class);
 
-    private static IMMessageClientManager inst = null;
+    private static IMClientMessageManager inst = null;
 
     private ClientThread messageClientThread = null;
 
@@ -42,14 +40,14 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
 
     private boolean verify = false;
 
-    public static IMMessageClientManager getInstance() {
+    public static IMClientMessageManager getInstance() {
         if (inst == null) {
-            inst = new IMMessageClientManager();
+            inst = new IMClientMessageManager();
         }
         return inst;
     }
 
-    public IMMessageClientManager() {
+    public IMClientMessageManager() {
 
     }
 
@@ -145,12 +143,12 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
                     if (shakeHandRsp.getStep() == 1 && !shakeHandRsp.getVerify()) {
                         // 不需要密码直接连接成功,但是要获取token,用token继续连接文件服务器
                         String token = shakeHandRsp.getToken();
-                        IMFileClientManager imFileClientManager = IMFileClientManager.getInstance();
-                        imFileClientManager.setHost(host);
+                        IMClientFileManager imClientFileManager = IMClientFileManager.getInstance();
+                        imClientFileManager.setHost(host);
                         // TODO 获取文件端口
-                        imFileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
-                        imFileClientManager.setToken(token);
-                        imFileClientManager.startClient();
+                        imClientFileManager.setPort(SysConstant.FILE_SERVER_PORT);
+                        imClientFileManager.setToken(token);
+                        imClientFileManager.startClient();
                         verify = true;
                     } else if (shakeHandRsp.getStep() == 1 && shakeHandRsp.getVerify()) {
                         // 需要密码，请求输入密码
@@ -197,12 +195,12 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
                     if (shakeHandRsp.getStep() == 2 && shakeHandRsp.getResult()) {
                         // 验证成功,用token连接服务器
                         String token = shakeHandRsp.getToken();
-                        IMFileClientManager imFileClientManager = IMFileClientManager.getInstance();
-                        imFileClientManager.setHost(host);
+                        IMClientFileManager imClientFileManager = IMClientFileManager.getInstance();
+                        imClientFileManager.setHost(host);
                         // TODO 获取文件端口
-                        imFileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
-                        imFileClientManager.setToken(token);
-                        imFileClientManager.startClient();
+                        imClientFileManager.setPort(SysConstant.FILE_SERVER_PORT);
+                        imClientFileManager.setToken(token);
+                        imClientFileManager.startClient();
                         verify = true;
                     } else if (shakeHandRsp.getStep() == 2 && !shakeHandRsp.getResult()) {
                         // 密码验证失败

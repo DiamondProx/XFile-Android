@@ -3,7 +3,7 @@ package com.huangjiang.manager;
 /**
  * 管理服务
  */
-public abstract class IMManager {
+public abstract class IMBaseManager {
 
     public abstract void start();
 

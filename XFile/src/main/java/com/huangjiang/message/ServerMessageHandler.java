@@ -1,8 +1,7 @@
 package com.huangjiang.message;
 
-import com.huangjiang.manager.IMMessageServerManager;
+import com.huangjiang.manager.IMServerMessageManager;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
-import com.huangjiang.manager.event.ServerMessageSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.utils.Logger;
 
@@ -29,16 +28,16 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         logger.e("****ServerMessage-ChannelRead");
-        IMMessageServerManager imMessageServerManager = IMMessageServerManager.getInstance();
-        if (imMessageServerManager.getAuthChannelHandlerContext() != null) {
+        IMServerMessageManager imServerMessageManager = IMServerMessageManager.getInstance();
+        if (imServerMessageManager.getAuthChannelHandlerContext() != null) {
             // 连接已经认证,判断是否是认证连接
-            if (ctx.channel().id() == imMessageServerManager.getAuthChannelHandlerContext().channel().id()) {
+            if (ctx.channel().id() == imServerMessageManager.getAuthChannelHandlerContext().channel().id()) {
                 // 分发认证数据
-                imMessageServerManager.packetDispatch((ByteBuf) msg);
+                imServerMessageManager.packetDispatch((ByteBuf) msg);
             }
         } else {
             // 分发认证数据
-            imMessageServerManager.packetDispatchAuth(ctx, (ByteBuf) msg);
+            imServerMessageManager.packetDispatchAuth(ctx, (ByteBuf) msg);
         }
     }
 
@@ -65,10 +64,10 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         super.handlerRemoved(ctx);
-        IMMessageServerManager imMessageServerManager = IMMessageServerManager.getInstance();
+        IMServerMessageManager imServerMessageManager = IMServerMessageManager.getInstance();
         logger.e("****ServerMessageHandlerRemoved1111");
-        if (imMessageServerManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imMessageServerManager.getAuthChannelHandlerContext().channel().id())) {
-            imMessageServerManager.setAuthChannelHandlerContext(null);
+        if (imServerMessageManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imServerMessageManager.getAuthChannelHandlerContext().channel().id())) {
+            imServerMessageManager.setAuthChannelHandlerContext(null);
             EventBus.getDefault().post(new ServerFileSocketEvent(SocketEvent.CONNECT_CLOSE));
             logger.e("****ServerMessageHandlerRemoved2222");
         }

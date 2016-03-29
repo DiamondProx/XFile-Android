@@ -21,7 +21,7 @@ import io.netty.buffer.ByteBuf;
 /**
  * 广播服务管理
  */
-public class IMDeviceServerManager extends IMManager {
+public class IMDeviceServerManager extends IMBaseManager {
 
     private Logger logger = Logger.getLogger(IMDeviceServerManager.class);
 

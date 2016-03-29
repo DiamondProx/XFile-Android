@@ -29,10 +29,10 @@ import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
-import com.huangjiang.manager.IMFileClientManager;
-import com.huangjiang.manager.IMFileServerManager;
-import com.huangjiang.manager.IMMessageClientManager;
-import com.huangjiang.manager.IMMessageServerManager;
+import com.huangjiang.manager.IMClientMessageManager;
+import com.huangjiang.manager.IMClientFileManager;
+import com.huangjiang.manager.IMServerFileManager;
+import com.huangjiang.manager.IMServerMessageManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.ConnectSuccessEvent;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
@@ -333,7 +333,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
             case SHAKE_INPUT_PASSWORD:
                 // 要求输入密码
                 Toast.makeText(HomeActivity.this, "要求输入密码", Toast.LENGTH_SHORT).show();
-                IMMessageClientManager.getInstance().sendShakeHandStepT("123456");
+                IMClientMessageManager.getInstance().sendShakeHandStepT("123456");
                 break;
         }
 
@@ -363,14 +363,14 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ConnectSuccessEvent event) {
-        if (event != null && IMMessageClientManager.getInstance() != null) {
+        if (event != null && IMClientMessageManager.getInstance() != null) {
             System.out.println("*****connect.ip:" + event.getIpAddress());
             // 发送消息
 //            XFileProtocol.Chat.Builder chatBuilder = XFileProtocol.Chat.newBuilder();
 //            chatBuilder.setContent("hi,im client");
 //            chatBuilder.setFrom("client");
 //            chatBuilder.setMessagetype(1);
-//            IMMessageClientManager.getInstance().sendMessage(chatBuilder.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_SEND_MESSAGE);
+//            IMClientMessageManager.getInstance().sendMessage(chatBuilder.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_SEND_MESSAGE);
             // 发送文件
 
 //            new Thread(new Runnable() {
@@ -425,14 +425,14 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     }
 
     void testConnect() {
-        IMMessageClientManager messageClientManager = IMMessageClientManager.getInstance();
+        IMClientMessageManager messageClientManager = IMClientMessageManager.getInstance();
         messageClientManager.setHost("172.16.88.208");
         messageClientManager.setPort(SysConstant.MESSAGE_PORT);
         messageClientManager.start();
     }
 
     void testFile() {
-        IMFileClientManager fileClientManager = IMFileClientManager.getInstance();
+        IMClientFileManager fileClientManager = IMClientFileManager.getInstance();
         fileClientManager.setHost("127.0.0.1");
         fileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
         fileClientManager.start();
@@ -441,12 +441,12 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     void closeConnect() {
         switch (connect_type) {
             case 1:
-                IMMessageServerManager.getInstance().stop();
-                IMFileServerManager.getInstance().stop();
+                IMServerMessageManager.getInstance().stop();
+                IMServerFileManager.getInstance().stop();
                 break;
             case 2:
-                IMMessageClientManager.getInstance().stop();
-                IMFileClientManager.getInstance().stop();
+                IMClientMessageManager.getInstance().stop();
+                IMClientFileManager.getInstance().stop();
                 break;
         }
     }

@@ -1,6 +1,6 @@
 package com.huangjiang.message;
 
-import com.huangjiang.manager.IMMessageClientManager;
+import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.event.ClientMessageSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.utils.Logger;
@@ -23,13 +23,13 @@ public class ClientMessageHandler extends ChannelHandlerAdapter {
         super.channelActive(ctx);
         logger.e("****ClientMessageChannelActive");
         // 请求确认连接
-        IMMessageClientManager.getInstance().sendShakeHand(ctx);
+        IMClientMessageManager.getInstance().sendShakeHand(ctx);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         logger.e("****ClientMessageChannelRead");
-        IMMessageClientManager.getInstance().packetDispatch((ByteBuf) msg);
+        IMClientMessageManager.getInstance().packetDispatch((ByteBuf) msg);
     }
 
     @Override

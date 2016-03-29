@@ -5,7 +5,6 @@ import android.os.Environment;
 import com.google.protobuf.ByteString;
 import com.huangjiang.business.model.FileInfo;
 import com.huangjiang.config.SysConstant;
-import com.huangjiang.message.DeviceServerThread;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
@@ -15,17 +14,16 @@ import java.io.File;
 import java.io.RandomAccessFile;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
  * 文件管理
  */
-public class IMFileManager extends IMManager {
+public class IMFileManager extends IMBaseManager {
 
 
-    private IMFileServerManager imFileServerManager = IMFileServerManager.getInstance();
-    private IMFileClientManager imFileClientManager = IMFileClientManager.getInstance();
+    private IMServerFileManager imServerFileManager = IMServerFileManager.getInstance();
+    private IMClientFileManager imClientFileManager = IMClientFileManager.getInstance();
 
     private FileInfo sendFile;
     private FileInfo recvFile;
@@ -87,7 +85,7 @@ public class IMFileManager extends IMManager {
             ByteString byteString = ByteString.copyFrom(sendData);
             fileBuilder.setData(byteString);
             System.out.println("*****开始发送文件:" + System.currentTimeMillis());
-            imFileClientManager.sendMessage(SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_SEND, fileBuilder.build());
+            imClientFileManager.sendMessage(SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_SEND, fileBuilder.build());
 
 
         } catch (Exception e) {
@@ -131,7 +129,7 @@ public class IMFileManager extends IMManager {
                 ByteString byteString = ByteString.copyFrom(fileData);
                 fileBuilder.setData(byteString);
             }
-            imFileClientManager.sendMessage(SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_SEND, fileBuilder.build());
+            imClientFileManager.sendMessage(SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_SEND, fileBuilder.build());
 
 
         } catch (Exception e) {
@@ -188,7 +186,7 @@ public class IMFileManager extends IMManager {
                 respFile.setData(ByteString.copyFrom("1".getBytes()));
 
 
-                //imFileServerManager.sendMessage(ctx, respFile.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_REC);
+                //imServerFileManager.sendMessage(ctx, respFile.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_TRANSER_FILE_REC);
 
             } else {
                 System.out.println("*****文件发送完毕:" + System.currentTimeMillis());

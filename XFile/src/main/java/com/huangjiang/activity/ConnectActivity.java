@@ -16,14 +16,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.huangjiang.XFileApplication;
 import com.huangjiang.filetransfer.R;
+import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMDeviceServerManager;
-import com.huangjiang.manager.IMMessageClientManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
-import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.event.ScanDeviceInfo;
 import com.huangjiang.utils.Logger;
 
@@ -179,7 +177,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         layout5.setVisibility(View.VISIBLE);
         animationDrawable.start();
         // 开始连接服务器
-        IMMessageClientManager messageClientManager = IMMessageClientManager.getInstance();
+        IMClientMessageManager messageClientManager = IMClientMessageManager.getInstance();
         messageClientManager.setHost(deviceInfoEvent.getIp());
         messageClientManager.setPort(deviceInfoEvent.getMessage_port());
         messageClientManager.start();
@@ -312,7 +310,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     public void onEventMainThread(ClientFileSocketEvent event) {
         switch (event.getEvent()) {
             case SHAKE_INPUT_PASSWORD:
-                IMMessageClientManager.getInstance().sendShakeHandStepT("123456");
+                IMClientMessageManager.getInstance().sendShakeHandStepT("123456");
                 break;
             case SHAKE_HAND_SUCCESS:
                 ConnectActivity.this.finish();

@@ -1,7 +1,7 @@
 package com.huangjiang.message;
 
-import com.huangjiang.manager.IMFileServerManager;
-import com.huangjiang.manager.IMMessageServerManager;
+import com.huangjiang.manager.IMServerFileManager;
+import com.huangjiang.manager.IMServerMessageManager;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.utils.Logger;
@@ -29,16 +29,16 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         logger.e("****ServerFile-ChannelRead");
-        IMFileServerManager imFileServerManager = IMFileServerManager.getInstance();
-        if (imFileServerManager.getAuthChannelHandlerContext() != null) {
+        IMServerFileManager imServerFileManager = IMServerFileManager.getInstance();
+        if (imServerFileManager.getAuthChannelHandlerContext() != null) {
             // 连接已经认证,判断是否是认证连接
-            if (ctx.channel().id() == imFileServerManager.getAuthChannelHandlerContext().channel().id()) {
+            if (ctx.channel().id() == imServerFileManager.getAuthChannelHandlerContext().channel().id()) {
                 // 分发认证数据
-                imFileServerManager.packetDispatch((ByteBuf) msg);
+                imServerFileManager.packetDispatch((ByteBuf) msg);
             }
         } else {
             // 分发认证数据
-            imFileServerManager.packetDispatchAuth(ctx, (ByteBuf) msg);
+            imServerFileManager.packetDispatchAuth(ctx, (ByteBuf) msg);
         }
     }
 
@@ -59,11 +59,11 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         super.handlerRemoved(ctx);
-        IMFileServerManager imFileServerManager = IMFileServerManager.getInstance();
-        if (imFileServerManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imFileServerManager.getAuthChannelHandlerContext().channel().id())) {
-            imFileServerManager.setAuthChannelHandlerContext(null);
-            if (IMMessageServerManager.getInstance().getAuthChannelHandlerContext() != null) {
-                IMMessageServerManager.getInstance().getAuthChannelHandlerContext().close();
+        IMServerFileManager imServerFileManager = IMServerFileManager.getInstance();
+        if (imServerFileManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imServerFileManager.getAuthChannelHandlerContext().channel().id())) {
+            imServerFileManager.setAuthChannelHandlerContext(null);
+            if (IMServerMessageManager.getInstance().getAuthChannelHandlerContext() != null) {
+                IMServerMessageManager.getInstance().getAuthChannelHandlerContext().close();
             }
             EventBus.getDefault().post(new ServerFileSocketEvent(SocketEvent.CONNECT_CLOSE));
         }

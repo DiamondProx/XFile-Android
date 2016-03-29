@@ -6,7 +6,6 @@ import com.huangjiang.config.SysConstant;
 import com.huangjiang.manager.callback.FileServerListenerQueue;
 import com.huangjiang.manager.callback.Packetlistener;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
-import com.huangjiang.manager.event.ServerMessageSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.XFileChannelInitializer;
 import com.huangjiang.message.ServerThread;
@@ -23,11 +22,11 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * 文件管理服务端
  */
-public class IMFileServerManager extends IMManager {
+public class IMServerFileManager extends IMBaseManager {
 
-    private Logger logger = Logger.getLogger(IMMessageServerManager.class);
+    private Logger logger = Logger.getLogger(IMServerMessageManager.class);
 
-    private static IMFileServerManager inst = null;
+    private static IMServerFileManager inst = null;
 
     private ServerThread messageServerThread = null;
 
@@ -40,14 +39,14 @@ public class IMFileServerManager extends IMManager {
     */
     private ChannelHandlerContext AuthChannelHandlerContext = null;
 
-    public static IMFileServerManager getInstance() {
+    public static IMServerFileManager getInstance() {
         if (inst == null) {
-            inst = new IMFileServerManager();
+            inst = new IMServerFileManager();
         }
         return inst;
     }
 
-    public IMFileServerManager() {
+    public IMServerFileManager() {
 
     }
 

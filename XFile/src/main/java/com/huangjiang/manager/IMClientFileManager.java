@@ -4,11 +4,9 @@ import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.manager.callback.FileClientListenerQueue;
-import com.huangjiang.manager.callback.MessageClientListenerQueue;
 import com.huangjiang.manager.callback.Packetlistener;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
-import com.huangjiang.message.ClientFileHandler;
 import com.huangjiang.message.ClientThread;
 import com.huangjiang.message.XFileChannelInitializer;
 import com.huangjiang.message.base.DataBuffer;
@@ -24,12 +22,12 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * 文件管理客户端
  */
-public class IMFileClientManager extends IMManager implements ClientThread.OnClientListener {
+public class IMClientFileManager extends IMBaseManager implements ClientThread.OnClientListener {
 
-    private Logger logger = Logger.getLogger(IMMessageClientManager.class);
+    private Logger logger = Logger.getLogger(IMClientMessageManager.class);
 
 
-    private static IMFileClientManager inst = null;
+    private static IMClientFileManager inst = null;
 
     private ClientThread fileClientThread = null;
 
@@ -41,14 +39,14 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
 
     private FileClientListenerQueue listenerQueue = FileClientListenerQueue.instance();
 
-    public static IMFileClientManager getInstance() {
+    public static IMClientFileManager getInstance() {
         if (inst == null) {
-            inst = new IMFileClientManager();
+            inst = new IMClientFileManager();
         }
         return inst;
     }
 
-    public IMFileClientManager() {
+    public IMClientFileManager() {
 
     }
 

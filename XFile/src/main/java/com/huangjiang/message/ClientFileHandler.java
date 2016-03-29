@@ -1,9 +1,7 @@
 package com.huangjiang.message;
 
-import com.huangjiang.manager.IMFileClientManager;
-import com.huangjiang.manager.IMMessageServerManager;
+import com.huangjiang.manager.IMClientFileManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
-import com.huangjiang.manager.event.ConnectSuccessEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.utils.Logger;
 
@@ -23,13 +21,13 @@ public class ClientFileHandler extends ChannelHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.e("****ClientFileChannelActive");
-        IMFileClientManager.getInstance().shakeHand(ctx);
+        IMClientFileManager.getInstance().shakeHand(ctx);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ByteBuf) {
-            IMFileClientManager.getInstance().packetDispatch(ctx, (ByteBuf) msg);
+            IMClientFileManager.getInstance().packetDispatch(ctx, (ByteBuf) msg);
         }
     }
 

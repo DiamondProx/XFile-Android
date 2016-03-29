@@ -6,11 +6,11 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMDeviceServerManager;
-import com.huangjiang.manager.IMFileClientManager;
-import com.huangjiang.manager.IMFileServerManager;
-import com.huangjiang.manager.IMMessageClientManager;
-import com.huangjiang.manager.IMMessageServerManager;
+import com.huangjiang.manager.IMClientFileManager;
+import com.huangjiang.manager.IMServerFileManager;
+import com.huangjiang.manager.IMServerMessageManager;
 import com.huangjiang.utils.Logger;
 
 /**
@@ -18,13 +18,13 @@ import com.huangjiang.utils.Logger;
  */
 public class IMService extends Service {
 
-    private Logger logger = Logger.getLogger(IMMessageClientManager.class);
+    private Logger logger = Logger.getLogger(IMClientMessageManager.class);
 
     private IMDeviceServerManager deviceServerMgr = IMDeviceServerManager.getInstance();
-    private IMMessageServerManager messageServerManager = IMMessageServerManager.getInstance();
-    private IMMessageClientManager messageClientManager = IMMessageClientManager.getInstance();
-    private IMFileServerManager fileServerManager = IMFileServerManager.getInstance();
-    private IMFileClientManager fileClientManager = IMFileClientManager.getInstance();
+    private IMServerMessageManager messageServerManager = IMServerMessageManager.getInstance();
+    private IMClientMessageManager messageClientManager = IMClientMessageManager.getInstance();
+    private IMServerFileManager fileServerManager = IMServerFileManager.getInstance();
+    private IMClientFileManager fileClientManager = IMClientFileManager.getInstance();
 
 
     /**
