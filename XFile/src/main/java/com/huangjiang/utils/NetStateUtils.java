@@ -7,7 +7,7 @@ import android.net.wifi.WifiManager;
 /**
  * Created by King on 2016-03-13.
  */
-public class NetStateUtil {
+public class NetStateUtils {
 
     public static String getIPv4(Context context) {
         //获取wifi服务

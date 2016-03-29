@@ -34,6 +34,20 @@ public final class XFileProtocol {
      * <code>required uint32 port = 2;</code>
      */
     int getPort();
+
+    /**
+     * <code>required string device_id = 3;</code>
+     */
+    boolean hasDeviceId();
+    /**
+     * <code>required string device_id = 3;</code>
+     */
+    String getDeviceId();
+    /**
+     * <code>required string device_id = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getDeviceIdBytes();
   }
   /**
    * Protobuf type {@code com.huangjiang.message.protocol.Bonjour}
@@ -96,6 +110,12 @@ public final class XFileProtocol {
             case 16: {
               bitField0_ |= 0x00000002;
               port_ = input.readUInt32();
+              break;
+            }
+            case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000004;
+              deviceId_ = bs;
               break;
             }
           }
@@ -195,9 +215,52 @@ public final class XFileProtocol {
       return port_;
     }
 
+    public static final int DEVICE_ID_FIELD_NUMBER = 3;
+    private Object deviceId_;
+    /**
+     * <code>required string device_id = 3;</code>
+     */
+    public boolean hasDeviceId() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required string device_id = 3;</code>
+     */
+    public String getDeviceId() {
+      Object ref = deviceId_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          deviceId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string device_id = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDeviceIdBytes() {
+      Object ref = deviceId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        deviceId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       ip_ = "";
       port_ = 0;
+      deviceId_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -213,6 +276,10 @@ public final class XFileProtocol {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!hasDeviceId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -225,6 +292,9 @@ public final class XFileProtocol {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeUInt32(2, port_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getDeviceIdBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -242,6 +312,10 @@ public final class XFileProtocol {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(2, port_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getDeviceIdBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -364,6 +438,8 @@ public final class XFileProtocol {
         bitField0_ = (bitField0_ & ~0x00000001);
         port_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
+        deviceId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -400,6 +476,10 @@ public final class XFileProtocol {
           to_bitField0_ |= 0x00000002;
         }
         result.port_ = port_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.deviceId_ = deviceId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -424,6 +504,11 @@ public final class XFileProtocol {
         if (other.hasPort()) {
           setPort(other.getPort());
         }
+        if (other.hasDeviceId()) {
+          bitField0_ |= 0x00000004;
+          deviceId_ = other.deviceId_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -434,6 +519,10 @@ public final class XFileProtocol {
           return false;
         }
         if (!hasPort()) {
+          
+          return false;
+        }
+        if (!hasDeviceId()) {
           
           return false;
         }
@@ -567,6 +656,82 @@ public final class XFileProtocol {
         return this;
       }
 
+      private Object deviceId_ = "";
+      /**
+       * <code>required string device_id = 3;</code>
+       */
+      public boolean hasDeviceId() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required string device_id = 3;</code>
+       */
+      public String getDeviceId() {
+        Object ref = deviceId_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            deviceId_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string device_id = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDeviceIdBytes() {
+        Object ref = deviceId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          deviceId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string device_id = 3;</code>
+       */
+      public Builder setDeviceId(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        deviceId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string device_id = 3;</code>
+       */
+      public Builder clearDeviceId() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        deviceId_ = getDefaultInstance().getDeviceId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string device_id = 3;</code>
+       */
+      public Builder setDeviceIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        deviceId_ = value;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:com.huangjiang.message.protocol.Bonjour)
     }
 
@@ -627,6 +792,20 @@ public final class XFileProtocol {
      * <code>required uint32 file_port = 4;</code>
      */
     int getFilePort();
+
+    /**
+     * <code>required string device_id = 5;</code>
+     */
+    boolean hasDeviceId();
+    /**
+     * <code>required string device_id = 5;</code>
+     */
+    String getDeviceId();
+    /**
+     * <code>required string device_id = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getDeviceIdBytes();
   }
   /**
    * Protobuf type {@code com.huangjiang.message.protocol.Echo}
@@ -700,6 +879,12 @@ public final class XFileProtocol {
             case 32: {
               bitField0_ |= 0x00000008;
               filePort_ = input.readUInt32();
+              break;
+            }
+            case 42: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000010;
+              deviceId_ = bs;
               break;
             }
           }
@@ -856,11 +1041,54 @@ public final class XFileProtocol {
       return filePort_;
     }
 
+    public static final int DEVICE_ID_FIELD_NUMBER = 5;
+    private Object deviceId_;
+    /**
+     * <code>required string device_id = 5;</code>
+     */
+    public boolean hasDeviceId() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>required string device_id = 5;</code>
+     */
+    public String getDeviceId() {
+      Object ref = deviceId_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          deviceId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string device_id = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDeviceIdBytes() {
+      Object ref = deviceId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        deviceId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       ip_ = "";
       name_ = "";
       messagePort_ = 0;
       filePort_ = 0;
+      deviceId_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -884,6 +1112,10 @@ public final class XFileProtocol {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!hasDeviceId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -902,6 +1134,9 @@ public final class XFileProtocol {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeUInt32(4, filePort_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(5, getDeviceIdBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -927,6 +1162,10 @@ public final class XFileProtocol {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(4, filePort_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, getDeviceIdBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1053,6 +1292,8 @@ public final class XFileProtocol {
         bitField0_ = (bitField0_ & ~0x00000004);
         filePort_ = 0;
         bitField0_ = (bitField0_ & ~0x00000008);
+        deviceId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -1097,6 +1338,10 @@ public final class XFileProtocol {
           to_bitField0_ |= 0x00000008;
         }
         result.filePort_ = filePort_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.deviceId_ = deviceId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1129,6 +1374,11 @@ public final class XFileProtocol {
         if (other.hasFilePort()) {
           setFilePort(other.getFilePort());
         }
+        if (other.hasDeviceId()) {
+          bitField0_ |= 0x00000010;
+          deviceId_ = other.deviceId_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -1147,6 +1397,10 @@ public final class XFileProtocol {
           return false;
         }
         if (!hasFilePort()) {
+          
+          return false;
+        }
+        if (!hasDeviceId()) {
           
           return false;
         }
@@ -1384,6 +1638,82 @@ public final class XFileProtocol {
       public Builder clearFilePort() {
         bitField0_ = (bitField0_ & ~0x00000008);
         filePort_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private Object deviceId_ = "";
+      /**
+       * <code>required string device_id = 5;</code>
+       */
+      public boolean hasDeviceId() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>required string device_id = 5;</code>
+       */
+      public String getDeviceId() {
+        Object ref = deviceId_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            deviceId_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string device_id = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDeviceIdBytes() {
+        Object ref = deviceId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          deviceId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string device_id = 5;</code>
+       */
+      public Builder setDeviceId(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        deviceId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string device_id = 5;</code>
+       */
+      public Builder clearDeviceId() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        deviceId_ = getDefaultInstance().getDeviceId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string device_id = 5;</code>
+       */
+      public Builder setDeviceIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        deviceId_ = value;
         onChanged();
         return this;
       }
@@ -3102,6 +3432,20 @@ public final class XFileProtocol {
      * <code>optional bool result = 5;</code>
      */
     boolean getResult();
+
+    /**
+     * <code>optional string device_name = 6;</code>
+     */
+    boolean hasDeviceName();
+    /**
+     * <code>optional string device_name = 6;</code>
+     */
+    String getDeviceName();
+    /**
+     * <code>optional string device_name = 6;</code>
+     */
+    com.google.protobuf.ByteString
+        getDeviceNameBytes();
   }
   /**
    * Protobuf type {@code com.huangjiang.message.protocol.ShakeHand}
@@ -3180,6 +3524,12 @@ public final class XFileProtocol {
             case 40: {
               bitField0_ |= 0x00000010;
               result_ = input.readBool();
+              break;
+            }
+            case 50: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000020;
+              deviceName_ = bs;
               break;
             }
           }
@@ -3351,12 +3701,55 @@ public final class XFileProtocol {
       return result_;
     }
 
+    public static final int DEVICE_NAME_FIELD_NUMBER = 6;
+    private Object deviceName_;
+    /**
+     * <code>optional string device_name = 6;</code>
+     */
+    public boolean hasDeviceName() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional string device_name = 6;</code>
+     */
+    public String getDeviceName() {
+      Object ref = deviceName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          deviceName_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string device_name = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDeviceNameBytes() {
+      Object ref = deviceName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        deviceName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       step_ = 0;
       verify_ = false;
       password_ = "";
       token_ = "";
       result_ = false;
+      deviceName_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3390,6 +3783,9 @@ public final class XFileProtocol {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeBool(5, result_);
       }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(6, getDeviceNameBytes());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -3418,6 +3814,10 @@ public final class XFileProtocol {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(5, result_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getDeviceNameBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3546,6 +3946,8 @@ public final class XFileProtocol {
         bitField0_ = (bitField0_ & ~0x00000008);
         result_ = false;
         bitField0_ = (bitField0_ & ~0x00000010);
+        deviceName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -3594,6 +3996,10 @@ public final class XFileProtocol {
           to_bitField0_ |= 0x00000010;
         }
         result.result_ = result_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.deviceName_ = deviceName_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3628,6 +4034,11 @@ public final class XFileProtocol {
         }
         if (other.hasResult()) {
           setResult(other.getResult());
+        }
+        if (other.hasDeviceName()) {
+          bitField0_ |= 0x00000020;
+          deviceName_ = other.deviceName_;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -3908,6 +4319,82 @@ public final class XFileProtocol {
         return this;
       }
 
+      private Object deviceName_ = "";
+      /**
+       * <code>optional string device_name = 6;</code>
+       */
+      public boolean hasDeviceName() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional string device_name = 6;</code>
+       */
+      public String getDeviceName() {
+        Object ref = deviceName_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            deviceName_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>optional string device_name = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDeviceNameBytes() {
+        Object ref = deviceName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          deviceName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string device_name = 6;</code>
+       */
+      public Builder setDeviceName(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        deviceName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string device_name = 6;</code>
+       */
+      public Builder clearDeviceName() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        deviceName_ = getDefaultInstance().getDeviceName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string device_name = 6;</code>
+       */
+      public Builder setDeviceNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        deviceName_ = value;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:com.huangjiang.message.protocol.ShakeHand)
     }
 
@@ -3954,16 +4441,17 @@ public final class XFileProtocol {
   static {
     String[] descriptorData = {
       "\n\023XFileProtocol.proto\022\037com.huangjiang.me" +
-      "ssage.protocol\"#\n\007Bonjour\022\n\n\002ip\030\001 \002(\t\022\014\n" +
-      "\004port\030\002 \002(\r\"I\n\004Echo\022\n\n\002ip\030\001 \002(\t\022\014\n\004name\030" +
-      "\002 \002(\t\022\024\n\014message_port\030\003 \002(\r\022\021\n\tfile_port" +
-      "\030\004 \002(\r\"Q\n\004File\022\014\n\004name\030\001 \002(\t\022\013\n\003md5\030\002 \002(" +
-      "\t\022\014\n\004data\030\003 \002(\014\022\020\n\010position\030\004 \002(\003\022\016\n\006len" +
-      "gth\030\005 \002(\003\":\n\004Chat\022\017\n\007content\030\001 \002(\t\022\023\n\013me" +
-      "ssagetype\030\002 \002(\r\022\014\n\004from\030\003 \002(\t\"a\n\tShakeHa" +
-      "nd\022\014\n\004step\030\001 \002(\r\022\025\n\006verify\030\002 \001(\010:\005false\022" +
-      "\020\n\010password\030\003 \001(\t\022\r\n\005token\030\004 \001(\t\022\016\n\006resu",
-      "lt\030\005 \001(\010B\002H\001"
+      "ssage.protocol\"6\n\007Bonjour\022\n\n\002ip\030\001 \002(\t\022\014\n" +
+      "\004port\030\002 \002(\r\022\021\n\tdevice_id\030\003 \002(\t\"\\\n\004Echo\022\n" +
+      "\n\002ip\030\001 \002(\t\022\014\n\004name\030\002 \002(\t\022\024\n\014message_port" +
+      "\030\003 \002(\r\022\021\n\tfile_port\030\004 \002(\r\022\021\n\tdevice_id\030\005" +
+      " \002(\t\"Q\n\004File\022\014\n\004name\030\001 \002(\t\022\013\n\003md5\030\002 \002(\t\022" +
+      "\014\n\004data\030\003 \002(\014\022\020\n\010position\030\004 \002(\003\022\016\n\006lengt" +
+      "h\030\005 \002(\003\":\n\004Chat\022\017\n\007content\030\001 \002(\t\022\023\n\013mess" +
+      "agetype\030\002 \002(\r\022\014\n\004from\030\003 \002(\t\"v\n\tShakeHand" +
+      "\022\014\n\004step\030\001 \002(\r\022\025\n\006verify\030\002 \001(\010:\005false\022\020\n",
+      "\010password\030\003 \001(\t\022\r\n\005token\030\004 \001(\t\022\016\n\006result" +
+      "\030\005 \001(\010\022\023\n\013device_name\030\006 \001(\tB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3982,13 +4470,13 @@ public final class XFileProtocol {
     internal_static_com_huangjiang_message_protocol_Bonjour_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_huangjiang_message_protocol_Bonjour_descriptor,
-        new String[] { "Ip", "Port", });
+        new String[] { "Ip", "Port", "DeviceId", });
     internal_static_com_huangjiang_message_protocol_Echo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_huangjiang_message_protocol_Echo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_huangjiang_message_protocol_Echo_descriptor,
-        new String[] { "Ip", "Name", "MessagePort", "FilePort", });
+        new String[] { "Ip", "Name", "MessagePort", "FilePort", "DeviceId", });
     internal_static_com_huangjiang_message_protocol_File_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_com_huangjiang_message_protocol_File_fieldAccessorTable = new
@@ -4006,7 +4494,7 @@ public final class XFileProtocol {
     internal_static_com_huangjiang_message_protocol_ShakeHand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_huangjiang_message_protocol_ShakeHand_descriptor,
-        new String[] { "Step", "Verify", "Password", "Token", "Result", });
+        new String[] { "Step", "Verify", "Password", "Token", "Result", "DeviceName", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

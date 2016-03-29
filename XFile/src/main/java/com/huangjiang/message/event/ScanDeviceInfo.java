@@ -3,13 +3,14 @@ package com.huangjiang.message.event;
 /**
  * 设备信息
  */
-public class DeviceInfoEvent {
+public class ScanDeviceInfo {
 
     private String ip;
+    private String name;
     private int brocast_port;
     private int message_port;
     private int file_port;
-    private String name;
+    private String device_id;
 
     public String getIp() {
         return ip;
@@ -49,5 +50,13 @@ public class DeviceInfoEvent {
 
     public void setFile_port(int file_port) {
         this.file_port = file_port;
+    }
+
+    public String getDevice_id() {
+        return device_id;
+    }
+
+    public void setDevice_id(String device_id) {
+        this.device_id = device_id;
     }
 }

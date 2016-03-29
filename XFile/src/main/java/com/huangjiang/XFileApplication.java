@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.huangjiang.service.IMService;
+import com.huangjiang.utils.XFileUtils;
 
 public class XFileApplication extends Application {
 
@@ -16,11 +17,15 @@ public class XFileApplication extends Application {
 
     public static int file_port;
 
+    public static String device_id;
+
+
+
     @Override
     public void onCreate() {
         super.onCreate();
         context = this;
-        startService(new Intent(this, IMService.class));
+        device_id = XFileUtils.getDeviceId();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.huangjiang.message;
 
 import com.huangjiang.manager.IMMessageServerManager;
+import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.manager.event.ServerMessageSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.utils.Logger;
@@ -27,7 +28,7 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        logger.e("****ServerMessageChannelRead");
+        logger.e("****ServerMessage-ChannelRead");
         IMMessageServerManager imMessageServerManager = IMMessageServerManager.getInstance();
         if (imMessageServerManager.getAuthChannelHandlerContext() != null) {
             // 连接已经认证,判断是否是认证连接
@@ -53,10 +54,6 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         super.channelReadComplete(ctx);
         logger.e("****ServerMessageChannelReadComplete");
-        IMMessageServerManager imMessageServerManager = IMMessageServerManager.getInstance();
-        if (imMessageServerManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imMessageServerManager.getAuthChannelHandlerContext().channel().id())) {
-//            EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
-        }
     }
 
     @Override
@@ -71,7 +68,8 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
         IMMessageServerManager imMessageServerManager = IMMessageServerManager.getInstance();
         logger.e("****ServerMessageHandlerRemoved1111");
         if (imMessageServerManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imMessageServerManager.getAuthChannelHandlerContext().channel().id())) {
-//            EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
+            imMessageServerManager.setAuthChannelHandlerContext(null);
+            EventBus.getDefault().post(new ServerFileSocketEvent(SocketEvent.CONNECT_CLOSE));
             logger.e("****ServerMessageHandlerRemoved2222");
         }
     }

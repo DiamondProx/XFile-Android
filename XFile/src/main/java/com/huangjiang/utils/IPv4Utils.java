@@ -5,7 +5,7 @@ import java.net.InetAddress;
 /**
  * IP地址转换
  */
-public class IPv4Util {
+public class IPv4Utils {
 
     public static byte[] ipToBytesByInet(String ipAddr) {
         try {

@@ -18,15 +18,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.huangjiang.config.SysConstant;
+import com.huangjiang.XFileApplication;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMDeviceServerManager;
 import com.huangjiang.manager.IMMessageClientManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
-import com.huangjiang.message.event.DeviceInfoEvent;
+import com.huangjiang.message.event.ScanDeviceInfo;
 import com.huangjiang.utils.Logger;
-import com.huangjiang.utils.NetStateUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -171,7 +170,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     }
 
 
-    void connectDevice(DeviceInfoEvent deviceInfoEvent) {
+    void connectDevice(ScanDeviceInfo deviceInfoEvent) {
 
         layout1.setVisibility(View.INVISIBLE);
         layout2.setVisibility(View.INVISIBLE);
@@ -219,9 +218,9 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(DeviceInfoEvent event) {
+    public void onEventMainThread(ScanDeviceInfo event) {
         logger.e("*****DeviceBroCast:" + event.getName());
-        if (event != null && !event.getName().equals(android.os.Build.MODEL)) {
+        if (event != null && !event.getDevice_id().equals(XFileApplication.device_id)) {
             if (!deviceAdapter.containDevice(event)) {
                 deviceAdapter.addDevice(event);
             }
@@ -230,14 +229,13 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        DeviceInfoEvent deviceInfoEvent = (DeviceInfoEvent) deviceAdapter.getItem(position);
+        ScanDeviceInfo deviceInfoEvent = (ScanDeviceInfo) deviceAdapter.getItem(position);
         connectDevice(deviceInfoEvent);
-
     }
 
     class ScanDeviceAdapter extends BaseAdapter {
 
-        private List<DeviceInfoEvent> mList = null;
+        private List<ScanDeviceInfo> mList = null;
 
         private LayoutInflater inflater;
 
@@ -274,7 +272,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            DeviceInfoEvent device = mList.get(position);
+            ScanDeviceInfo device = mList.get(position);
             holder.name.setText(device.getName());
             return convertView;
         }
@@ -285,15 +283,15 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
             }
         }
 
-        void addDevice(DeviceInfoEvent device) {
+        void addDevice(ScanDeviceInfo device) {
             if (mList != null) {
                 mList.add(device);
             }
         }
 
-        boolean containDevice(DeviceInfoEvent device) {
-            for (DeviceInfoEvent d : mList) {
-                if (d.getName().equals(device.getName())) {
+        boolean containDevice(ScanDeviceInfo device) {
+            for (ScanDeviceInfo d : mList) {
+                if (d.getDevice_id().equals(device.getDevice_id())) {
                     return true;
                 }
             }
@@ -304,7 +302,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
             TextView name;
         }
 
-        public void setList(List<DeviceInfoEvent> mList) {
+        public void setList(List<ScanDeviceInfo> mList) {
             this.mList = mList;
         }
     }
@@ -312,16 +310,24 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ClientFileSocketEvent event) {
-
-        if (event.getEvent() == SocketEvent.SHAKE_INPUT_PASSWORD) {
-
-            IMMessageClientManager.getInstance().sendShakeHandStepT("123456");
-        } else if (event.getEvent() == SocketEvent.SHAKE_HAND_SUCCESS) {
-
-            ConnectActivity.this.finish();
-
-
+        switch (event.getEvent()) {
+            case SHAKE_INPUT_PASSWORD:
+                IMMessageClientManager.getInstance().sendShakeHandStepT("123456");
+                break;
+            case SHAKE_HAND_SUCCESS:
+                ConnectActivity.this.finish();
+                break;
+            case CONNECT_CLOSE:
+            case SHAKE_HAND_FAILE:
+                // 没找到设备/连接失败
+                layout1.setVisibility(View.INVISIBLE);
+                layout2.setVisibility(View.INVISIBLE);
+                layout3.setVisibility(View.VISIBLE);
+                layout4.setVisibility(View.INVISIBLE);
+                layout5.setVisibility(View.INVISIBLE);
+                break;
         }
+
     }
 
 }

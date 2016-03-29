@@ -135,6 +135,7 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
         sendMessage(sid, cid, shakeHand.build(), new Packetlistener(10000) {
             @Override
             public void onSuccess(Object response) {
+                logger.e("****SendShakeHandOnResponse");
                 if (response == null) {
                     return;
                 }
@@ -163,7 +164,7 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
 
             @Override
             public void onFaild() {
-                //ctx.close();
+                ctx.close();
                 logger.e("****SendShakeHandOnFaild");
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
@@ -171,10 +172,11 @@ public class IMMessageClientManager extends IMManager implements ClientThread.On
             @Override
             public void onTimeout() {
                 logger.e("****SendShakeHandOnTimeout");
-                //ctx.close();
+                ctx.close();
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
         });
+        logger.e("****SendShakeHand****");
     }
 
     public void sendShakeHandStepT(String password) {

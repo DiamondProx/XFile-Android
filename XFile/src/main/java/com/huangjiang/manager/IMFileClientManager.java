@@ -72,6 +72,7 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
 
     void startClient() {
         stopClient();
+        listenerQueue.onStart();
         fileClientThread = new ClientThread(XFileChannelInitializer.InitialType.CLIENTFILEHANDLER);
         fileClientThread.setOnClientListener(this);
         fileClientThread.setHost(this.host);
@@ -83,6 +84,7 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
         if (fileClientThread != null) {
             fileClientThread.closeConnect();
             fileClientThread = null;
+            listenerQueue.onDestory();
         }
     }
 
@@ -148,6 +150,7 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
         XFileProtocol.ShakeHand.Builder shakeHand = XFileProtocol.ShakeHand.newBuilder();
         shakeHand.setStep(1);// 直接验证token
         shakeHand.setToken(this.token);
+        shakeHand.setDeviceName(android.os.Build.MODEL);
         short cid = SysConstant.CMD_SHAKE_HAND;
         short sid = SysConstant.SERVICE_DEFAULT;
         sendMessage(sid, cid, shakeHand.build(), new Packetlistener() {
@@ -158,13 +161,15 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
                 }
                 byte[] rsp = (byte[]) response;
                 try {
-                    XFileProtocol.ShakeHand shakeHand = XFileProtocol.ShakeHand.parseFrom(rsp);
-                    if (shakeHand.getStep() == 1 && shakeHand.getResult()) {
+                    XFileProtocol.ShakeHand rspShakeHand = XFileProtocol.ShakeHand.parseFrom(rsp);
+                    if (rspShakeHand.getStep() == 1 && rspShakeHand.getResult()) {
                         // 服务器文件端口连接成功
-                        EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_SUCCESS));
-                    } else if (shakeHand.getStep() == 1 && !shakeHand.getResult()) {
+                        ClientFileSocketEvent event = new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_SUCCESS);
+                        event.setDevice_name(rspShakeHand.getDeviceName());
+                        EventBus.getDefault().post(event);
+                    } else if (rspShakeHand.getStep() == 1 && !rspShakeHand.getResult()) {
                         // 连接失败
-//                        ctx.close();
+                        ctx.close();
                         EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
                     }
                 } catch (InvalidProtocolBufferException e) {
@@ -174,13 +179,13 @@ public class IMFileClientManager extends IMManager implements ClientThread.OnCli
 
             @Override
             public void onFaild() {
-//                ctx.close();
+                ctx.close();
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
 
             @Override
             public void onTimeout() {
-//                ctx.close();
+                ctx.close();
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
         });

@@ -28,6 +28,7 @@ public class IMMessageServerManager extends IMManager {
 
     private MessageServerListenerQueue listenerQueue = MessageServerListenerQueue.instance();
 
+
     /*
      * 认证连接
      */

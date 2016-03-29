@@ -30,10 +30,12 @@ import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.manager.IMFileClientManager;
+import com.huangjiang.manager.IMFileServerManager;
 import com.huangjiang.manager.IMMessageClientManager;
+import com.huangjiang.manager.IMMessageServerManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
-import com.huangjiang.manager.event.ClientMessageSocketEvent;
 import com.huangjiang.manager.event.ConnectSuccessEvent;
+import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.service.IMService;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -72,13 +74,16 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
     public List<Fragment> fragments = new ArrayList<Fragment>();
 
-    private TextView device_name;
+    private TextView device_name, connect_device_name;
 
     ColorStateList gray_color, blue_color, green_color;
 
     Button btn_share, btn_close;
 
     RelativeLayout top_main_layout, top_connect_layout;
+
+    int connect_type = 0;//0 无连接,1 服务端,2 客户端
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +124,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         top_connect_layout = (RelativeLayout) findViewById(R.id.top_connect_layout);
         btn_close = (Button) findViewById(R.id.btn_close);
         btn_close.setOnClickListener(this);
+        connect_device_name = (TextView) findViewById(R.id.txt_connect_name);
         device_name = (TextView) findViewById(R.id.mobile_name);
         tvPersonNumber = (TextView) slidingMenu.findViewById(R.id.person_number);
         tvCountNumber = (TextView) slidingMenu.findViewById(R.id.count_number);
@@ -197,111 +203,6 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 break;
         }
 
-    }
-
-    // 发送广播发现设备
-    void sendBonjour() {
-//        if (DeviceClient.getInstance().getChannel() != null) {
-//            try {
-//                Channel channel = DeviceClient.getInstance().getChannel();
-//                Header header = new Header();
-//                header.setCommandId(SysConstant.CMD_Bonjour);
-//                String ip = NetStateUtil.getIPv4(HomeActivity.this);
-//                XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
-//                bonjour.setIp(ip);
-//                bonjour.setBrocast_port(SysConstant.BROADCASE_PORT);
-//                byte[] body = bonjour.build().toByteArray();
-//                header.setLength(SysConstant.HEADER_LENGTH + body.length);
-//                byte[] data = new byte[SysConstant.HEADER_LENGTH + body.length];
-//                System.arraycopy(header.toByteArray(), 0, data, 0, SysConstant.HEADER_LENGTH);
-//                System.arraycopy(body, 0, data, SysConstant.HEADER_LENGTH, body.length);
-//                channel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), new InetSocketAddress(SysConstant.BROADCASE_ADDRESS, SysConstant.BROADCASE_PORT))).sync();
-//            } catch (Exception e) {
-//                Logger.getLogger(HomeActivity.class).d("sendBonjourMessage", e.getMessage());
-//            }
-//        }
-    }
-
-    void tranferFile() {
-//        FileClient client = new FileClient();
-//        client.connect();
-//        byte[] req = "t".getBytes();
-//        ByteBuf byteBuf = Unpooled.buffer(req.length);
-//        byteBuf.writeBytes(req);
-//        client.write(byteBuf);
-    }
-
-    void sendMessage() {
-//        MessageClient client = new MessageClient();
-//        client.connect();
-    }
-
-    void testConnect() {
-        IMMessageClientManager messageClientManager = IMMessageClientManager.getInstance();
-        messageClientManager.setHost("172.16.88.208");
-        messageClientManager.setPort(SysConstant.MESSAGE_PORT);
-        messageClientManager.start();
-    }
-
-    void testFile() {
-        IMFileClientManager fileClientManager = IMFileClientManager.getInstance();
-        fileClientManager.setHost("127.0.0.1");
-        fileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
-        fileClientManager.start();
-    }
-
-    void closeConnect() {
-        IMMessageClientManager.getInstance().stop();
-        IMFileClientManager.getInstance().stop();
-    }
-
-
-    void testReadFile() {
-        //MappedByteBuffer
-        //RandomAccessFile
-        try {
-            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                File path = Environment.getExternalStorageDirectory();
-                String sendTextPath = path.getAbsolutePath() + "/send.txt";
-                File sendFile = new File(sendTextPath);
-                System.out.println("*****length:" + sendFile.length());
-                if (sendFile.exists()) {
-                    RandomAccessFile rafi = new RandomAccessFile(sendTextPath, "r");
-                    byte[] readData = new byte[19];
-//                    rafi.seek(2);
-//                    rafi.read(readData);
-//                    rafi.readFully(readData);
-                    rafi.read(readData, 1, 2);
-                    String str = new String(readData, "UTF-8");
-                    System.out.println("*****readData:" + str);
-                }
-                System.out.println("*****sdPath:" + path.getAbsolutePath());
-            }
-        } catch (Exception e) {
-            System.out.println("*****testReadFile.error:" + e.getMessage());
-        }
-
-
-    }
-
-    void sendFile() {
-        try {
-            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                File path = Environment.getExternalStorageDirectory();
-                File sendFile = new File(path.getAbsolutePath() + "/send.txt");
-                System.out.println("*****length:" + sendFile.length());
-                if (sendFile.exists()) {
-
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("*****sendFile.error:" + e.getMessage());
-        }
-    }
-
-    void showConnect() {
-        Intent connectActivity = new Intent(HomeActivity.this, ConnectActivity.class);
-        startActivity(connectActivity);
     }
 
 
@@ -402,6 +303,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         tvCountNumber.setText(String.format(getString(R.string.count_number), "0"));
         tvFileNumber.setText(String.format(getString(R.string.file_total_b), "0.00"));
         device_name.setText(android.os.Build.MODEL);
+        startService(new Intent(this, IMService.class));
     }
 
     @Override
@@ -416,16 +318,17 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
         switch (event.getEvent()) {
             case SHAKE_HAND_SUCCESS:
-                // 连接成功
+                connect_type = 2;
+                // 客户端连接成功
                 top_main_layout.setVisibility(View.INVISIBLE);
                 top_connect_layout.setVisibility(View.VISIBLE);
-                Toast.makeText(HomeActivity.this, "连接成功", Toast.LENGTH_SHORT).show();
+                connect_device_name.setText(event.getDevice_name());
                 break;
             case CONNECT_CLOSE:
-                // 连接关闭
+                connect_type = 0;
+                // 客户端关闭
                 top_main_layout.setVisibility(View.VISIBLE);
                 top_connect_layout.setVisibility(View.INVISIBLE);
-                Toast.makeText(HomeActivity.this, "关闭连接", Toast.LENGTH_SHORT).show();
                 break;
             case SHAKE_INPUT_PASSWORD:
                 // 要求输入密码
@@ -438,17 +341,25 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(ClientMessageSocketEvent event) {
+    public void onEventMainThread(ServerFileSocketEvent event) {
         switch (event.getEvent()) {
-
+            case SHAKE_HAND_SUCCESS:
+                connect_type = 1;
+                // 被连接成功
+                top_main_layout.setVisibility(View.INVISIBLE);
+                top_connect_layout.setVisibility(View.VISIBLE);
+                connect_device_name.setText(event.getDevice_name());
+                break;
             case CONNECT_CLOSE:
-                // 连接关闭
+                connect_type = 0;
+                // 服务端关闭
                 top_main_layout.setVisibility(View.VISIBLE);
                 top_connect_layout.setVisibility(View.INVISIBLE);
-                Toast.makeText(HomeActivity.this, "关闭连接", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
+
+    //---------------------------TEST------------------------------------
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ConnectSuccessEvent event) {
@@ -474,6 +385,118 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
 
         }
+    }
+
+    // 发送广播发现设备
+    void sendBonjour() {
+//        if (DeviceClient.getInstance().getChannel() != null) {
+//            try {
+//                Channel channel = DeviceClient.getInstance().getChannel();
+//                Header header = new Header();
+//                header.setCommandId(SysConstant.CMD_Bonjour);
+//                String ip = NetStateUtils.getIPv4(HomeActivity.this);
+//                XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
+//                bonjour.setIp(ip);
+//                bonjour.setBrocast_port(SysConstant.BROADCASE_PORT);
+//                byte[] body = bonjour.build().toByteArray();
+//                header.setLength(SysConstant.HEADER_LENGTH + body.length);
+//                byte[] data = new byte[SysConstant.HEADER_LENGTH + body.length];
+//                System.arraycopy(header.toByteArray(), 0, data, 0, SysConstant.HEADER_LENGTH);
+//                System.arraycopy(body, 0, data, SysConstant.HEADER_LENGTH, body.length);
+//                channel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), new InetSocketAddress(SysConstant.BROADCASE_ADDRESS, SysConstant.BROADCASE_PORT))).sync();
+//            } catch (Exception e) {
+//                Logger.getLogger(HomeActivity.class).d("sendBonjourMessage", e.getMessage());
+//            }
+//        }
+    }
+
+    void tranferFile() {
+//        FileClient client = new FileClient();
+//        client.connect();
+//        byte[] req = "t".getBytes();
+//        ByteBuf byteBuf = Unpooled.buffer(req.length);
+//        byteBuf.writeBytes(req);
+//        client.write(byteBuf);
+    }
+
+    void sendMessage() {
+//        MessageClient client = new MessageClient();
+//        client.connect();
+    }
+
+    void testConnect() {
+        IMMessageClientManager messageClientManager = IMMessageClientManager.getInstance();
+        messageClientManager.setHost("172.16.88.208");
+        messageClientManager.setPort(SysConstant.MESSAGE_PORT);
+        messageClientManager.start();
+    }
+
+    void testFile() {
+        IMFileClientManager fileClientManager = IMFileClientManager.getInstance();
+        fileClientManager.setHost("127.0.0.1");
+        fileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
+        fileClientManager.start();
+    }
+
+    void closeConnect() {
+        switch (connect_type) {
+            case 1:
+                IMMessageServerManager.getInstance().stop();
+                IMFileServerManager.getInstance().stop();
+                break;
+            case 2:
+                IMMessageClientManager.getInstance().stop();
+                IMFileClientManager.getInstance().stop();
+                break;
+        }
+    }
+
+    void testReadFile() {
+        //MappedByteBuffer
+        //RandomAccessFile
+        try {
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                File path = Environment.getExternalStorageDirectory();
+                String sendTextPath = path.getAbsolutePath() + "/send.txt";
+                File sendFile = new File(sendTextPath);
+                System.out.println("*****length:" + sendFile.length());
+                if (sendFile.exists()) {
+                    RandomAccessFile rafi = new RandomAccessFile(sendTextPath, "r");
+                    byte[] readData = new byte[19];
+//                    rafi.seek(2);
+//                    rafi.read(readData);
+//                    rafi.readFully(readData);
+                    rafi.read(readData, 1, 2);
+                    String str = new String(readData, "UTF-8");
+                    System.out.println("*****readData:" + str);
+                }
+                System.out.println("*****sdPath:" + path.getAbsolutePath());
+            }
+        } catch (Exception e) {
+            System.out.println("*****testReadFile.error:" + e.getMessage());
+        }
+
+
+    }
+
+    void sendFile() {
+        try {
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                File path = Environment.getExternalStorageDirectory();
+                File sendFile = new File(path.getAbsolutePath() + "/send.txt");
+                System.out.println("*****length:" + sendFile.length());
+                if (sendFile.exists()) {
+
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("*****sendFile.error:" + e.getMessage());
+        }
+    }
+
+    void showConnect() {
+        Intent connectActivity = new Intent(HomeActivity.this, ConnectActivity.class);
+        startActivity(connectActivity);
     }
 
 

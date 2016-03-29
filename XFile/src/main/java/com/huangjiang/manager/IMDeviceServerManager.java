@@ -1,16 +1,15 @@
 package com.huangjiang.manager;
 
 import com.google.protobuf.GeneratedMessage;
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.huangjiang.XFileApplication;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.message.DeviceServerThread;
 import com.huangjiang.message.base.DataBuffer;
 import com.huangjiang.message.base.Header;
-import com.huangjiang.message.event.DeviceInfoEvent;
+import com.huangjiang.message.event.ScanDeviceInfo;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
-import com.huangjiang.utils.NetStateUtil;
+import com.huangjiang.utils.NetStateUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -33,6 +32,8 @@ public class IMDeviceServerManager extends IMManager {
     private String ip;
 
     private int port;
+
+    private String device_id;
 
     Timer timer = null;
 
@@ -61,8 +62,9 @@ public class IMDeviceServerManager extends IMManager {
 
     void startServer() {
         stopServer();
-        this.ip = NetStateUtil.getIPv4(XFileApplication.context);
+        this.ip = NetStateUtils.getIPv4(XFileApplication.context);
         this.port = SysConstant.BROADCASE_PORT;
+        this.device_id = XFileApplication.device_id;
         mDeviceServerThread = new DeviceServerThread();
         mDeviceServerThread.start();
     }
@@ -109,14 +111,18 @@ public class IMDeviceServerManager extends IMManager {
             XFileProtocol.Bonjour request = XFileProtocol.Bonjour.parseFrom(bodyData);
             String remoteIp = request.getIp();
             int remotePort = request.getPort();
-            XFileProtocol.Echo.Builder response = XFileProtocol.Echo.newBuilder();
-            response.setIp(this.ip);
-            response.setMessagePort(SysConstant.MESSAGE_PORT);
-            response.setFilePort(SysConstant.FILE_SERVER_PORT);
-            response.setName(android.os.Build.MODEL);
-            short serviceId = SysConstant.SERVICE_DEFAULT;
-            short commandId = SysConstant.CMD_ECHO;
-            sendMessage(serviceId, commandId, response.build(), remoteIp, remotePort);
+            String deviceId = request.getDeviceId();
+            if (!this.device_id.equals(deviceId)) {
+                XFileProtocol.Echo.Builder response = XFileProtocol.Echo.newBuilder();
+                response.setIp(this.ip);
+                response.setMessagePort(SysConstant.MESSAGE_PORT);
+                response.setFilePort(SysConstant.FILE_SERVER_PORT);
+                response.setName(android.os.Build.MODEL);
+                response.setDeviceId(XFileApplication.device_id);
+                short serviceId = SysConstant.SERVICE_DEFAULT;
+                short commandId = SysConstant.CMD_ECHO;
+                sendMessage(serviceId, commandId, response.build(), remoteIp, remotePort);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.e(e.getMessage());
@@ -130,11 +136,12 @@ public class IMDeviceServerManager extends IMManager {
     void dispatchEcho(byte[] bodyData) {
         try {
             XFileProtocol.Echo request = XFileProtocol.Echo.parseFrom(bodyData);
-            DeviceInfoEvent event = new DeviceInfoEvent();
+            ScanDeviceInfo event = new ScanDeviceInfo();
             event.setIp(request.getIp());
             event.setName(request.getName());
             event.setMessage_port(request.getMessagePort());
             event.setFile_port(request.getFilePort());
+            event.setDevice_id(request.getDeviceId());
             EventBus.getDefault().postSticky(event);
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,6 +159,7 @@ public class IMDeviceServerManager extends IMManager {
                 XFileProtocol.Bonjour.Builder request = XFileProtocol.Bonjour.newBuilder();
                 request.setIp(ip);
                 request.setPort(port);
+                request.setDeviceId(device_id);
                 short serviceId = SysConstant.SERVICE_DEFAULT;
                 short commandId = SysConstant.CMD_Bonjour;
                 sendMessage(serviceId, commandId, request.build(), SysConstant.BROADCASE_ADDRESS, SysConstant.BROADCASE_PORT);

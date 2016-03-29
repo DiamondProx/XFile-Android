@@ -23,12 +23,12 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        logger.e("****ServerFileExceptionCaught");
+        logger.e("****ServerFileChannelActive");
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
+        logger.e("****ServerFile-ChannelRead");
         IMFileServerManager imFileServerManager = IMFileServerManager.getInstance();
         if (imFileServerManager.getAuthChannelHandlerContext() != null) {
             // 连接已经认证,判断是否是认证连接
@@ -40,7 +40,6 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
             // 分发认证数据
             imFileServerManager.packetDispatchAuth(ctx, (ByteBuf) msg);
         }
-
     }
 
     @Override
@@ -54,10 +53,21 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         super.channelReadComplete(ctx);
+        logger.e("****ServerFileChannelReadComplete");
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        super.handlerRemoved(ctx);
         IMFileServerManager imFileServerManager = IMFileServerManager.getInstance();
         if (imFileServerManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imFileServerManager.getAuthChannelHandlerContext().channel().id())) {
-//            EventBus.getDefault().post(new ServerFileSocketEvent(SocketEvent.CONNECT_CLOSE));
+            imFileServerManager.setAuthChannelHandlerContext(null);
+            if (IMMessageServerManager.getInstance().getAuthChannelHandlerContext() != null) {
+                IMMessageServerManager.getInstance().getAuthChannelHandlerContext().close();
+            }
+            EventBus.getDefault().post(new ServerFileSocketEvent(SocketEvent.CONNECT_CLOSE));
         }
-        logger.e("****ServerFileChannelReadComplete");
+
+        logger.e("****ServerFileHandlerRemoved");
     }
 }

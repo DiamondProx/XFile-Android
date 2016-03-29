@@ -11,11 +11,14 @@ import com.huangjiang.manager.IMFileClientManager;
 import com.huangjiang.manager.IMFileServerManager;
 import com.huangjiang.manager.IMMessageClientManager;
 import com.huangjiang.manager.IMMessageServerManager;
+import com.huangjiang.utils.Logger;
 
 /**
  *
  */
 public class IMService extends Service {
+
+    private Logger logger = Logger.getLogger(IMMessageClientManager.class);
 
     private IMDeviceServerManager deviceServerMgr = IMDeviceServerManager.getInstance();
     private IMMessageServerManager messageServerManager = IMMessageServerManager.getInstance();
@@ -52,6 +55,7 @@ public class IMService extends Service {
         deviceServerMgr.start();
         messageServerManager.start();
         fileServerManager.start();
+        logger.e("****IMServiceStart");
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -63,5 +67,7 @@ public class IMService extends Service {
         messageClientManager.stop();
         fileServerManager.stop();
         fileClientManager.stop();
+        logger.e("****IMServiceStop");
+
     }
 }

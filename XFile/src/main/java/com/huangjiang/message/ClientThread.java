@@ -1,6 +1,7 @@
 package com.huangjiang.message;
 
 import com.google.protobuf.GeneratedMessage;
+import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.ClientMessageSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.base.Header;
@@ -80,7 +81,7 @@ public class ClientThread extends Thread {
         } finally {
             eventLoopGroup.shutdownGracefully();
             logger.e("*****Client Close");
-            EventBus.getDefault().post(new ClientMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
+            EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.CONNECT_CLOSE));
         }
     }
 

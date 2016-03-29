@@ -5,6 +5,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.manager.callback.FileServerListenerQueue;
 import com.huangjiang.manager.callback.Packetlistener;
+import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.manager.event.ServerMessageSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.XFileChannelInitializer;
@@ -161,10 +162,13 @@ public class IMFileServerManager extends IMManager {
                         XFileProtocol.ShakeHand.Builder rspShakeHand = XFileProtocol.ShakeHand.newBuilder();
                         rspShakeHand.setStep(1);
                         rspShakeHand.setResult(true);
+                        rspShakeHand.setDeviceName(android.os.Build.MODEL);
                         short sid = SysConstant.SERVICE_DEFAULT;
                         short cid = SysConstant.CMD_SHAKE_HAND;
                         sendMessage(ctx, sid, cid, rspShakeHand.build(), null, reqSeqnum);
-                        EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.SHAKE_HAND_SUCCESS));
+                        ServerFileSocketEvent event = new ServerFileSocketEvent(SocketEvent.SHAKE_HAND_SUCCESS);
+                        event.setDevice_name(shakeHand.getDeviceName());
+                        EventBus.getDefault().post(event);
                     } else {
                         // 连接失败
                         XFileProtocol.ShakeHand.Builder rspShakeHand = XFileProtocol.ShakeHand.newBuilder();

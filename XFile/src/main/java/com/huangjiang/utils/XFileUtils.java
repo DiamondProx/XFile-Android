@@ -24,8 +24,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
+import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+
+import com.huangjiang.XFileApplication;
 
 public class XFileUtils {
 
@@ -254,6 +257,12 @@ public class XFileUtils {
             }
         }
         return value;
+    }
+
+    public static String getDeviceId() {
+        TelephonyManager tm = (TelephonyManager) XFileApplication.context.getSystemService(Context.TELEPHONY_SERVICE);
+        String deviceId = tm.getDeviceId();
+        return deviceId;
     }
 
 
