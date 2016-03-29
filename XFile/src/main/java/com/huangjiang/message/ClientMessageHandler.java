@@ -22,7 +22,8 @@ public class ClientMessageHandler extends ChannelHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         logger.e("****ClientMessageChannelActive");
-        // 请求确认连接
+        // 服务端需要初始化Handler，等到200毫秒
+        Thread.sleep(200);
         IMClientMessageManager.getInstance().sendShakeHand(ctx);
     }
 

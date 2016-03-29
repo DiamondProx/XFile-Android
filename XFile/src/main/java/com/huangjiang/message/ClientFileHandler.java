@@ -21,6 +21,8 @@ public class ClientFileHandler extends ChannelHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.e("****ClientFileChannelActive");
+        // 服务端需要初始化Handler，等到200毫秒
+        Thread.sleep(200);
         IMClientFileManager.getInstance().shakeHand(ctx);
     }
 

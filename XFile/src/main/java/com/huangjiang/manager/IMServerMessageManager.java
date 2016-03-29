@@ -99,6 +99,7 @@ public class IMServerMessageManager extends IMBaseManager {
         short commandId = header.getCommandId();
         switch (commandId) {
             case SysConstant.CMD_SHAKE_HAND:
+                logger.e("****ServerMessage-DispatchShakeHand");
                 ShakeHand(ctx, body, header.getSeqnum());
                 break;
         }
@@ -154,9 +155,9 @@ public class IMServerMessageManager extends IMBaseManager {
                         rspShakeHand.setToken(SysConstant.TOKEN);
                         short sid = SysConstant.SERVICE_DEFAULT;
                         short cid = SysConstant.CMD_SHAKE_HAND;
-                        logger.e("****ServerMessageResponse1111");
+                        logger.e("****ServerMessage-Response1111");
                         sendMessage(ctx, sid, cid, rspShakeHand.build(), null, reqSeqnum);
-                        logger.e("****ServerMessageResponse2222");
+                        logger.e("****ServerMessage-Response2222");
 
                     }
                     break;

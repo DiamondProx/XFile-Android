@@ -22,7 +22,7 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        logger.e("****ServerMessageChannelActive");
+        logger.e("****ServerMessage-ChannelActive");
     }
 
     @Override
@@ -37,6 +37,7 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
             }
         } else {
             // 分发认证数据
+            logger.e("****ServerMessage-DispatchAuth");
             imServerMessageManager.packetDispatchAuth(ctx, (ByteBuf) msg);
         }
     }
@@ -46,30 +47,30 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
         super.exceptionCaught(ctx, cause);
         ctx.close();
         logger.e(cause.getMessage());
-        logger.e("****ServerMessageExceptionCaught");
+        logger.e("****ServerMessage-ExceptionCaught");
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         super.channelReadComplete(ctx);
-        logger.e("****ServerMessageChannelReadComplete");
+        logger.e("****ServerMessage-ChannelReadComplete");
     }
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         super.handlerAdded(ctx);
-        logger.e("****ServerMessageHandlerAdded");
+        logger.e("****ServerMessage-HandlerAdded");
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         super.handlerRemoved(ctx);
         IMServerMessageManager imServerMessageManager = IMServerMessageManager.getInstance();
-        logger.e("****ServerMessageHandlerRemoved1111");
+        logger.e("****ServerMessage-HandlerRemoved1111");
         if (imServerMessageManager.getAuthChannelHandlerContext() != null && ctx.channel().id().equals(imServerMessageManager.getAuthChannelHandlerContext().channel().id())) {
             imServerMessageManager.setAuthChannelHandlerContext(null);
             EventBus.getDefault().post(new ServerFileSocketEvent(SocketEvent.CONNECT_CLOSE));
-            logger.e("****ServerMessageHandlerRemoved2222");
+            logger.e("****ServerMessage-HandlerRemoved2222");
         }
     }
 }

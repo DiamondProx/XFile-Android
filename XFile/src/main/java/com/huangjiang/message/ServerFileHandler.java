@@ -23,7 +23,7 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        logger.e("****ServerFileChannelActive");
+        logger.e("****ServerFile-ChannelActive");
     }
 
     @Override
@@ -38,6 +38,7 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
             }
         } else {
             // 分发认证数据
+            logger.e("****ServerFile-DispatchAuth");
             imServerFileManager.packetDispatchAuth(ctx, (ByteBuf) msg);
         }
     }
@@ -46,14 +47,14 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         super.exceptionCaught(ctx, cause);
         logger.e(cause.getMessage());
-        logger.e("****ServerFileExceptionCaught");
+        logger.e("****ServerFile-ExceptionCaught");
 
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         super.channelReadComplete(ctx);
-        logger.e("****ServerFileChannelReadComplete");
+        logger.e("****ServerFile-ChannelReadComplete");
     }
 
     @Override
@@ -68,6 +69,6 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
             EventBus.getDefault().post(new ServerFileSocketEvent(SocketEvent.CONNECT_CLOSE));
         }
 
-        logger.e("****ServerFileHandlerRemoved");
+        logger.e("****ServerFile-HandlerRemoved");
     }
 }

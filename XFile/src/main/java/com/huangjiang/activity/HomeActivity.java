@@ -441,6 +441,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     void closeConnect() {
         switch (connect_type) {
             case 1:
+                // TODO 服务器关闭连接
                 IMServerMessageManager.getInstance().stop();
                 IMServerFileManager.getInstance().stop();
                 break;

@@ -95,6 +95,7 @@ public class IMServerFileManager extends IMBaseManager {
         short commandId = header.getCommandId();
         switch (commandId) {
             case SysConstant.CMD_SHAKE_HAND:
+                logger.e("****ServerMessage-DispatchShakeHand");
                 ShakeHand(ctx, body, header.getSeqnum());
                 break;
         }
@@ -155,6 +156,7 @@ public class IMServerFileManager extends IMBaseManager {
                     // 直接对比token是否正确
                     String token = shakeHand.getToken();
                     if (SysConstant.TOKEN.equals(token)) {
+                        logger.e("****ServerFile-Response1111");
                         // 保存认证的连接
                         this.setAuthChannelHandlerContext(ctx);
                         // 连接成功
@@ -168,6 +170,7 @@ public class IMServerFileManager extends IMBaseManager {
                         ServerFileSocketEvent event = new ServerFileSocketEvent(SocketEvent.SHAKE_HAND_SUCCESS);
                         event.setDevice_name(shakeHand.getDeviceName());
                         EventBus.getDefault().post(event);
+                        logger.e("****ServerFile-Response2222");
                     } else {
                         // 连接失败
                         XFileProtocol.ShakeHand.Builder rspShakeHand = XFileProtocol.ShakeHand.newBuilder();
