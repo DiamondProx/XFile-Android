@@ -3,8 +3,11 @@ package com.huangjiang.manager;
 import android.os.Environment;
 
 import com.google.protobuf.ByteString;
+import com.huangjiang.XFileApplication;
 import com.huangjiang.business.model.FileInfo;
+import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.config.SysConstant;
+import com.huangjiang.manager.callback.Packetlistener;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
@@ -21,6 +24,7 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class IMFileManager extends IMBaseManager {
 
+    private Logger logger = Logger.getLogger(IMFileManager.class);
 
     private IMServerFileManager imServerFileManager = IMServerFileManager.getInstance();
     private IMClientFileManager imClientFileManager = IMClientFileManager.getInstance();
@@ -30,7 +34,11 @@ public class IMFileManager extends IMBaseManager {
     private RandomAccessFile sendRAFReader;
     private RandomAccessFile recvRAFWriter;
 
-    private Logger logger = Logger.getLogger(IMFileManager.class);
+    private int writeIndex;
+    private int readIndex;
+    private boolean isTransmit = false;
+    private boolean isCancel = false;
+
 
     private static IMFileManager inst = null;
 
@@ -50,6 +58,79 @@ public class IMFileManager extends IMBaseManager {
     @Override
     public void stop() {
 
+    }
+
+
+    /**
+     * 创建发送文件任务
+     */
+    public void createTask(final XFileProtocol.File.Builder createTask) {
+        short cid = SysConstant.CMD_FILE_NEW;
+        short sid = SysConstant.SERVICE_DEFAULT;
+
+        Packetlistener packetlistener = new Packetlistener() {
+            @Override
+            public void onSuccess(short serviceId, Object response) {
+
+                if (serviceId != SysConstant.SERVICE_FILE_NEW_SUCCESS || response == null) {
+                    return;
+                }
+                byte[] rsp = (byte[]) response;
+                try {
+                    // 创建文件成功,检查是否有传输任务,如果正在传输,添加
+                    XFileProtocol.File rspTask = XFileProtocol.File.parseFrom(rsp);
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.e(e.getMessage());
+                }
+
+            }
+
+            @Override
+            public void onFaild() {
+
+            }
+
+            @Override
+            public void onTimeout() {
+
+            }
+        };
+        if (XFileApplication.connect_type == 1) {
+            IMClientMessageManager.getInstance().sendMessage(sid, cid, createTask.build(), packetlistener);
+        } else if (XFileApplication.connect_type == 2) {
+            IMServerMessageManager.getInstance().sendMessage(sid, cid, createTask.build(), packetlistener, (short) 0);
+        }
+
+    }
+
+    public void checkTask(XFileProtocol.File.Builder checkTask) {
+        short cid = SysConstant.CMD_FILE_NEW;
+        short sid = SysConstant.SERVICE_DEFAULT;
+        Packetlistener packetlistener = new Packetlistener() {
+            @Override
+            public void onSuccess(short serviceId, Object response) {
+
+            }
+
+            @Override
+            public void onFaild() {
+
+            }
+
+            @Override
+            public void onTimeout() {
+
+            }
+        };
+        if (XFileApplication.connect_type == 1) {
+            IMClientMessageManager.getInstance().sendMessage(sid, cid, checkTask.build(), packetlistener);
+        } else if (XFileApplication.connect_type == 2) {
+            IMServerMessageManager.getInstance().sendMessage(sid, cid, checkTask.build(), packetlistener, (short) 0);
+        }
     }
 
 

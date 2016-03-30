@@ -19,6 +19,7 @@ public class XFileApplication extends Application {
 
     public static String device_id;
 
+    public static int connect_type = 1;//0 未连接,1 客户端连接,2 服务端连接
 
 
     @Override

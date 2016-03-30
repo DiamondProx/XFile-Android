@@ -1787,6 +1787,62 @@ public final class XFileProtocol {
      * <code>required int64 length = 5;</code>
      */
     long getLength();
+
+    /**
+     * <code>required string path = 6;</code>
+     */
+    boolean hasPath();
+    /**
+     * <code>required string path = 6;</code>
+     */
+    String getPath();
+    /**
+     * <code>required string path = 6;</code>
+     */
+    com.google.protobuf.ByteString
+        getPathBytes();
+
+    /**
+     * <code>required string extension = 7;</code>
+     */
+    boolean hasExtension();
+    /**
+     * <code>required string extension = 7;</code>
+     */
+    String getExtension();
+    /**
+     * <code>required string extension = 7;</code>
+     */
+    com.google.protobuf.ByteString
+        getExtensionBytes();
+
+    /**
+     * <code>required string full_name = 8;</code>
+     */
+    boolean hasFullName();
+    /**
+     * <code>required string full_name = 8;</code>
+     */
+    String getFullName();
+    /**
+     * <code>required string full_name = 8;</code>
+     */
+    com.google.protobuf.ByteString
+        getFullNameBytes();
+
+    /**
+     * <code>required string task_id = 9;</code>
+     */
+    boolean hasTaskId();
+    /**
+     * <code>required string task_id = 9;</code>
+     */
+    String getTaskId();
+    /**
+     * <code>required string task_id = 9;</code>
+     */
+    com.google.protobuf.ByteString
+        getTaskIdBytes();
   }
   /**
    * Protobuf type {@code com.huangjiang.message.protocol.File}
@@ -1865,6 +1921,30 @@ public final class XFileProtocol {
             case 40: {
               bitField0_ |= 0x00000010;
               length_ = input.readInt64();
+              break;
+            }
+            case 50: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000020;
+              path_ = bs;
+              break;
+            }
+            case 58: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000040;
+              extension_ = bs;
+              break;
+            }
+            case 66: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000080;
+              fullName_ = bs;
+              break;
+            }
+            case 74: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000100;
+              taskId_ = bs;
               break;
             }
           }
@@ -2036,12 +2116,184 @@ public final class XFileProtocol {
       return length_;
     }
 
+    public static final int PATH_FIELD_NUMBER = 6;
+    private Object path_;
+    /**
+     * <code>required string path = 6;</code>
+     */
+    public boolean hasPath() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>required string path = 6;</code>
+     */
+    public String getPath() {
+      Object ref = path_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          path_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string path = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPathBytes() {
+      Object ref = path_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        path_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EXTENSION_FIELD_NUMBER = 7;
+    private Object extension_;
+    /**
+     * <code>required string extension = 7;</code>
+     */
+    public boolean hasExtension() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>required string extension = 7;</code>
+     */
+    public String getExtension() {
+      Object ref = extension_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          extension_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string extension = 7;</code>
+     */
+    public com.google.protobuf.ByteString
+        getExtensionBytes() {
+      Object ref = extension_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        extension_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int FULL_NAME_FIELD_NUMBER = 8;
+    private Object fullName_;
+    /**
+     * <code>required string full_name = 8;</code>
+     */
+    public boolean hasFullName() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>required string full_name = 8;</code>
+     */
+    public String getFullName() {
+      Object ref = fullName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          fullName_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string full_name = 8;</code>
+     */
+    public com.google.protobuf.ByteString
+        getFullNameBytes() {
+      Object ref = fullName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        fullName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TASK_ID_FIELD_NUMBER = 9;
+    private Object taskId_;
+    /**
+     * <code>required string task_id = 9;</code>
+     */
+    public boolean hasTaskId() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>required string task_id = 9;</code>
+     */
+    public String getTaskId() {
+      Object ref = taskId_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          taskId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string task_id = 9;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTaskIdBytes() {
+      Object ref = taskId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        taskId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       name_ = "";
       md5_ = "";
       data_ = com.google.protobuf.ByteString.EMPTY;
       position_ = 0L;
       length_ = 0L;
+      path_ = "";
+      extension_ = "";
+      fullName_ = "";
+      taskId_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2069,6 +2321,22 @@ public final class XFileProtocol {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!hasPath()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasExtension()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasFullName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTaskId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -2090,6 +2358,18 @@ public final class XFileProtocol {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeInt64(5, length_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(6, getPathBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeBytes(7, getExtensionBytes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeBytes(8, getFullNameBytes());
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeBytes(9, getTaskIdBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -2119,6 +2399,22 @@ public final class XFileProtocol {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(5, length_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getPathBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(7, getExtensionBytes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(8, getFullNameBytes());
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(9, getTaskIdBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2247,6 +2543,14 @@ public final class XFileProtocol {
         bitField0_ = (bitField0_ & ~0x00000008);
         length_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000010);
+        path_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
+        extension_ = "";
+        bitField0_ = (bitField0_ & ~0x00000040);
+        fullName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000080);
+        taskId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
 
@@ -2295,6 +2599,22 @@ public final class XFileProtocol {
           to_bitField0_ |= 0x00000010;
         }
         result.length_ = length_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.path_ = path_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.extension_ = extension_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        result.fullName_ = fullName_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.taskId_ = taskId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2330,6 +2650,26 @@ public final class XFileProtocol {
         if (other.hasLength()) {
           setLength(other.getLength());
         }
+        if (other.hasPath()) {
+          bitField0_ |= 0x00000020;
+          path_ = other.path_;
+          onChanged();
+        }
+        if (other.hasExtension()) {
+          bitField0_ |= 0x00000040;
+          extension_ = other.extension_;
+          onChanged();
+        }
+        if (other.hasFullName()) {
+          bitField0_ |= 0x00000080;
+          fullName_ = other.fullName_;
+          onChanged();
+        }
+        if (other.hasTaskId()) {
+          bitField0_ |= 0x00000100;
+          taskId_ = other.taskId_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -2352,6 +2692,22 @@ public final class XFileProtocol {
           return false;
         }
         if (!hasLength()) {
+          
+          return false;
+        }
+        if (!hasPath()) {
+          
+          return false;
+        }
+        if (!hasExtension()) {
+          
+          return false;
+        }
+        if (!hasFullName()) {
+          
+          return false;
+        }
+        if (!hasTaskId()) {
           
           return false;
         }
@@ -2628,6 +2984,310 @@ public final class XFileProtocol {
         return this;
       }
 
+      private Object path_ = "";
+      /**
+       * <code>required string path = 6;</code>
+       */
+      public boolean hasPath() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>required string path = 6;</code>
+       */
+      public String getPath() {
+        Object ref = path_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            path_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string path = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPathBytes() {
+        Object ref = path_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          path_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string path = 6;</code>
+       */
+      public Builder setPath(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        path_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string path = 6;</code>
+       */
+      public Builder clearPath() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        path_ = getDefaultInstance().getPath();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string path = 6;</code>
+       */
+      public Builder setPathBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        path_ = value;
+        onChanged();
+        return this;
+      }
+
+      private Object extension_ = "";
+      /**
+       * <code>required string extension = 7;</code>
+       */
+      public boolean hasExtension() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>required string extension = 7;</code>
+       */
+      public String getExtension() {
+        Object ref = extension_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            extension_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string extension = 7;</code>
+       */
+      public com.google.protobuf.ByteString
+          getExtensionBytes() {
+        Object ref = extension_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          extension_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string extension = 7;</code>
+       */
+      public Builder setExtension(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000040;
+        extension_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string extension = 7;</code>
+       */
+      public Builder clearExtension() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        extension_ = getDefaultInstance().getExtension();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string extension = 7;</code>
+       */
+      public Builder setExtensionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000040;
+        extension_ = value;
+        onChanged();
+        return this;
+      }
+
+      private Object fullName_ = "";
+      /**
+       * <code>required string full_name = 8;</code>
+       */
+      public boolean hasFullName() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>required string full_name = 8;</code>
+       */
+      public String getFullName() {
+        Object ref = fullName_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            fullName_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string full_name = 8;</code>
+       */
+      public com.google.protobuf.ByteString
+          getFullNameBytes() {
+        Object ref = fullName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          fullName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string full_name = 8;</code>
+       */
+      public Builder setFullName(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000080;
+        fullName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string full_name = 8;</code>
+       */
+      public Builder clearFullName() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        fullName_ = getDefaultInstance().getFullName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string full_name = 8;</code>
+       */
+      public Builder setFullNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000080;
+        fullName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private Object taskId_ = "";
+      /**
+       * <code>required string task_id = 9;</code>
+       */
+      public boolean hasTaskId() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <code>required string task_id = 9;</code>
+       */
+      public String getTaskId() {
+        Object ref = taskId_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            taskId_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string task_id = 9;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTaskIdBytes() {
+        Object ref = taskId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          taskId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string task_id = 9;</code>
+       */
+      public Builder setTaskId(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        taskId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string task_id = 9;</code>
+       */
+      public Builder clearTaskId() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        taskId_ = getDefaultInstance().getTaskId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string task_id = 9;</code>
+       */
+      public Builder setTaskIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        taskId_ = value;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:com.huangjiang.message.protocol.File)
     }
 
@@ -2658,13 +3318,13 @@ public final class XFileProtocol {
         getContentBytes();
 
     /**
-     * <code>required uint32 messagetype = 2;</code>
+     * <code>required uint32 message_type = 2;</code>
      */
-    boolean hasMessagetype();
+    boolean hasMessageType();
     /**
-     * <code>required uint32 messagetype = 2;</code>
+     * <code>required uint32 message_type = 2;</code>
      */
-    int getMessagetype();
+    int getMessageType();
 
     /**
      * <code>required string from = 3;</code>
@@ -2740,7 +3400,7 @@ public final class XFileProtocol {
             }
             case 16: {
               bitField0_ |= 0x00000002;
-              messagetype_ = input.readUInt32();
+              messageType_ = input.readUInt32();
               break;
             }
             case 26: {
@@ -2831,19 +3491,19 @@ public final class XFileProtocol {
       }
     }
 
-    public static final int MESSAGETYPE_FIELD_NUMBER = 2;
-    private int messagetype_;
+    public static final int MESSAGE_TYPE_FIELD_NUMBER = 2;
+    private int messageType_;
     /**
-     * <code>required uint32 messagetype = 2;</code>
+     * <code>required uint32 message_type = 2;</code>
      */
-    public boolean hasMessagetype() {
+    public boolean hasMessageType() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required uint32 messagetype = 2;</code>
+     * <code>required uint32 message_type = 2;</code>
      */
-    public int getMessagetype() {
-      return messagetype_;
+    public int getMessageType() {
+      return messageType_;
     }
 
     public static final int FROM_FIELD_NUMBER = 3;
@@ -2890,7 +3550,7 @@ public final class XFileProtocol {
 
     private void initFields() {
       content_ = "";
-      messagetype_ = 0;
+      messageType_ = 0;
       from_ = "";
     }
     private byte memoizedIsInitialized = -1;
@@ -2903,7 +3563,7 @@ public final class XFileProtocol {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasMessagetype()) {
+      if (!hasMessageType()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -2922,7 +3582,7 @@ public final class XFileProtocol {
         output.writeBytes(1, getContentBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeUInt32(2, messagetype_);
+        output.writeUInt32(2, messageType_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBytes(3, getFromBytes());
@@ -2942,7 +3602,7 @@ public final class XFileProtocol {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(2, messagetype_);
+          .computeUInt32Size(2, messageType_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
@@ -3067,7 +3727,7 @@ public final class XFileProtocol {
         super.clear();
         content_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        messagetype_ = 0;
+        messageType_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
         from_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -3106,7 +3766,7 @@ public final class XFileProtocol {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.messagetype_ = messagetype_;
+        result.messageType_ = messageType_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
@@ -3132,8 +3792,8 @@ public final class XFileProtocol {
           content_ = other.content_;
           onChanged();
         }
-        if (other.hasMessagetype()) {
-          setMessagetype(other.getMessagetype());
+        if (other.hasMessageType()) {
+          setMessageType(other.getMessageType());
         }
         if (other.hasFrom()) {
           bitField0_ |= 0x00000004;
@@ -3149,7 +3809,7 @@ public final class XFileProtocol {
           
           return false;
         }
-        if (!hasMessagetype()) {
+        if (!hasMessageType()) {
           
           return false;
         }
@@ -3255,34 +3915,34 @@ public final class XFileProtocol {
         return this;
       }
 
-      private int messagetype_ ;
+      private int messageType_ ;
       /**
-       * <code>required uint32 messagetype = 2;</code>
+       * <code>required uint32 message_type = 2;</code>
        */
-      public boolean hasMessagetype() {
+      public boolean hasMessageType() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required uint32 messagetype = 2;</code>
+       * <code>required uint32 message_type = 2;</code>
        */
-      public int getMessagetype() {
-        return messagetype_;
+      public int getMessageType() {
+        return messageType_;
       }
       /**
-       * <code>required uint32 messagetype = 2;</code>
+       * <code>required uint32 message_type = 2;</code>
        */
-      public Builder setMessagetype(int value) {
+      public Builder setMessageType(int value) {
         bitField0_ |= 0x00000002;
-        messagetype_ = value;
+        messageType_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required uint32 messagetype = 2;</code>
+       * <code>required uint32 message_type = 2;</code>
        */
-      public Builder clearMessagetype() {
+      public Builder clearMessageType() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        messagetype_ = 0;
+        messageType_ = 0;
         onChanged();
         return this;
       }
@@ -4445,13 +5105,15 @@ public final class XFileProtocol {
       "\004port\030\002 \002(\r\022\021\n\tdevice_id\030\003 \002(\t\"\\\n\004Echo\022\n" +
       "\n\002ip\030\001 \002(\t\022\014\n\004name\030\002 \002(\t\022\024\n\014message_port" +
       "\030\003 \002(\r\022\021\n\tfile_port\030\004 \002(\r\022\021\n\tdevice_id\030\005" +
-      " \002(\t\"Q\n\004File\022\014\n\004name\030\001 \002(\t\022\013\n\003md5\030\002 \002(\t\022" +
-      "\014\n\004data\030\003 \002(\014\022\020\n\010position\030\004 \002(\003\022\016\n\006lengt" +
-      "h\030\005 \002(\003\":\n\004Chat\022\017\n\007content\030\001 \002(\t\022\023\n\013mess" +
-      "agetype\030\002 \002(\r\022\014\n\004from\030\003 \002(\t\"v\n\tShakeHand" +
-      "\022\014\n\004step\030\001 \002(\r\022\025\n\006verify\030\002 \001(\010:\005false\022\020\n",
-      "\010password\030\003 \001(\t\022\r\n\005token\030\004 \001(\t\022\016\n\006result" +
-      "\030\005 \001(\010\022\023\n\013device_name\030\006 \001(\tB\002H\001"
+      " \002(\t\"\226\001\n\004File\022\014\n\004name\030\001 \002(\t\022\013\n\003md5\030\002 \002(\t" +
+      "\022\014\n\004data\030\003 \002(\014\022\020\n\010position\030\004 \002(\003\022\016\n\006leng" +
+      "th\030\005 \002(\003\022\014\n\004path\030\006 \002(\t\022\021\n\textension\030\007 \002(" +
+      "\t\022\021\n\tfull_name\030\010 \002(\t\022\017\n\007task_id\030\t \002(\t\";\n" +
+      "\004Chat\022\017\n\007content\030\001 \002(\t\022\024\n\014message_type\030\002",
+      " \002(\r\022\014\n\004from\030\003 \002(\t\"v\n\tShakeHand\022\014\n\004step\030" +
+      "\001 \002(\r\022\025\n\006verify\030\002 \001(\010:\005false\022\020\n\010password" +
+      "\030\003 \001(\t\022\r\n\005token\030\004 \001(\t\022\016\n\006result\030\005 \001(\010\022\023\n" +
+      "\013device_name\030\006 \001(\tB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4482,13 +5144,13 @@ public final class XFileProtocol {
     internal_static_com_huangjiang_message_protocol_File_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_huangjiang_message_protocol_File_descriptor,
-        new String[] { "Name", "Md5", "Data", "Position", "Length", });
+        new String[] { "Name", "Md5", "Data", "Position", "Length", "Path", "Extension", "FullName", "TaskId", });
     internal_static_com_huangjiang_message_protocol_Chat_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_com_huangjiang_message_protocol_Chat_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_huangjiang_message_protocol_Chat_descriptor,
-        new String[] { "Content", "Messagetype", "From", });
+        new String[] { "Content", "MessageType", "From", });
     internal_static_com_huangjiang_message_protocol_ShakeHand_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_com_huangjiang_message_protocol_ShakeHand_fieldAccessorTable = new

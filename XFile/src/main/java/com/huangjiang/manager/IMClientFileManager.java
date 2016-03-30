@@ -110,11 +110,12 @@ public class IMClientFileManager extends IMBaseManager implements ClientThread.O
         Header header = dataBuffer.getHeader();
         byte[] body = dataBuffer.getBodyData();
         int commandId = header.getCommandId();
+        short serviceId=header.getServiceId();
         Packetlistener packetlistener = listenerQueue.pop(header.getSeqnum());
         logger.e("****ClientFilePacketDispatch1111");
         if (packetlistener != null) {
             logger.e("****ClientFilePacketDispatch2222");
-            packetlistener.onSuccess(body);
+            packetlistener.onSuccess(serviceId,body);
         }
         switch (commandId) {
             case SysConstant.CMD_TRANSER_FILE_REC:
@@ -153,7 +154,7 @@ public class IMClientFileManager extends IMBaseManager implements ClientThread.O
         short sid = SysConstant.SERVICE_DEFAULT;
         sendMessage(sid, cid, shakeHand.build(), new Packetlistener() {
             @Override
-            public void onSuccess(Object response) {
+            public void onSuccess(short serviceId,Object response) {
                 if (response == null) {
                     return;
                 }

@@ -91,12 +91,13 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
         DataBuffer dataBuffer = new DataBuffer(byteBuf);
         Header header = dataBuffer.getHeader();
         byte[] body = dataBuffer.getBodyData();
-        int commandId = header.getCommandId();
+        short commandId = header.getCommandId();
+        short serviceId = header.getServiceId();
         Packetlistener packetlistener = listenerQueue.pop(header.getSeqnum());
         logger.e("****ClientMessagePacketDispatch1111");
         if (packetlistener != null) {
             logger.e("****ClientMessagePacketDispatch2222");
-            packetlistener.onSuccess(body);
+            packetlistener.onSuccess(serviceId, body);
         }
         switch (commandId) {
             case SysConstant.CMD_SEND_MESSAGE:
@@ -132,7 +133,7 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
         short cid = SysConstant.CMD_SHAKE_HAND;
         sendMessage(sid, cid, shakeHand.build(), new Packetlistener(10000) {
             @Override
-            public void onSuccess(Object response) {
+            public void onSuccess(short serviceId, Object response) {
                 logger.e("****SendShakeHandOnResponse");
                 if (response == null) {
                     return;
@@ -185,7 +186,7 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
         short cid = SysConstant.CMD_SHAKE_HAND;
         sendMessage(sid, cid, shakeHand.build(), new Packetlistener() {
             @Override
-            public void onSuccess(Object response) {
+            public void onSuccess(short serviceId,Object response) {
                 if (response == null) {
                     return;
                 }

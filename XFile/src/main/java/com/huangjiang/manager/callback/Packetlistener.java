@@ -35,7 +35,7 @@ public abstract class Packetlistener implements IMListener {
         this.timeOut = timeOut;
     }
 
-    public abstract void onSuccess(Object response);
+    public abstract void onSuccess(short service,Object response);
 
     public abstract void onFaild();
 

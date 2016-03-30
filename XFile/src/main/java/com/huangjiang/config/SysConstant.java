@@ -19,6 +19,12 @@ public class SysConstant {
 
     public static final short CMD_SHAKE_HAND = 0x06;//握手
 
+    public static final short CMD_FILE_NEW = 0x07;//发送文件
+
+    public static final short CMD_FILE_CHECK = 0x08;//检查文件
+
+    public static final short CMD_FILE_SET = 0x09;//文件保存
+
     public static final String BROADCASE_ADDRESS = "255.255.255.255";//广播地址
 
     public static final int BROADCASE_PORT = 8081;// 发现设备服务器端口
@@ -30,6 +36,18 @@ public class SysConstant {
     public static final int FILE_SEGMENT_SIZE = 4096;// 分段文件大小
 
     public static final short SERVICE_DEFAULT = 0x99;// 保留服务号
+
+    public static final short SERVICE_FILE_NEW_SUCCESS = 0x98;//接收方新建文件成功
+
+    public static final short SERVICE_FILE_NEW_FAILED = 0x97;//新建文件失败
+
+    public static final short SERVICE_FILE_CHECK_SUCCESS = 0x96;//检查任务成功
+
+    public static final short SERVICE_TASK_CHECK_FAILED = 0x95;//检查任务失败
+
+    public static final short SERVICE_FILE_SET_SUCCESS = 0x94;//保存文件成功
+
+    public static final short SERVICE_FILE_SET_FAILED = 0x93;//保存文件失败
 
     public static final boolean VERIFY = false;// 是否需要密码验证
 

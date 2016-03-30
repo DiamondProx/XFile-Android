@@ -19,10 +19,14 @@ message File{
   required bytes data = 3;
   required int64 position = 4;
   required int64 length = 5;
+  required string path = 6;
+  required string extension = 7;
+  required string full_name = 8;
+  required string task_id = 9;
 }
 message Chat{
  required string content = 1;
- required uint32 messagetype = 2;
+ required uint32 message_type = 2;
  required string from = 3;
 }
 message ShakeHand{

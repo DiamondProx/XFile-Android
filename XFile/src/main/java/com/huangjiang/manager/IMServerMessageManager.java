@@ -113,7 +113,7 @@ public class IMServerMessageManager extends IMBaseManager {
             byte[] body = new byte[lenght - SysConstant.HEADER_LENGTH];
             byteBuf.readBytes(body);
             XFileProtocol.Chat chat = XFileProtocol.Chat.parseFrom(body);
-            System.out.println("*****Chat.getMessagetype:" + chat.getMessagetype());
+            System.out.println("*****Chat.getMessagetype:" + chat.getMessageType());
             System.out.println("*****Chat.getContent:" + chat.getContent());
             System.out.println("*****Chat.getFrom:" + chat.getFrom());
         } catch (Exception e) {

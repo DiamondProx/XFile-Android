@@ -5,7 +5,7 @@ package com.huangjiang.manager.callback;
  * @email : yingmu@mogujie.com.
  */
 public interface IMListener<T> {
-    public abstract void onSuccess(T response);
+    public abstract void onSuccess(short serviceId, T response);
 
     public abstract void onFaild();
 
