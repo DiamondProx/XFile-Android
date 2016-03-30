@@ -103,20 +103,31 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
             case SysConstant.CMD_SEND_MESSAGE:
 
                 break;
+            case SysConstant.CMD_FILE_NEW:
+            case SysConstant.CMD_TASK_CHECK:
+                IMFileManager.getInstance().dispatchMessage(header, body);
+                break;
         }
     }
 
 
     public void sendMessage(short serviceId, short commandId, GeneratedMessage msg) {
-        sendMessage(serviceId, commandId, msg, null);
+        sendMessage(serviceId, commandId, msg, null, (short) 0);
     }
 
-    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener) {
+    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, short seqnum) {
+        sendMessage(serviceId, commandId, msg, null, seqnum);
+    }
+
+    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener, short seqnum) {
         if (messageClientThread != null) {
             Header header = new Header();
             header.setCommandId(commandId);
             header.setServiceId(serviceId);
-            if (packetlistener != null) {
+            if (seqnum != 0) {
+                header.setSeqnum(seqnum);
+            }
+            if (packetlistener != null && seqnum != 0) {
                 short reqSeqnum = header.getSeqnum();
                 listenerQueue.push(reqSeqnum, packetlistener);
             }
@@ -174,7 +185,7 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
                 ctx.close();
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
-        });
+        }, (short) 0);
         logger.e("****SendShakeHand****");
     }
 
@@ -186,7 +197,7 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
         short cid = SysConstant.CMD_SHAKE_HAND;
         sendMessage(sid, cid, shakeHand.build(), new Packetlistener() {
             @Override
-            public void onSuccess(short serviceId,Object response) {
+            public void onSuccess(short serviceId, Object response) {
                 if (response == null) {
                     return;
                 }
@@ -224,7 +235,7 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
                 stopClient();
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
-        });
+        }, (short) 0);
     }
 
 

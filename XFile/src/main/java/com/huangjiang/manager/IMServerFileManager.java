@@ -78,10 +78,21 @@ public class IMServerFileManager extends IMBaseManager {
     public void packetDispatch(ByteBuf byteBuf) throws InvalidProtocolBufferException {
         DataBuffer dataBuffer = new DataBuffer(byteBuf);
         Header header = dataBuffer.getHeader();
-        int commandId = header.getCommandId();
+        byte[] body = dataBuffer.getBodyData();
+        short commandId = header.getCommandId();
+        short serviceId = header.getServiceId();
+        Packetlistener packetlistener = listenerQueue.pop(header.getSeqnum());
+        logger.e("****ServerFilePacketDispatch1111");
+        if (packetlistener != null) {
+            logger.e("****ServerFilePacketDispatch2222");
+            packetlistener.onSuccess(serviceId, body);
+        }
         switch (commandId) {
             case SysConstant.CMD_SEND_MESSAGE:
 
+                break;
+            case SysConstant.CMD_FILE_NEW:
+                IMFileManager.getInstance().dispatchMessage(header, body);
                 break;
 
         }

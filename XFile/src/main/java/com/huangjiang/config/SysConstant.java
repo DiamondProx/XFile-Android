@@ -21,7 +21,7 @@ public class SysConstant {
 
     public static final short CMD_FILE_NEW = 0x07;//发送文件
 
-    public static final short CMD_FILE_CHECK = 0x08;//检查文件
+    public static final short CMD_TASK_CHECK = 0x08;//检查文件
 
     public static final short CMD_FILE_SET = 0x09;//文件保存
 
@@ -41,7 +41,7 @@ public class SysConstant {
 
     public static final short SERVICE_FILE_NEW_FAILED = 0x97;//新建文件失败
 
-    public static final short SERVICE_FILE_CHECK_SUCCESS = 0x96;//检查任务成功
+    public static final short SERVICE_TASK_CHECK_SUCCESS = 0x96;//检查任务成功
 
     public static final short SERVICE_TASK_CHECK_FAILED = 0x95;//检查任务失败
 

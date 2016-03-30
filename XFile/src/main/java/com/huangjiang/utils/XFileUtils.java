@@ -265,5 +265,20 @@ public class XFileUtils {
         return deviceId;
     }
 
+    public static String getStoragePathByExtension(String extension) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator);
+        sb.append("XFile" + File.separator);
+        switch (extension) {
+            case "doc":
+                sb.append("doc" + File.separator);
+                break;
+            default:
+                sb.append("other" + File.separator);
+                break;
+        }
+        return sb.toString();
+    }
+
 
 }
