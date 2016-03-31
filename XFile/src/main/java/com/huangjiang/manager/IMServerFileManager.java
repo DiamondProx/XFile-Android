@@ -82,16 +82,16 @@ public class IMServerFileManager extends IMBaseManager {
         short commandId = header.getCommandId();
         short serviceId = header.getServiceId();
         Packetlistener packetlistener = listenerQueue.pop(header.getSeqnum());
-        logger.e("****ServerFilePacketDispatch1111");
+//        logger.e("****ServerFilePacketDispatch1111");
         if (packetlistener != null) {
-            logger.e("****ServerFilePacketDispatch2222");
+//            logger.e("****ServerFilePacketDispatch2222");
             packetlistener.onSuccess(serviceId, body);
         }
         switch (commandId) {
             case SysConstant.CMD_SEND_MESSAGE:
 
                 break;
-            case SysConstant.CMD_FILE_NEW:
+            case SysConstant.CMD_FILE_SET:
                 IMFileManager.getInstance().dispatchMessage(header, body);
                 break;
 
@@ -115,6 +115,10 @@ public class IMServerFileManager extends IMBaseManager {
 
     public void sendMessage(short serviceId, short commandId, GeneratedMessage msg) {
         sendMessage(AuthChannelHandlerContext, serviceId, commandId, msg, null, (short) 0);
+    }
+
+    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener, short seqnum) {
+        sendMessage(AuthChannelHandlerContext, serviceId, commandId, msg, packetlistener, seqnum);
     }
 
     public void sendMessage(ChannelHandlerContext ctx, short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener, short seqnum) {

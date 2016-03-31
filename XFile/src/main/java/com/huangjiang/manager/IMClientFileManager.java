@@ -88,18 +88,24 @@ public class IMClientFileManager extends IMBaseManager implements ClientThread.O
 
 
     public void sendMessage(short serviceId, short commandId, GeneratedMessage msg) {
-        sendMessage(serviceId, commandId, msg, null);
+        sendMessage(serviceId, commandId, msg, (short) 0);
+    }
+    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, short seqnum) {
+        sendMessage(serviceId, commandId, msg, null, seqnum);
     }
 
-    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener) {
+    public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, Packetlistener packetlistener, short seqnum) {
         if (fileClientThread != null) {
             Header header = new Header();
             header.setCommandId(commandId);
             header.setServiceId(serviceId);
             header.setLength(SysConstant.HEADER_LENGTH + msg.getSerializedSize());
-            if (packetlistener != null) {
-                short seqnum = header.getSeqnum();
-                listenerQueue.push(seqnum, packetlistener);
+            if (seqnum != 0) {
+                header.setSeqnum(seqnum);
+            }
+            if (packetlistener != null && seqnum == 0) {
+                short reqSeqnum = header.getSeqnum();
+                listenerQueue.push(reqSeqnum, packetlistener);
             }
             fileClientThread.sendMessage(header, msg);
         }
@@ -112,16 +118,16 @@ public class IMClientFileManager extends IMBaseManager implements ClientThread.O
         int commandId = header.getCommandId();
         short serviceId = header.getServiceId();
         Packetlistener packetlistener = listenerQueue.pop(header.getSeqnum());
-        logger.e("****ClientFilePacketDispatch1111");
+//        logger.e("****ClientFilePacketDispatch1111");
         if (packetlistener != null) {
-            logger.e("****ClientFilePacketDispatch2222");
+//            logger.e("****ClientFilePacketDispatch2222");
             packetlistener.onSuccess(serviceId, body);
         }
         switch (commandId) {
             case SysConstant.CMD_TRANSER_FILE_REC:
                 IMFileManager.getInstance().continueSendFile(header, byteBuf);
                 break;
-            case SysConstant.CMD_FILE_NEW:
+            case SysConstant.CMD_FILE_SET:
                 IMFileManager.getInstance().dispatchMessage(header, body);
                 break;
 
@@ -190,7 +196,7 @@ public class IMClientFileManager extends IMBaseManager implements ClientThread.O
                 ctx.close();
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
-        });
+        },(short)0);
 
 
     }

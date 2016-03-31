@@ -21,9 +21,15 @@ public class SysConstant {
 
     public static final short CMD_FILE_NEW = 0x07;//发送文件-发送文件步骤1
 
-    public static final short CMD_TASK_CHECK = 0x08;//检查文件-发送文件步骤2
+    public static final short CMD_FILE_NEW_RSP = 0x08;//发送文件-发送文件步骤1答复
 
-    public static final short CMD_FILE_SET = 0x09;//文件保存-发送文件步骤3
+    public static final short CMD_TASK_CHECK = 0x09;//检查文件-发送文件步骤2
+
+    public static final short CMD_TASK_CHECK_RSP = 0x10;//检查文件-发送文件步骤2答复
+
+    public static final short CMD_FILE_SET = 0x11;//文件保存-发送文件步骤3
+
+    public static final short CMD_FILE_SET_RSP = 0x12;//文件保存-发送文件步骤3答复
 
     public static final String BROADCASE_ADDRESS = "255.255.255.255";//广播地址
 

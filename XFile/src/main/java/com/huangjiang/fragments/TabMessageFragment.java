@@ -375,6 +375,9 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 listMessage.add(receiveFile);
                 adpater.notifyDataSetChanged();
                 break;
+            case SET_FILE_SUCCESS:
+                Toast.makeText(getActivity(), "receive_success", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
@@ -391,6 +394,9 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 break;
             case CHECK_TASK_FAILED:
                 Toast.makeText(getActivity(), "check_failed", Toast.LENGTH_SHORT).show();
+                break;
+            case SET_FILE_SUCCESS:
+                Toast.makeText(getActivity(), "send_success", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

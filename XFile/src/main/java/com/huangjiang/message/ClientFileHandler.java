@@ -45,6 +45,6 @@ public class ClientFileHandler extends ChannelHandlerAdapter {
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         super.channelReadComplete(ctx);
 //        EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.CONNECT_CLOSE));
-        logger.e("****ClientFileChannelReadComplete");
+//        logger.e("****ClientFileChannelReadComplete");
     }
 }
