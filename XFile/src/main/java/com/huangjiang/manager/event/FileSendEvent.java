@@ -1,19 +1,20 @@
 package com.huangjiang.manager.event;
 
+import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.message.protocol.XFileProtocol;
 
 /**
- * EventBus-客户端文件参数
+ * EventBus-文件发送参数
  */
-public class ClientFileEvent {
+public class FileSendEvent {
 
     FileEvent event;
 
-    XFileProtocol.File fileInfo;
+    TFileInfo fileInfo;
 
     private String taskId;
 
-    public ClientFileEvent(FileEvent event) {
+    public FileSendEvent(FileEvent event) {
         this.event = event;
     }
 
@@ -25,11 +26,11 @@ public class ClientFileEvent {
         return event;
     }
 
-    public void setFileInfo(XFileProtocol.File fileInfo) {
+    public void setFileInfo(TFileInfo fileInfo) {
         this.fileInfo = fileInfo;
     }
 
-    public XFileProtocol.File getFileInfo() {
+    public TFileInfo getFileInfo() {
         return fileInfo;
     }
 

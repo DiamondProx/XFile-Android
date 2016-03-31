@@ -19,11 +19,11 @@ public class SysConstant {
 
     public static final short CMD_SHAKE_HAND = 0x06;//握手
 
-    public static final short CMD_FILE_NEW = 0x07;//发送文件
+    public static final short CMD_FILE_NEW = 0x07;//发送文件-发送文件步骤1
 
-    public static final short CMD_TASK_CHECK = 0x08;//检查文件
+    public static final short CMD_TASK_CHECK = 0x08;//检查文件-发送文件步骤2
 
-    public static final short CMD_FILE_SET = 0x09;//文件保存
+    public static final short CMD_FILE_SET = 0x09;//文件保存-发送文件步骤3
 
     public static final String BROADCASE_ADDRESS = "255.255.255.255";//广播地址
 
@@ -37,23 +37,25 @@ public class SysConstant {
 
     public static final short SERVICE_DEFAULT = 0x99;// 保留服务号
 
-    public static final short SERVICE_FILE_NEW_SUCCESS = 0x98;//接收方新建文件成功
+    public static final short SERVICE_FILE_NEW_SUCCESS = 0x98;//接收方新建文件成功-接收文件步骤1
 
-    public static final short SERVICE_FILE_NEW_FAILED = 0x97;//新建文件失败
+    public static final short SERVICE_FILE_NEW_FAILED = 0x97;//新建文件失败-接收文件步骤1
 
-    public static final short SERVICE_TASK_CHECK_SUCCESS = 0x96;//检查任务成功
+    public static final short SERVICE_TASK_CHECK_SUCCESS = 0x96;//检查任务成功-接收文件步骤2
 
-    public static final short SERVICE_TASK_CHECK_FAILED = 0x95;//检查任务失败
+    public static final short SERVICE_TASK_CHECK_FAILED = 0x95;//检查任务失败-接收文件步骤2
 
-    public static final short SERVICE_FILE_SET_SUCCESS = 0x94;//保存文件成功
+    public static final short SERVICE_FILE_SET_SUCCESS = 0x94;//保存文件成功-接收文件步骤3
 
-    public static final short SERVICE_FILE_SET_FAILED = 0x93;//保存文件失败
+    public static final short SERVICE_FILE_SET_FAILED = 0x93;//保存文件失败-接收文件步骤3
 
     public static final boolean VERIFY = false;// 是否需要密码验证
 
     public static final String PASS_WORD = "123456";// 后台密码
 
     public static final String TOKEN = "token";// 测试token
+
+    public static final String TEMP_TASK_ID = "task_id";// 测试taskId
 
 
 }

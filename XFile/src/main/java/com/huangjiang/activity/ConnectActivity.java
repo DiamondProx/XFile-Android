@@ -40,7 +40,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     Button search_join, search_cancel, search_back, connect_back, connecting_cancel;
     LinearLayout layout1, layout2, layout3, layout4, layout5;
 
-    int scan_time = 5000;//设备扫描时间
+    int scan_time = 2500;//设备扫描时间
     ListView lv_device;
     ScanDeviceAdapter deviceAdapter;
     private AnimationDrawable animationDrawable;

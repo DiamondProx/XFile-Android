@@ -127,7 +127,7 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
             if (seqnum != 0) {
                 header.setSeqnum(seqnum);
             }
-            if (packetlistener != null && seqnum != 0) {
+            if (packetlistener != null && seqnum == 0) {
                 short reqSeqnum = header.getSeqnum();
                 listenerQueue.push(reqSeqnum, packetlistener);
             }

@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.huangjiang.XFileApplication;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
@@ -81,8 +82,6 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     Button btn_share, btn_close;
 
     RelativeLayout top_main_layout, top_connect_layout;
-
-    int connect_type = 0;//0 无连接,1 服务端,2 客户端
 
 
     @Override
@@ -318,14 +317,14 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
         switch (event.getEvent()) {
             case SHAKE_HAND_SUCCESS:
-                connect_type = 2;
+                XFileApplication.connect_type = 1;
                 // 客户端连接成功
                 top_main_layout.setVisibility(View.INVISIBLE);
                 top_connect_layout.setVisibility(View.VISIBLE);
                 connect_device_name.setText(event.getDevice_name());
                 break;
             case CONNECT_CLOSE:
-                connect_type = 0;
+                XFileApplication.connect_type = 0;
                 // 客户端关闭
                 top_main_layout.setVisibility(View.VISIBLE);
                 top_connect_layout.setVisibility(View.INVISIBLE);
@@ -344,14 +343,14 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     public void onEventMainThread(ServerFileSocketEvent event) {
         switch (event.getEvent()) {
             case SHAKE_HAND_SUCCESS:
-                connect_type = 1;
+                XFileApplication.connect_type = 2;
                 // 被连接成功
                 top_main_layout.setVisibility(View.INVISIBLE);
                 top_connect_layout.setVisibility(View.VISIBLE);
                 connect_device_name.setText(event.getDevice_name());
                 break;
             case CONNECT_CLOSE:
-                connect_type = 0;
+                XFileApplication.connect_type = 0;
                 // 服务端关闭
                 top_main_layout.setVisibility(View.VISIBLE);
                 top_connect_layout.setVisibility(View.INVISIBLE);
@@ -439,15 +438,15 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     }
 
     void closeConnect() {
-        switch (connect_type) {
-            case 1:
+        switch (XFileApplication.connect_type) {
+            case 1://0 无连接,2 服务端,1 客户端:
+                IMClientMessageManager.getInstance().stop();
+                IMClientFileManager.getInstance().stop();
+                break;
+            case 2:
                 // TODO 服务器关闭连接
                 IMServerMessageManager.getInstance().stop();
                 IMServerFileManager.getInstance().stop();
-                break;
-            case 2:
-                IMClientMessageManager.getInstance().stop();
-                IMClientFileManager.getInstance().stop();
                 break;
         }
     }

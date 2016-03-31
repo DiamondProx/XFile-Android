@@ -3,6 +3,7 @@ package com.huangjiang.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -11,17 +12,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.huangjiang.business.model.TransferMessageInfo;
+import com.google.protobuf.ByteString;
+import com.huangjiang.XFileApplication;
+import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
+import com.huangjiang.manager.IMFileManager;
+import com.huangjiang.manager.event.FileEvent;
+import com.huangjiang.manager.event.FileReceiveEvent;
+import com.huangjiang.manager.event.FileSendEvent;
+import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.view.TabBar;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,24 +51,28 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
     ListView lv_message;
 
-    List<TransferMessageInfo> listMessage;
+    List<TFileInfo> listMessage;
 
     TransferMessageAdpater adpater;
+
+    Button btn_sendfile;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_message, null);
 
+        EventBus.getDefault().register(this);
+
         txt_disk_status = (TextView) view.findViewById(R.id.txt_dis_status);
         txt_clear = (TextView) view.findViewById(R.id.txt_clear);
-
-
         tabBar = (TabBar) view.findViewById(R.id.tab_mobile);
         tabBar.setListener(this);
         tabBar.setTabBackground(R.color.tab_green);
         tabBar.setTabSelectBackground(R.color.tab_green_select);
         View view_message = inflater.inflate(R.layout.page_message, null);
         lv_message = (ListView) view_message.findViewById(R.id.lv_message);
+        btn_sendfile = (Button) view_message.findViewById(R.id.btn_sendfile);
+        btn_sendfile.setOnClickListener(this);
         adpater = new TransferMessageAdpater(getActivity());
         lv_message.setAdapter(adpater);
 
@@ -90,48 +108,48 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         testMessageData();
 
 
-
-
         return view;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     void testMessageData() {
-        listMessage=new ArrayList<>();
-
-        TransferMessageInfo message = new TransferMessageInfo();
-        message.setMessageType(2);
-        message.setFrom("R815T");
-        message.setFileName("4dazxcvbng");
-        message.setFileSize("12.53kb");
-        listMessage.add(message);
+        listMessage = new ArrayList<>();
 
 
-        message = new TransferMessageInfo();
-        message.setMessageType(1);
-        message.setFrom("R815T");
-        message.setFileName("指南针.apk");
-        message.setFileSize("682kb");
-        listMessage.add(message);
-
-
-        message = new TransferMessageInfo();
-        message.setMessageType(1);
-        message.setFrom("R815T");
-        message.setFileName("头文字D.mp3");
-        message.setFileSize("1.65MB");
-        listMessage.add(message);
-
-        message = new TransferMessageInfo();
-        message.setMessageType(1);
-        message.setFrom("R815T");
-        message.setFileName("975124556321");
-        message.setFileSize("3.65MB");
-        listMessage.add(message);
+//        TransferMessageInfo message = new TransferMessageInfo();
+//        message.setMessageType(2);
+//        message.setFrom("R815T");
+//        message.setFileName("4dazxcvbng");
+//        message.setFileSize("12.53kb");
+//        listMessage.add(message);
+//
+//
+//        message = new TransferMessageInfo();
+//        message.setMessageType(1);
+//        message.setFrom("R815T");
+//        message.setFileName("指南针.apk");
+//        message.setFileSize("682kb");
+//        listMessage.add(message);
+//
+//
+//        message = new TransferMessageInfo();
+//        message.setMessageType(1);
+//        message.setFrom("R815T");
+//        message.setFileName("头文字D.mp3");
+//        message.setFileSize("1.65MB");
+//        listMessage.add(message);
+//
+//        message = new TransferMessageInfo();
+//        message.setMessageType(1);
+//        message.setFrom("R815T");
+//        message.setFileName("975124556321");
+//        message.setFileSize("3.65MB");
+//        listMessage.add(message);
 
         adpater.notifyDataSetChanged();
 
@@ -154,6 +172,43 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_sendfile:
+                testSendFile();
+                break;
+        }
+    }
+
+    void testSendFile() {
+
+//        TFileInfo tFileInfo = new TFileInfo();
+//        tFileInfo.setIs_send(true);
+//        tFileInfo.setFrom("R815T");
+//        tFileInfo.setLength(1024 * 10);
+//        tFileInfo.setFull_name("指南针.apk");
+//        listMessage.add(tFileInfo);
+//        adpater.notifyDataSetChanged();
+
+        if (XFileApplication.connect_type == 0) {
+            Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String testFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "doufu.mp3";
+        File file = new File(testFile);
+        if (file.exists()) {
+            XFileProtocol.File.Builder sendFile = XFileProtocol.File.newBuilder();
+            sendFile.setName("doufu");
+            sendFile.setFullName("doufu.mp3");
+            sendFile.setMd5("md5");
+            sendFile.setPosition(0);
+            sendFile.setPath(file.getAbsolutePath());
+            sendFile.setExtension("mp3");
+            sendFile.setTaskId(SysConstant.TEMP_TASK_ID);
+            sendFile.setData(ByteString.copyFrom("1".getBytes()));
+            sendFile.setLength(file.length());
+            IMFileManager.getInstance().startTransferFile(sendFile.build());
+        }
+
 
     }
 
@@ -238,8 +293,8 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
         @Override
         public int getItemViewType(int position) {
-            TransferMessageInfo message = listMessage.get(position);
-            if (message.getMessageType() == 1) {
+            TFileInfo message = listMessage.get(position);
+            if (!message.is_send()) {
                 return REVICE_MESSAGE;
             } else {
                 return SEND_MESSAGE;
@@ -249,12 +304,12 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            final TransferMessageInfo message = listMessage.get(position);
-            int messageType = message.getMessageType();
+            final TFileInfo message = listMessage.get(position);
+            boolean isSend = message.is_send();
             VideoViewHoler videoHolder = null;
             if (convertView == null) {
                 videoHolder = new VideoViewHoler();
-                if (messageType == 1) {
+                if (!isSend) {
                     convertView = mInflater.inflate(R.layout.listview_transfer_message_revice, null);
                 } else {
                     convertView = mInflater.inflate(R.layout.listview_transfer_message_send, null);
@@ -273,8 +328,8 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 videoHolder.headImg.setImageResource(R.mipmap.avatar_default);
                 videoHolder.fileImg.setImageResource(R.mipmap.data_folder_documents_placeholder);
                 videoHolder.from.setText(String.format(getString(R.string.from), message.getFrom()));
-                videoHolder.name.setText(message.getFileName());
-                videoHolder.size.setText(message.getFileSize());
+                videoHolder.name.setText(message.getFull_name());
+                videoHolder.size.setText("1024kb");
 
             }
             return convertView;
@@ -304,9 +359,39 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 //    }
 
 
-
     @Override
     public void onTabSelect(int index) {
         viewPager.setCurrentItem(index);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(FileReceiveEvent fileEvent) {
+        // 接收文件状态
+        FileEvent e = fileEvent.getEvent();
+        switch (e) {
+            case CREATE_FILE_SUCCESS:
+                TFileInfo receiveFile = fileEvent.getFileInfo();
+                receiveFile.setIs_send(false);
+                listMessage.add(receiveFile);
+                adpater.notifyDataSetChanged();
+                break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(FileSendEvent fileEvent) {
+        // 发送文件状态
+        FileEvent e = fileEvent.getEvent();
+        switch (e) {
+            case CREATE_FILE_SUCCESS:
+                TFileInfo receiveFile = fileEvent.getFileInfo();
+                receiveFile.setIs_send(true);
+                listMessage.add(receiveFile);
+                adpater.notifyDataSetChanged();
+                break;
+            case CHECK_TASK_FAILED:
+                Toast.makeText(getActivity(), "check_failed", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }

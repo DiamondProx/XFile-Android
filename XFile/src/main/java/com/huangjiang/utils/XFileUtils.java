@@ -29,6 +29,8 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.huangjiang.XFileApplication;
+import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.message.protocol.XFileProtocol;
 
 public class XFileUtils {
 
@@ -273,6 +275,9 @@ public class XFileUtils {
             case "doc":
                 sb.append("doc" + File.separator);
                 break;
+            case "mp3":
+                sb.append("music" + File.separator);
+                break;
             default:
                 sb.append("other" + File.separator);
                 break;
@@ -280,5 +285,29 @@ public class XFileUtils {
         return sb.toString();
     }
 
+    public static XFileProtocol.File buildSendFile(TFileInfo fileInfo) {
+        XFileProtocol.File.Builder sendFile = XFileProtocol.File.newBuilder();
+        sendFile.setName(fileInfo.getName());
+        sendFile.setMd5(fileInfo.getMd5());
+        sendFile.setPosition(fileInfo.getPostion());
+        sendFile.setLength(fileInfo.getLength());
+        sendFile.setPath(fileInfo.getPath());
+        sendFile.setExtension(fileInfo.getExtension());
+        sendFile.setFullName(fileInfo.getFull_name());
+        sendFile.setTaskId(fileInfo.getTask_id());
+        return sendFile.build();
+    }
+    public static TFileInfo buildTFile(XFileProtocol.File fileInfo) {
+        TFileInfo tFile = new TFileInfo();
+        tFile.setName(fileInfo.getName());
+        tFile.setMd5(fileInfo.getMd5());
+        tFile.setPostion(fileInfo.getPosition());
+        tFile.setLength(fileInfo.getLength());
+        tFile.setPath(fileInfo.getPath());
+        tFile.setExtension(fileInfo.getExtension());
+        tFile.setFull_name(fileInfo.getFullName());
+        tFile.setTask_id(fileInfo.getTaskId());
+        return tFile;
+    }
 
 }
