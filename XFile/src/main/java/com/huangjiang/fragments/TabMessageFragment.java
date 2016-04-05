@@ -29,6 +29,7 @@ import com.huangjiang.manager.event.FileEvent;
 import com.huangjiang.manager.event.FileReceiveEvent;
 import com.huangjiang.manager.event.FileSendEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
+import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.TabBar;
 
 import org.greenrobot.eventbus.EventBus;
@@ -284,6 +285,15 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             return listMessage == null ? null : listMessage.get(position);
         }
 
+        public void setPercent(String taskId, long percent) {
+
+            for (TFileInfo fileInfo : listMessage) {
+                if (taskId.equals(fileInfo.getTask_id())) {
+                    fileInfo.setPercent(percent);
+                }
+            }
+        }
+
         @Override
         public long getItemId(int position) {
             return position;
@@ -321,6 +331,8 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 videoHolder.from = (TextView) convertView.findViewById(R.id.from);
                 videoHolder.name = (TextView) convertView.findViewById(R.id.fileName);
                 videoHolder.size = (TextView) convertView.findViewById(R.id.fileSize);
+                videoHolder.remainPercent = (TextView) convertView.findViewById(R.id.remainPercent);
+                videoHolder.status = (TextView) convertView.findViewById(R.id.status);
                 convertView.setTag(videoHolder);
             } else {
                 videoHolder = (VideoViewHoler) convertView.getTag();
@@ -330,7 +342,8 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 videoHolder.fileImg.setImageResource(R.mipmap.data_folder_documents_placeholder);
                 videoHolder.from.setText(message.getFrom());
                 videoHolder.name.setText(message.getFull_name());
-                videoHolder.size.setText("1024kb");
+                videoHolder.size.setText(XFileUtils.getFolderSizeString(message.getLength()));
+                videoHolder.remainPercent.setText(String.valueOf(message.getPercent()));
 
             }
             return convertView;
@@ -342,6 +355,8 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             TextView from;
             TextView name;
             TextView size;
+            TextView remainPercent;
+            TextView status;
         }
 
     }
@@ -383,6 +398,11 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             case SET_FILE_SUCCESS:
                 Toast.makeText(getActivity(), "receive_success", Toast.LENGTH_SHORT).show();
                 break;
+            case SET_FILE_SET:
+                TFileInfo setFile = fileEvent.getFileInfo();
+                adpater.setPercent(setFile.getTask_id(), setFile.getPercent());
+                adpater.notifyDataSetChanged();
+                break;
         }
     }
 
@@ -406,6 +426,11 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 break;
             case SET_FILE_SUCCESS:
                 Toast.makeText(getActivity(), "send_success", Toast.LENGTH_SHORT).show();
+                break;
+            case SET_FILE_SET:
+                TFileInfo setFile = fileEvent.getFileInfo();
+                adpater.setPercent(setFile.getTask_id(), setFile.getPercent());
+                adpater.notifyDataSetChanged();
                 break;
         }
     }

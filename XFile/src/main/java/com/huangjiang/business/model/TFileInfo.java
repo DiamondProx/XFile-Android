@@ -27,6 +27,7 @@ public class TFileInfo {
     private String task_id;
     private boolean is_send;// 是否发送方
     private String from;//发送方
+    private long percent;// 百分比
 
     public String getName() {
         return name;
@@ -106,5 +107,13 @@ public class TFileInfo {
 
     public void setFrom(String from) {
         this.from = from;
+    }
+
+    public long getPercent() {
+        return percent;
+    }
+
+    public void setPercent(long percent) {
+        this.percent = percent;
     }
 }

@@ -53,4 +53,5 @@
     <string name="play">播放</string>
     <string name="send_to">发送给 %1$s</string>
     <string name="receive_from">接收自 %1$s</string>
+    <string name="percent">%1$s%</string>
 </resources>

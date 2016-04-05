@@ -194,6 +194,7 @@ public class IMFileManager extends IMBaseManager {
 //            return false;
 //        }
         readIndex = requestFile.getPosition();
+        writePercent = readIndex * 100 / requestFile.getLength();
         createTask(requestFile);
 //        isTransmit = true;
         return true;
@@ -210,6 +211,10 @@ public class IMFileManager extends IMBaseManager {
             // 判断传回来的postion是否等于文件length，相等的情况下，当作已经传输完成
             if (remain == 0) {
                 FileSendEvent event = new FileSendEvent(FileEvent.SET_FILE_SUCCESS);
+                TFileInfo tFile = XFileUtils.buildTFile(requestFile);
+                tFile.setPercent(100);
+                readPercent = 100;
+                event.setFileInfo(tFile);
                 event.setTaskId(requestFile.getTaskId());
                 isTransmit = false;
                 EventBus.getDefault().post(event);
@@ -239,6 +244,18 @@ public class IMFileManager extends IMBaseManager {
                     try {
                         byte[] rsp = (byte[]) response;
                         XFileProtocol.File responseFile = XFileProtocol.File.parseFrom(rsp);
+
+                        // TODO 通知界面进度
+                        readIndex = responseFile.getPosition();
+                        long temPercent = readIndex * 100 / responseFile.getLength();
+                        if (readPercent < temPercent) {
+                            readPercent = temPercent;
+                            FileSendEvent event = new FileSendEvent(FileEvent.SET_FILE_SET);
+                            TFileInfo tFile = XFileUtils.buildTFile(responseFile);
+                            tFile.setPercent(readPercent);
+                            event.setFileInfo(tFile);
+                            EventBus.getDefault().post(event);
+                        }
 
                         if (!isCancel) {
                             // 正常收到答复继续传送文件
@@ -277,6 +294,10 @@ public class IMFileManager extends IMBaseManager {
             } else if (XFileApplication.connect_type == 2) {
                 IMServerFileManager.getInstance().sendMessage(sid, cid, responseFile.build(), packetlistener, (short) 0);
             }
+
+
+            // TODO 保存数据库进度
+
 //            logger.e("****setFileSend");
         } catch (Exception e) {
             e.printStackTrace();
@@ -362,6 +383,11 @@ public class IMFileManager extends IMBaseManager {
             } else {
                 sid = SysConstant.SERVICE_TASK_CHECK_FAILED;
             }
+
+            writeIndex = requestFile.getPosition();
+            writeLength = requestFile.getLength();
+            writePercent = writeIndex * 100 / writeLength;
+
             // 答复发送端创建成功
             if (XFileApplication.connect_type == 1) {
                 IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, header.getSeqnum());
@@ -424,11 +450,24 @@ public class IMFileManager extends IMBaseManager {
                         EventBus.getDefault().post(event);
                     }
                 };
+                writeIndex = requestFile.getPosition();
+                long tempPercent = writeIndex * 100 / requestFile.getLength();
+                if (writePercent < tempPercent) {
+                    writePercent = tempPercent;
+                    // TODO 更新接收状态
+                    FileReceiveEvent event = new FileReceiveEvent(FileEvent.SET_FILE_SET);
+                    TFileInfo tFile = XFileUtils.buildTFile(requestFile);
+                    tFile.setPercent(readPercent);
+                    event.setFileInfo(tFile);
+                    EventBus.getDefault().post(event);
+                }
 
                 if (requestFile.getPosition() + fileData.length == requestFile.getLength()) {
                     // 文件发送完成,提醒接收端结束状态
                     FileReceiveEvent event = new FileReceiveEvent(FileEvent.SET_FILE_SUCCESS);
                     TFileInfo tFile = XFileUtils.buildTFile(requestFile);
+                    tFile.setPercent(100);
+                    writePercent = 100;
                     event.setFileInfo(tFile);
                     EventBus.getDefault().post(event);
                 }

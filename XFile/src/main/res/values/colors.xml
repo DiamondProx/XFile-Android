@@ -36,6 +36,7 @@
 
     <color name="translucent_background">#80000000</color>
     <color name="orange">#FFBD5F</color>
+    <color name="red">#ffff4444</color>
 
 
 </resources>
