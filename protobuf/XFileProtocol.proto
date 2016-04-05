@@ -23,6 +23,7 @@ message File{
   required string extension = 7;
   required string full_name = 8;
   required string task_id = 9;
+  optional string from = 10;
 }
 message Chat{
  required string content = 1;

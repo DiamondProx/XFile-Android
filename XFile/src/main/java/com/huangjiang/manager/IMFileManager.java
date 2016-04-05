@@ -1,5 +1,6 @@
 package com.huangjiang.manager;
 
+import android.os.Build;
 import android.os.Environment;
 
 import com.google.protobuf.ByteString;
@@ -325,13 +326,15 @@ public class IMFileManager extends IMBaseManager {
 
 
             // 答复发送端创建成功
+            XFileProtocol.File.Builder responseFile = requestFile.toBuilder();
+            responseFile.setFrom(Build.MODEL);
             short sid = SysConstant.SERVICE_FILE_NEW_SUCCESS;
             short cid = SysConstant.CMD_FILE_NEW_RSP;
 
             if (XFileApplication.connect_type == 1) {
-                IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, header.getSeqnum());
+                IMClientMessageManager.getInstance().sendMessage(sid, cid, responseFile.build(), header.getSeqnum());
             } else {
-                IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, header.getSeqnum());
+                IMServerMessageManager.getInstance().sendMessage(sid, cid, responseFile.build(), null, header.getSeqnum());
             }
             // 发送Event消息,通知界面
             FileReceiveEvent event = new FileReceiveEvent(FileEvent.CREATE_FILE_SUCCESS);

@@ -307,6 +307,7 @@ public class XFileUtils {
         tFile.setExtension(fileInfo.getExtension());
         tFile.setFull_name(fileInfo.getFullName());
         tFile.setTask_id(fileInfo.getTaskId());
+        tFile.setFrom(fileInfo.getFrom());
         return tFile;
     }
 

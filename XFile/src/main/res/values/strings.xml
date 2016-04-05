@@ -51,4 +51,6 @@
     <string name="transfer">传输</string>
     <string name="multi_select">多选</string>
     <string name="play">播放</string>
+    <string name="send_to">发送给 %1$s</string>
+    <string name="receive_from">接收自 %1$s</string>
 </resources>

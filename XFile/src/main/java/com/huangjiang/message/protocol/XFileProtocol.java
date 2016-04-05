@@ -1843,6 +1843,20 @@ public final class XFileProtocol {
      */
     com.google.protobuf.ByteString
         getTaskIdBytes();
+
+    /**
+     * <code>optional string from = 10;</code>
+     */
+    boolean hasFrom();
+    /**
+     * <code>optional string from = 10;</code>
+     */
+    String getFrom();
+    /**
+     * <code>optional string from = 10;</code>
+     */
+    com.google.protobuf.ByteString
+        getFromBytes();
   }
   /**
    * Protobuf type {@code com.huangjiang.message.protocol.File}
@@ -1945,6 +1959,12 @@ public final class XFileProtocol {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000100;
               taskId_ = bs;
+              break;
+            }
+            case 82: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000200;
+              from_ = bs;
               break;
             }
           }
@@ -2284,6 +2304,48 @@ public final class XFileProtocol {
       }
     }
 
+    public static final int FROM_FIELD_NUMBER = 10;
+    private Object from_;
+    /**
+     * <code>optional string from = 10;</code>
+     */
+    public boolean hasFrom() {
+      return ((bitField0_ & 0x00000200) == 0x00000200);
+    }
+    /**
+     * <code>optional string from = 10;</code>
+     */
+    public String getFrom() {
+      Object ref = from_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          from_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string from = 10;</code>
+     */
+    public com.google.protobuf.ByteString
+        getFromBytes() {
+      Object ref = from_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        from_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       name_ = "";
       md5_ = "";
@@ -2294,6 +2356,7 @@ public final class XFileProtocol {
       extension_ = "";
       fullName_ = "";
       taskId_ = "";
+      from_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2371,6 +2434,9 @@ public final class XFileProtocol {
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         output.writeBytes(9, getTaskIdBytes());
       }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeBytes(10, getFromBytes());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -2415,6 +2481,10 @@ public final class XFileProtocol {
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(9, getTaskIdBytes());
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(10, getFromBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2551,6 +2621,8 @@ public final class XFileProtocol {
         bitField0_ = (bitField0_ & ~0x00000080);
         taskId_ = "";
         bitField0_ = (bitField0_ & ~0x00000100);
+        from_ = "";
+        bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
 
@@ -2615,6 +2687,10 @@ public final class XFileProtocol {
           to_bitField0_ |= 0x00000100;
         }
         result.taskId_ = taskId_;
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000200;
+        }
+        result.from_ = from_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2668,6 +2744,11 @@ public final class XFileProtocol {
         if (other.hasTaskId()) {
           bitField0_ |= 0x00000100;
           taskId_ = other.taskId_;
+          onChanged();
+        }
+        if (other.hasFrom()) {
+          bitField0_ |= 0x00000200;
+          from_ = other.from_;
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -3284,6 +3365,82 @@ public final class XFileProtocol {
   }
   bitField0_ |= 0x00000100;
         taskId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private Object from_ = "";
+      /**
+       * <code>optional string from = 10;</code>
+       */
+      public boolean hasFrom() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      /**
+       * <code>optional string from = 10;</code>
+       */
+      public String getFrom() {
+        Object ref = from_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            from_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>optional string from = 10;</code>
+       */
+      public com.google.protobuf.ByteString
+          getFromBytes() {
+        Object ref = from_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          from_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string from = 10;</code>
+       */
+      public Builder setFrom(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000200;
+        from_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string from = 10;</code>
+       */
+      public Builder clearFrom() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        from_ = getDefaultInstance().getFrom();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string from = 10;</code>
+       */
+      public Builder setFromBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000200;
+        from_ = value;
         onChanged();
         return this;
       }
@@ -5105,15 +5262,15 @@ public final class XFileProtocol {
       "\004port\030\002 \002(\r\022\021\n\tdevice_id\030\003 \002(\t\"\\\n\004Echo\022\n" +
       "\n\002ip\030\001 \002(\t\022\014\n\004name\030\002 \002(\t\022\024\n\014message_port" +
       "\030\003 \002(\r\022\021\n\tfile_port\030\004 \002(\r\022\021\n\tdevice_id\030\005" +
-      " \002(\t\"\226\001\n\004File\022\014\n\004name\030\001 \002(\t\022\013\n\003md5\030\002 \002(\t" +
+      " \002(\t\"\244\001\n\004File\022\014\n\004name\030\001 \002(\t\022\013\n\003md5\030\002 \002(\t" +
       "\022\014\n\004data\030\003 \002(\014\022\020\n\010position\030\004 \002(\003\022\016\n\006leng" +
       "th\030\005 \002(\003\022\014\n\004path\030\006 \002(\t\022\021\n\textension\030\007 \002(" +
-      "\t\022\021\n\tfull_name\030\010 \002(\t\022\017\n\007task_id\030\t \002(\t\";\n" +
-      "\004Chat\022\017\n\007content\030\001 \002(\t\022\024\n\014message_type\030\002",
-      " \002(\r\022\014\n\004from\030\003 \002(\t\"v\n\tShakeHand\022\014\n\004step\030" +
-      "\001 \002(\r\022\025\n\006verify\030\002 \001(\010:\005false\022\020\n\010password" +
-      "\030\003 \001(\t\022\r\n\005token\030\004 \001(\t\022\016\n\006result\030\005 \001(\010\022\023\n" +
-      "\013device_name\030\006 \001(\tB\002H\001"
+      "\t\022\021\n\tfull_name\030\010 \002(\t\022\017\n\007task_id\030\t \002(\t\022\014\n" +
+      "\004from\030\n \001(\t\";\n\004Chat\022\017\n\007content\030\001 \002(\t\022\024\n\014",
+      "message_type\030\002 \002(\r\022\014\n\004from\030\003 \002(\t\"v\n\tShak" +
+      "eHand\022\014\n\004step\030\001 \002(\r\022\025\n\006verify\030\002 \001(\010:\005fal" +
+      "se\022\020\n\010password\030\003 \001(\t\022\r\n\005token\030\004 \001(\t\022\016\n\006r" +
+      "esult\030\005 \001(\010\022\023\n\013device_name\030\006 \001(\tB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -5144,7 +5301,7 @@ public final class XFileProtocol {
     internal_static_com_huangjiang_message_protocol_File_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_huangjiang_message_protocol_File_descriptor,
-        new String[] { "Name", "Md5", "Data", "Position", "Length", "Path", "Extension", "FullName", "TaskId", });
+        new String[] { "Name", "Md5", "Data", "Position", "Length", "Path", "Extension", "FullName", "TaskId", "From", });
     internal_static_com_huangjiang_message_protocol_Chat_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_com_huangjiang_message_protocol_Chat_fieldAccessorTable = new

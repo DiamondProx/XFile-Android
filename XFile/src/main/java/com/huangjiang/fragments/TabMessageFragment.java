@@ -206,6 +206,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             sendFile.setTaskId(SysConstant.TEMP_TASK_ID);
             sendFile.setData(ByteString.copyFrom("1".getBytes()));
             sendFile.setLength(file.length());
+            sendFile.setFrom(android.os.Build.MODEL);
             IMFileManager.getInstance().startTransferFile(sendFile.build());
         }
 
@@ -327,7 +328,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             if (message != null) {
                 videoHolder.headImg.setImageResource(R.mipmap.avatar_default);
                 videoHolder.fileImg.setImageResource(R.mipmap.data_folder_documents_placeholder);
-                videoHolder.from.setText(String.format(getString(R.string.from), message.getFrom()));
+                videoHolder.from.setText(message.getFrom());
                 videoHolder.name.setText(message.getFull_name());
                 videoHolder.size.setText("1024kb");
 
@@ -364,13 +365,17 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         viewPager.setCurrentItem(index);
     }
 
+    /*
+     * 接收文件
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(FileReceiveEvent fileEvent) {
-        // 接收文件状态
+
         FileEvent e = fileEvent.getEvent();
         switch (e) {
             case CREATE_FILE_SUCCESS:
                 TFileInfo receiveFile = fileEvent.getFileInfo();
+                receiveFile.setFrom(getString(R.string.receive_from, receiveFile.getFrom()));
                 receiveFile.setIs_send(false);
                 listMessage.add(receiveFile);
                 adpater.notifyDataSetChanged();
@@ -381,14 +386,18 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         }
     }
 
+    /*
+     *  发送文件
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(FileSendEvent fileEvent) {
-        // 发送文件状态
+
         FileEvent e = fileEvent.getEvent();
         switch (e) {
             case CREATE_FILE_SUCCESS:
                 TFileInfo receiveFile = fileEvent.getFileInfo();
                 receiveFile.setIs_send(true);
+                receiveFile.setFrom(getString(R.string.send_to, receiveFile.getFrom()));
                 listMessage.add(receiveFile);
                 adpater.notifyDataSetChanged();
                 break;
