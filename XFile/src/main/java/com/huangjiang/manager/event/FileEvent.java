@@ -13,6 +13,6 @@ public enum FileEvent {
     SET_FILE_FAILED,
     SET_FILE_STOP,
     SET_FILE_RESUME,
-    SET_FILE_SET
+    SET_FILE
 
 }

@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,20 +84,24 @@ public class XFileUtils {
      */
     public static String getFolderSizeString(long size) {
         String sizeStr = null;
-        long kb = 1024;
-        long mb = kb * 1024;
-        long gb = mb * 1024;
+        float kb = 1024;
+        float mb = kb * 1024;
+        float gb = mb * 1024;
+        DecimalFormat fnum = new DecimalFormat("##0.00");
         if (size < kb) {
             sizeStr = size + "bit";
         } else if (size < mb) {
-            size = size / kb;
-            sizeStr = size + "KB";
+            float showSize = (float) size / kb;
+            fnum.format(showSize);
+            sizeStr = fnum.format(showSize) + "KB";
         } else if (size < gb) {
-            size = size / mb;
-            sizeStr = size + "MB";
+            float showSize = (float) size / mb;
+            fnum.format(showSize);
+            sizeStr = fnum.format(showSize) + "MB";
         } else {
-            size = size / gb;
-            sizeStr = size + "GB";
+            float showSize = (float) size / gb;
+            fnum.format(showSize);
+            sizeStr = fnum.format(showSize) + "GB";
         }
         return sizeStr;
     }
@@ -297,6 +302,7 @@ public class XFileUtils {
         sendFile.setTaskId(fileInfo.getTask_id());
         return sendFile.build();
     }
+
     public static TFileInfo buildTFile(XFileProtocol.File fileInfo) {
         TFileInfo tFile = new TFileInfo();
         tFile.setName(fileInfo.getName());

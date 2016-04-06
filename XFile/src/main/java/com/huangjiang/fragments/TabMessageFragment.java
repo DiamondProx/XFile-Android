@@ -269,10 +269,12 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
     class TransferMessageAdpater extends BaseAdapter {
 
         private LayoutInflater mInflater;
+        private Context mContext;
 
 
         public TransferMessageAdpater(Context context) {
             mInflater = LayoutInflater.from(context);
+            this.mContext = context;
         }
 
         @Override
@@ -290,6 +292,16 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             for (TFileInfo fileInfo : listMessage) {
                 if (taskId.equals(fileInfo.getTask_id())) {
                     fileInfo.setPercent(percent);
+                    break;
+                }
+            }
+        }
+
+        public void setState(String taskId, FileEvent state) {
+            for (TFileInfo fileInfo : listMessage) {
+                if (taskId.equals(fileInfo.getTask_id())) {
+                    fileInfo.setStateEvent(state);
+                    break;
                 }
             }
         }
@@ -322,6 +334,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 videoHolder = new VideoViewHoler();
                 if (!isSend) {
                     convertView = mInflater.inflate(R.layout.listview_transfer_message_revice, null);
+                    videoHolder.btn_step = (Button) convertView.findViewById(R.id.setup);
                 } else {
                     convertView = mInflater.inflate(R.layout.listview_transfer_message_send, null);
                 }
@@ -333,6 +346,8 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 videoHolder.size = (TextView) convertView.findViewById(R.id.fileSize);
                 videoHolder.remainPercent = (TextView) convertView.findViewById(R.id.remainPercent);
                 videoHolder.status = (TextView) convertView.findViewById(R.id.status);
+                videoHolder.line1 = (TextView) convertView.findViewById(R.id.tv_line1);
+                videoHolder.line2 = (TextView) convertView.findViewById(R.id.tv_line2);
                 convertView.setTag(videoHolder);
             } else {
                 videoHolder = (VideoViewHoler) convertView.getTag();
@@ -343,7 +358,126 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 videoHolder.from.setText(message.getFrom());
                 videoHolder.name.setText(message.getFull_name());
                 videoHolder.size.setText(XFileUtils.getFolderSizeString(message.getLength()));
-                videoHolder.remainPercent.setText(String.valueOf(message.getPercent()));
+                videoHolder.remainPercent.setText(String.format(mContext.getString(R.string.percent), message.getPercent()));
+
+                FileEvent stateEvent = message.getStateEvent();
+                String stateStr = "";
+                if (stateEvent != null) {
+                    switch (stateEvent) {
+                        case CREATE_FILE_SUCCESS:
+                            stateStr = "创建成功";
+                            break;
+                        case CREATE_FILE_FAILED:
+                            stateStr = "创建失败";
+                            break;
+                        case CHECK_TASK_SUCCESS:
+                            stateStr = "校验成功";
+                            break;
+                        case CHECK_TASK_FAILED:
+                            stateStr = "校验失败";
+                            break;
+                        case SET_FILE_SUCCESS:
+                            stateStr = "发送完成";
+                            break;
+                        case SET_FILE_FAILED:
+                            stateStr = "发送失败";
+                            break;
+                        case SET_FILE_STOP:
+                            stateStr = "暂停";
+                            break;
+                        case SET_FILE_RESUME:
+                            stateStr = "暂停";
+                            break;
+                        case SET_FILE:
+                            stateStr = "传输中";
+                            break;
+                    }
+                    videoHolder.status.setText(stateStr);
+
+                    if (!isSend) {
+                        switch (stateEvent) {
+                            case CREATE_FILE_SUCCESS:
+                                videoHolder.btn_step.setVisibility(View.GONE);
+                                break;
+                            case CREATE_FILE_FAILED:
+                                videoHolder.btn_step.setText("重试");
+                                videoHolder.btn_step.setVisibility(View.VISIBLE);
+                                break;
+                            case CHECK_TASK_SUCCESS:
+                                videoHolder.btn_step.setVisibility(View.GONE);
+                                break;
+                            case CHECK_TASK_FAILED:
+                                videoHolder.btn_step.setText("重试");
+                                videoHolder.btn_step.setVisibility(View.VISIBLE);
+                                break;
+                            case SET_FILE_SUCCESS:
+                                videoHolder.btn_step.setText("查看");
+                                videoHolder.btn_step.setVisibility(View.VISIBLE);
+                                break;
+                            case SET_FILE_FAILED:
+                                videoHolder.btn_step.setText("重试");
+                                videoHolder.btn_step.setVisibility(View.VISIBLE);
+                                break;
+                            case SET_FILE_STOP:
+                                videoHolder.btn_step.setText("继续");
+                                videoHolder.btn_step.setVisibility(View.VISIBLE);
+                                break;
+                            case SET_FILE_RESUME:
+                                videoHolder.btn_step.setText("继续");
+                                videoHolder.btn_step.setVisibility(View.VISIBLE);
+                                break;
+                            case SET_FILE:
+                                videoHolder.btn_step.setText("暂停");
+                                videoHolder.btn_step.setVisibility(View.VISIBLE);
+                                break;
+                        }
+
+                        videoHolder.btn_step.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                FileEvent stateEvent = message.getStateEvent();
+                                if (stateEvent != null) {
+                                    switch (stateEvent) {
+                                        case CREATE_FILE_SUCCESS:
+
+                                            break;
+                                        case CREATE_FILE_FAILED:
+
+                                            break;
+                                        case CHECK_TASK_SUCCESS:
+
+                                            break;
+                                        case CHECK_TASK_FAILED:
+
+                                            break;
+                                        case SET_FILE_SUCCESS:
+
+                                            break;
+                                        case SET_FILE_FAILED:
+
+                                            break;
+                                        case SET_FILE_STOP:
+                                            Toast.makeText(getActivity(),"点了继续",Toast.LENGTH_SHORT).show();
+                                            IMFileManager.getInstance().resumeReceive(message);
+                                            break;
+                                        case SET_FILE_RESUME:
+
+                                            break;
+                                        case SET_FILE:
+                                            IMFileManager.getInstance().stopReceive();
+                                            break;
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+
+                } else {
+                    videoHolder.status.setVisibility(View.GONE);
+                    videoHolder.line1.setVisibility(View.GONE);
+                }
+
 
             }
             return convertView;
@@ -357,6 +491,8 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             TextView size;
             TextView remainPercent;
             TextView status;
+            TextView line1, line2;
+            Button btn_step;
         }
 
     }
@@ -388,21 +524,30 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
         FileEvent e = fileEvent.getEvent();
         switch (e) {
-            case CREATE_FILE_SUCCESS:
+            case CREATE_FILE_SUCCESS: {
                 TFileInfo receiveFile = fileEvent.getFileInfo();
                 receiveFile.setFrom(getString(R.string.receive_from, receiveFile.getFrom()));
                 receiveFile.setIs_send(false);
                 listMessage.add(receiveFile);
+                adpater.setState(receiveFile.getTask_id(), e);
                 adpater.notifyDataSetChanged();
-                break;
-            case SET_FILE_SUCCESS:
-                Toast.makeText(getActivity(), "receive_success", Toast.LENGTH_SHORT).show();
-                break;
-            case SET_FILE_SET:
+            }
+            break;
+            case SET_FILE_SUCCESS: {
+                TFileInfo receiveFile = fileEvent.getFileInfo();
+                adpater.setState(receiveFile.getTask_id(), e);
+                adpater.notifyDataSetChanged();
+            }
+            break;
+            case SET_FILE:
+            case SET_FILE_STOP:
+            {
                 TFileInfo setFile = fileEvent.getFileInfo();
                 adpater.setPercent(setFile.getTask_id(), setFile.getPercent());
+                adpater.setState(setFile.getTask_id(), e);
                 adpater.notifyDataSetChanged();
-                break;
+            }
+            break;
         }
     }
 
@@ -414,24 +559,40 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
         FileEvent e = fileEvent.getEvent();
         switch (e) {
-            case CREATE_FILE_SUCCESS:
+            case CREATE_FILE_SUCCESS: {
                 TFileInfo receiveFile = fileEvent.getFileInfo();
                 receiveFile.setIs_send(true);
                 receiveFile.setFrom(getString(R.string.send_to, receiveFile.getFrom()));
                 listMessage.add(receiveFile);
+                adpater.setState(receiveFile.getTask_id(), e);
                 adpater.notifyDataSetChanged();
-                break;
-            case CHECK_TASK_FAILED:
-                Toast.makeText(getActivity(), "check_failed", Toast.LENGTH_SHORT).show();
-                break;
-            case SET_FILE_SUCCESS:
-                Toast.makeText(getActivity(), "send_success", Toast.LENGTH_SHORT).show();
-                break;
-            case SET_FILE_SET:
+            }
+
+            break;
+            case CHECK_TASK_FAILED: {
+                TFileInfo receiveFile = fileEvent.getFileInfo();
+                adpater.setState(receiveFile.getTask_id(), e);
+                adpater.notifyDataSetChanged();
+            }
+
+            break;
+            case SET_FILE_SUCCESS: {
+                TFileInfo receiveFile = fileEvent.getFileInfo();
+                adpater.setState(receiveFile.getTask_id(), e);
+                adpater.notifyDataSetChanged();
+            }
+
+            break;
+            case SET_FILE:
+            case SET_FILE_STOP:
+            {
                 TFileInfo setFile = fileEvent.getFileInfo();
                 adpater.setPercent(setFile.getTask_id(), setFile.getPercent());
+                adpater.setState(setFile.getTask_id(), e);
                 adpater.notifyDataSetChanged();
-                break;
+            }
+
+            break;
         }
     }
 }

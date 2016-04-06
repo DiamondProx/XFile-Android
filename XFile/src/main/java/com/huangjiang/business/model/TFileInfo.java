@@ -1,5 +1,7 @@
 package com.huangjiang.business.model;
 
+import com.huangjiang.manager.event.FileEvent;
+
 /**
  * 传输文件实体
  */
@@ -28,6 +30,7 @@ public class TFileInfo {
     private boolean is_send;// 是否发送方
     private String from;//发送方
     private long percent;// 百分比
+    private FileEvent stateEvent;//传输状态
 
     public String getName() {
         return name;
@@ -115,5 +118,13 @@ public class TFileInfo {
 
     public void setPercent(long percent) {
         this.percent = percent;
+    }
+
+    public FileEvent getStateEvent() {
+        return stateEvent;
+    }
+
+    public void setStateEvent(FileEvent stateEvent) {
+        this.stateEvent = stateEvent;
     }
 }

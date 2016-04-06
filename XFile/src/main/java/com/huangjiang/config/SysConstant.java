@@ -55,6 +55,8 @@ public class SysConstant {
 
     public static final short SERVICE_FILE_SET_FAILED = 0x93;//保存文件失败-接收文件步骤3
 
+    public static final short SERVICE_FILE_SET_STOP = 0x92;//暂停接收文件
+
     public static final boolean VERIFY = false;// 是否需要密码验证
 
     public static final String PASS_WORD = "123456";// 后台密码
