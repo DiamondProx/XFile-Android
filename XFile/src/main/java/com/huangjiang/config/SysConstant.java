@@ -31,6 +31,12 @@ public class SysConstant {
 
     public static final short CMD_FILE_SET_RSP = 0x12;//文件保存-发送文件步骤3答复
 
+    public static final short CMD_FILE_RESUME = 0x13;//文件保存-短点续传
+
+    public static final short CMD_FILE_CANCEL = 0x14;//文件取消
+
+    public static final short CMD_FILE_CANCEL_RSP = 0x15;//文件取消-答复
+
     public static final String BROADCASE_ADDRESS = "255.255.255.255";//广播地址
 
     public static final int BROADCASE_PORT = 8081;// 发现设备服务器端口

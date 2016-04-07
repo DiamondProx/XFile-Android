@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,6 +31,8 @@ import com.huangjiang.manager.event.FileReceiveEvent;
 import com.huangjiang.manager.event.FileSendEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.view.MenuItem;
+import com.huangjiang.view.PopupMenu;
 import com.huangjiang.view.TabBar;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,7 +43,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TabMessageFragment extends Fragment implements TabBar.OnTabListener, ViewPager.OnPageChangeListener, View.OnClickListener {
+public class TabMessageFragment extends Fragment implements TabBar.OnTabListener, ViewPager.OnPageChangeListener, View.OnClickListener, AdapterView.OnItemClickListener, PopupMenu.OnItemSelectedListener {
 
 
     List<View> list;
@@ -76,6 +79,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         btn_sendfile.setOnClickListener(this);
         adpater = new TransferMessageAdpater(getActivity());
         lv_message.setAdapter(adpater);
+        lv_message.setOnItemClickListener(this);
 
         View view_inbox = inflater.inflate(R.layout.page_inbox, null);
         video_layout = (LinearLayout) view_inbox.findViewById(R.id.video_layout);
@@ -214,6 +218,33 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        TFileInfo tFileInfo = listMessage.get(position);
+        PopupMenu menu = new PopupMenu(getActivity());
+        // Set Listener
+        menu.setOnItemSelectedListener(TabMessageFragment.this);
+        menu.setTFileInfo(tFileInfo);
+        // Add Menu (Android menu like style)
+        menu.add(0, R.string.transfer).setIcon(
+                getResources().getDrawable(R.mipmap.data_downmenu_send));
+        menu.add(1, R.string.multi_select).setIcon(
+                getResources().getDrawable(R.mipmap.data_downmenu_check));
+        menu.add(2, R.string.play).setIcon(
+                getResources().getDrawable(R.mipmap.data_downmenu_open));
+        menu.add(3, R.string.more).setIcon(
+                getResources().getDrawable(R.mipmap.data_downmenu_more));
+        menu.show(view);
+    }
+
+    @Override
+    public void onItemSelected(MenuItem item, TFileInfo tFileInfo) {
+        if (tFileInfo != null) {
+            Toast.makeText(getActivity(), "clickMemu", Toast.LENGTH_SHORT).show();
+            IMFileManager.getInstance().cancelTask(tFileInfo);
+        }
+    }
+
 
     class MyPagerAdapter extends PagerAdapter {
 
@@ -287,11 +318,21 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             return listMessage == null ? null : listMessage.get(position);
         }
 
-        public void setPercent(String taskId, long percent) {
+//        public void setPercent(String taskId, long percent) {
+//
+//            for (TFileInfo fileInfo : listMessage) {
+//                if (taskId.equals(fileInfo.getTask_id())) {
+//                    fileInfo.setPercent(percent);
+//                    break;
+//                }
+//            }
+//        }
 
+        public void setTFileInfo(TFileInfo tFileInfo) {
             for (TFileInfo fileInfo : listMessage) {
-                if (taskId.equals(fileInfo.getTask_id())) {
-                    fileInfo.setPercent(percent);
+                if (tFileInfo.getTask_id().equals(fileInfo.getTask_id())) {
+                    fileInfo.setPercent(tFileInfo.getPercent());
+                    fileInfo.setPostion(tFileInfo.getPostion());
                     break;
                 }
             }
@@ -301,6 +342,24 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             for (TFileInfo fileInfo : listMessage) {
                 if (taskId.equals(fileInfo.getTask_id())) {
                     fileInfo.setStateEvent(state);
+                    break;
+                }
+            }
+        }
+
+        public TFileInfo getTFileByTaskId(String taskId) {
+            for (TFileInfo fileInfo : listMessage) {
+                if (taskId.equals(fileInfo.getTask_id())) {
+                    return fileInfo;
+                }
+            }
+            return null;
+        }
+
+        public void cancelTask(TFileInfo tFileInfo) {
+            for (TFileInfo fileInfo : listMessage) {
+                if (tFileInfo.getTask_id().equals(fileInfo.getTask_id())) {
+                    listMessage.remove(fileInfo);
                     break;
                 }
             }
@@ -323,6 +382,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 return SEND_MESSAGE;
             }
         }
+
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -431,43 +491,48 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                                 videoHolder.btn_step.setVisibility(View.VISIBLE);
                                 break;
                         }
-
+                        videoHolder.btn_step.setTag(message.getTask_id());
                         videoHolder.btn_step.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                FileEvent stateEvent = message.getStateEvent();
-                                if (stateEvent != null) {
-                                    switch (stateEvent) {
-                                        case CREATE_FILE_SUCCESS:
+                                if (v.getTag() != null) {
+                                    String taskId = (String) v.getTag();
+                                    TFileInfo taskInfo = getTFileByTaskId(taskId);
+                                    FileEvent stateEvent = taskInfo.getStateEvent();
+                                    if (stateEvent != null) {
+                                        switch (stateEvent) {
+                                            case CREATE_FILE_SUCCESS:
 
-                                            break;
-                                        case CREATE_FILE_FAILED:
+                                                break;
+                                            case CREATE_FILE_FAILED:
 
-                                            break;
-                                        case CHECK_TASK_SUCCESS:
+                                                break;
+                                            case CHECK_TASK_SUCCESS:
 
-                                            break;
-                                        case CHECK_TASK_FAILED:
+                                                break;
+                                            case CHECK_TASK_FAILED:
 
-                                            break;
-                                        case SET_FILE_SUCCESS:
+                                                break;
+                                            case SET_FILE_SUCCESS:
 
-                                            break;
-                                        case SET_FILE_FAILED:
+                                                break;
+                                            case SET_FILE_FAILED:
 
-                                            break;
-                                        case SET_FILE_STOP:
-                                            Toast.makeText(getActivity(),"点了继续",Toast.LENGTH_SHORT).show();
-                                            IMFileManager.getInstance().resumeReceive(message);
-                                            break;
-                                        case SET_FILE_RESUME:
+                                                break;
+                                            case SET_FILE_STOP:
+                                                Toast.makeText(getActivity(), "点了继续", Toast.LENGTH_SHORT).show();
+                                                IMFileManager.getInstance().resumeReceive(taskInfo);
+                                                break;
+                                            case SET_FILE_RESUME:
 
-                                            break;
-                                        case SET_FILE:
-                                            IMFileManager.getInstance().stopReceive();
-                                            break;
+                                                break;
+                                            case SET_FILE:
+                                                IMFileManager.getInstance().stopReceive();
+                                                break;
+                                        }
                                     }
                                 }
+
                             }
                         });
                     }
@@ -540,13 +605,19 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             }
             break;
             case SET_FILE:
-            case SET_FILE_STOP:
-            {
+            case SET_FILE_STOP: {
                 TFileInfo setFile = fileEvent.getFileInfo();
-                adpater.setPercent(setFile.getTask_id(), setFile.getPercent());
+                adpater.setTFileInfo(setFile);
                 adpater.setState(setFile.getTask_id(), e);
                 adpater.notifyDataSetChanged();
             }
+            break;
+            case CANCEL_FILE: {
+                TFileInfo setFile = fileEvent.getFileInfo();
+                adpater.cancelTask(setFile);
+                adpater.notifyDataSetChanged();
+            }
+
             break;
         }
     }
@@ -584,11 +655,15 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
             break;
             case SET_FILE:
-            case SET_FILE_STOP:
-            {
+            case SET_FILE_STOP: {
                 TFileInfo setFile = fileEvent.getFileInfo();
-                adpater.setPercent(setFile.getTask_id(), setFile.getPercent());
+                adpater.setTFileInfo(setFile);
                 adpater.setState(setFile.getTask_id(), e);
+                adpater.notifyDataSetChanged();
+            }
+            case CANCEL_FILE: {
+                TFileInfo setFile = fileEvent.getFileInfo();
+                adpater.cancelTask(setFile);
                 adpater.notifyDataSetChanged();
             }
 

@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.filetransfer.R;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class PopupMenu {
     private View mContentView;
     private ListViewForScrollView mItemsView;
     private OnItemSelectedListener mListener;
+    private TFileInfo tFileInfo;
 
     private List<MenuItem> mItems;
     private int mWidth = 240;
@@ -77,6 +79,10 @@ public class PopupMenu {
         });
 
         setContentView(mInflater.inflate(R.layout.popup_menu, null));
+    }
+
+    public void setTFileInfo(TFileInfo tFileInfo) {
+        this.tFileInfo = tFileInfo;
     }
 
     /**
@@ -135,7 +141,7 @@ public class PopupMenu {
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
                 if (mListener != null) {
-                    mListener.onItemSelected(mItems.get(position));
+                    mListener.onItemSelected(mItems.get(position),tFileInfo);
                 }
                 mPopupWindow.dismiss();
             }
@@ -241,7 +247,7 @@ public class PopupMenu {
      * an item in this PopupMenu has been selected.
      */
     public interface OnItemSelectedListener {
-        public void onItemSelected(MenuItem item);
+        public void onItemSelected(MenuItem item, TFileInfo tFileInfo);
     }
 
     static class ViewHolder {
@@ -267,7 +273,7 @@ public class PopupMenu {
 
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.menu_list_item, null);
@@ -292,7 +298,7 @@ public class PopupMenu {
                     holder.arrow_up.setVisibility(View.GONE);
                     holder.arrow_down.setVisibility(View.VISIBLE);
                 }
-                holder.content_layout.setBackgroundResource(R.drawable.menu_blue_selector);
+                //holder.content_layout.setBackgroundResource(R.drawable.menu_blue_selector);
             } else if (position == 0) {
                 if (showUp) {
                     holder.arrow_up.setVisibility(View.VISIBLE);
@@ -323,6 +329,16 @@ public class PopupMenu {
                 holder.icon.setVisibility(View.GONE);
             }
             holder.title.setText(item.getTitle());
+
+            holder.content_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onItemSelected(mItems.get(position),tFileInfo);
+                    }
+                    dismiss();
+                }
+            });
 
             return convertView;
         }

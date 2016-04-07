@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
     android:background="@color/white">
 
 
@@ -129,6 +130,7 @@
         android:background="@drawable/setup_selector"
         android:text="查看"
         android:textColor="@color/white"
+
         android:visibility="gone" />
 
 

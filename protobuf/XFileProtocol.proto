@@ -24,6 +24,7 @@ message File{
   required string full_name = 8;
   required string task_id = 9;
   optional string from = 10;
+  optional bool is_send = 11;
 }
 message Chat{
  required string content = 1;

@@ -95,6 +95,8 @@ public class IMServerMessageManager extends IMBaseManager {
                 break;
             case SysConstant.CMD_FILE_NEW:
             case SysConstant.CMD_TASK_CHECK:
+            case SysConstant.CMD_FILE_RESUME:
+            case SysConstant.CMD_FILE_CANCEL:
                 IMFileManager.getInstance().dispatchMessage(header, body);
                 break;
 
