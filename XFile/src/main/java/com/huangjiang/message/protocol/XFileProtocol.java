@@ -1762,11 +1762,11 @@ public final class XFileProtocol {
         getMd5Bytes();
 
     /**
-     * <code>required bytes data = 3;</code>
+     * <code>optional bytes data = 3;</code>
      */
     boolean hasData();
     /**
-     * <code>required bytes data = 3;</code>
+     * <code>optional bytes data = 3;</code>
      */
     com.google.protobuf.ByteString getData();
 
@@ -2108,13 +2108,13 @@ public final class XFileProtocol {
     public static final int DATA_FIELD_NUMBER = 3;
     private com.google.protobuf.ByteString data_;
     /**
-     * <code>required bytes data = 3;</code>
+     * <code>optional bytes data = 3;</code>
      */
     public boolean hasData() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required bytes data = 3;</code>
+     * <code>optional bytes data = 3;</code>
      */
     public com.google.protobuf.ByteString getData() {
       return data_;
@@ -2399,10 +2399,6 @@ public final class XFileProtocol {
         return false;
       }
       if (!hasMd5()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasData()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -2810,10 +2806,6 @@ public final class XFileProtocol {
           
           return false;
         }
-        if (!hasData()) {
-          
-          return false;
-        }
         if (!hasPosition()) {
           
           return false;
@@ -3014,19 +3006,19 @@ public final class XFileProtocol {
 
       private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>required bytes data = 3;</code>
+       * <code>optional bytes data = 3;</code>
        */
       public boolean hasData() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required bytes data = 3;</code>
+       * <code>optional bytes data = 3;</code>
        */
       public com.google.protobuf.ByteString getData() {
         return data_;
       }
       /**
-       * <code>required bytes data = 3;</code>
+       * <code>optional bytes data = 3;</code>
        */
       public Builder setData(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -3038,7 +3030,7 @@ public final class XFileProtocol {
         return this;
       }
       /**
-       * <code>required bytes data = 3;</code>
+       * <code>optional bytes data = 3;</code>
        */
       public Builder clearData() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -5341,7 +5333,7 @@ public final class XFileProtocol {
       "\n\002ip\030\001 \002(\t\022\014\n\004name\030\002 \002(\t\022\024\n\014message_port" +
       "\030\003 \002(\r\022\021\n\tfile_port\030\004 \002(\r\022\021\n\tdevice_id\030\005" +
       " \002(\t\"\265\001\n\004File\022\014\n\004name\030\001 \002(\t\022\013\n\003md5\030\002 \002(\t" +
-      "\022\014\n\004data\030\003 \002(\014\022\020\n\010position\030\004 \002(\003\022\016\n\006leng" +
+      "\022\014\n\004data\030\003 \001(\014\022\020\n\010position\030\004 \002(\003\022\016\n\006leng" +
       "th\030\005 \002(\003\022\014\n\004path\030\006 \002(\t\022\021\n\textension\030\007 \002(" +
       "\t\022\021\n\tfull_name\030\010 \002(\t\022\017\n\007task_id\030\t \002(\t\022\014\n" +
       "\004from\030\n \001(\t\022\017\n\007is_send\030\013 \001(\010\";\n\004Chat\022\017\n\007",

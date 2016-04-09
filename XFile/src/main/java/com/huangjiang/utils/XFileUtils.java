@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -300,6 +301,7 @@ public class XFileUtils {
         sendFile.setExtension(fileInfo.getExtension());
         sendFile.setFullName(fileInfo.getFull_name());
         sendFile.setTaskId(fileInfo.getTask_id());
+        sendFile.setIsSend(fileInfo.is_send());
         return sendFile.build();
     }
 
@@ -315,6 +317,11 @@ public class XFileUtils {
         tFile.setTask_id(fileInfo.getTaskId());
         tFile.setFrom(fileInfo.getFrom());
         return tFile;
+    }
+
+    public static String buildTaskId() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
     }
 
 }

@@ -21,6 +21,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -43,6 +45,8 @@ public class IMFileManager extends IMBaseManager {
     private boolean isTransmit = false;
     private boolean isCancel = false;
     private boolean isCancelReceive = false;
+
+    private List<XFileProtocol.File> taskFile = new ArrayList<>();
 
 
     private static IMFileManager inst = null;
@@ -89,20 +93,30 @@ public class IMFileManager extends IMBaseManager {
                     XFileProtocol.File rspTask = XFileProtocol.File.parseFrom(rsp);
                     XFileProtocol.File.Builder reqTask = rspTask.toBuilder();
                     reqTask.setIsSend(true);
+                    // 加入缓存列表
+                    taskFile.add(rspTask);
+
+                    // 发送Event消息,通知界面
+                    FileSendEvent createEvent = new FileSendEvent(FileEvent.CREATE_FILE_SUCCESS);
+                    TFileInfo tFile1 = XFileUtils.buildTFile(rspTask);
+                    createEvent.setFileInfo(tFile1);
+                    EventBus.getDefault().post(createEvent);
+                    logger.e("****createTaskSuccess");
+
                     if (!isTransmit) {
                         // 没有正在传输的任务,直接校验任务合法性
-//                        isTransmit = true;
+                        isTransmit = true;
                         checkTask(reqTask.build());
                     } else {
-                        // TODO 正在传输文件,保存任务为准备传输状态
+                        // 正在传输文件,保存任务为准备传输状态
                         // saveTask();
+                        // 发送Event消息,通知界面
+                        FileSendEvent event = new FileSendEvent(FileEvent.WAITING);
+                        TFileInfo tFile = XFileUtils.buildTFile(rspTask);
+                        event.setFileInfo(tFile);
+                        EventBus.getDefault().post(event);
+                        logger.e("****createTaskSuccess");
                     }
-                    // 发送Event消息,通知界面
-                    FileSendEvent event = new FileSendEvent(FileEvent.CREATE_FILE_SUCCESS);
-                    TFileInfo tFile = XFileUtils.buildTFile(rspTask);
-                    event.setFileInfo(tFile);
-                    EventBus.getDefault().post(event);
-                    logger.e("****createTaskSuccess");
 
 
                 } catch (Exception e) {
@@ -151,9 +165,9 @@ public class IMFileManager extends IMBaseManager {
                     return;
                 }
                 try {
-                    FileSendEvent event = new FileSendEvent(FileEvent.CHECK_TASK_SUCCESS);
-                    event.setTaskId(checkTask.getTaskId());
-                    EventBus.getDefault().post(event);
+                    FileSendEvent checkEvent = new FileSendEvent(FileEvent.CHECK_TASK_SUCCESS);
+                    checkEvent.setTaskId(checkTask.getTaskId());
+                    EventBus.getDefault().post(checkEvent);
                     logger.e("***checkTaskSuccess");
                     byte[] rsp = (byte[]) response;
                     XFileProtocol.File rspTask = XFileProtocol.File.parseFrom(rsp);
@@ -165,9 +179,7 @@ public class IMFileManager extends IMBaseManager {
                     } else {
 
                     }
-//                    if (isTransmit) {
 
-//                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.e(e.getMessage());
@@ -200,16 +212,6 @@ public class IMFileManager extends IMBaseManager {
         logger.e("****checkTaskSend");
     }
 
-    public boolean startTransferFile(final XFileProtocol.File requestFile) {
-//        if (isTransmit) {
-//            return false;
-//        }
-        readIndex = requestFile.getPosition();
-        writePercent = readIndex * 100 / requestFile.getLength();
-        createTask(requestFile);
-//        isTransmit = true;
-        return true;
-    }
 
     public void transferFile(final XFileProtocol.File requestFile) {
         short cid = SysConstant.CMD_FILE_SET;
@@ -252,7 +254,6 @@ public class IMFileManager extends IMBaseManager {
                         EventBus.getDefault().post(event);
                         return;
                     }
-
 
                     try {
                         byte[] rsp = (byte[]) response;
@@ -331,15 +332,15 @@ public class IMFileManager extends IMBaseManager {
         switch (header.getCommandId()) {
             case SysConstant.CMD_FILE_NEW:
                 // 新建接收文件任务
-                createNewFile(header, bodyData);
+                dispatchCreateTask(header, bodyData);
                 break;
             case SysConstant.CMD_TASK_CHECK:
                 // 检查任务是否存在/任务存在进入文件传输
-                checkTask(header, bodyData);
+                dispatchCheckTask(header, bodyData);
                 break;
             case SysConstant.CMD_FILE_SET:
                 // 保存文件/断点续传
-                receiveData(header, bodyData);
+                dispatchReceiveData(header, bodyData);
                 break;
             case SysConstant.CMD_FILE_RESUME:
                 // 断点续传
@@ -351,7 +352,7 @@ public class IMFileManager extends IMBaseManager {
         }
     }
 
-    void createNewFile(Header header, byte[] bodyData) {
+    void dispatchCreateTask(Header header, byte[] bodyData) {
         try {
             XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
 
@@ -373,6 +374,7 @@ public class IMFileManager extends IMBaseManager {
             // 答复发送端创建成功
             XFileProtocol.File.Builder responseFile = requestFile.toBuilder();
             responseFile.setFrom(Build.MODEL);
+            responseFile.setIsSend(false);
             short sid = SysConstant.SERVICE_FILE_NEW_SUCCESS;
             short cid = SysConstant.CMD_FILE_NEW_RSP;
 
@@ -381,11 +383,21 @@ public class IMFileManager extends IMBaseManager {
             } else {
                 IMServerMessageManager.getInstance().sendMessage(sid, cid, responseFile.build(), null, header.getSeqnum());
             }
-            // 发送Event消息,通知界面
-            FileReceiveEvent event = new FileReceiveEvent(FileEvent.CREATE_FILE_SUCCESS);
-            TFileInfo tFile = XFileUtils.buildTFile(requestFile);
-            event.setFileInfo(tFile);
-            EventBus.getDefault().post(event);
+            // 创建成功
+            FileReceiveEvent createEvent = new FileReceiveEvent(FileEvent.CREATE_FILE_SUCCESS);
+            TFileInfo tFile1 = XFileUtils.buildTFile(responseFile.build());
+            createEvent.setFileInfo(tFile1);
+            EventBus.getDefault().post(createEvent);
+
+            taskFile.add(responseFile.build());
+
+            if (isTransmit) {
+                // 发送Event消息,通知界面
+                FileReceiveEvent waitEvent = new FileReceiveEvent(FileEvent.WAITING);
+                TFileInfo tFile2 = XFileUtils.buildTFile(responseFile.build());
+                waitEvent.setFileInfo(tFile2);
+                EventBus.getDefault().post(waitEvent);
+            }
 
 
         } catch (Exception e) {
@@ -394,7 +406,7 @@ public class IMFileManager extends IMBaseManager {
         }
     }
 
-    void checkTask(Header header, byte[] bodyData) {
+    void dispatchCheckTask(Header header, byte[] bodyData) {
         try {
             XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
 
@@ -402,7 +414,8 @@ public class IMFileManager extends IMBaseManager {
             short cid = SysConstant.CMD_TASK_CHECK_RSP;
 
             // 判断本地是否有这个taskId,找不到这个taskId返回失败信息,停止传送/续传
-            if (SysConstant.TEMP_TASK_ID.equals(requestFile.getTaskId())) {
+            XFileProtocol.File rspFile = verifyTask(requestFile);
+            if (rspFile != null) {
                 sid = SysConstant.SERVICE_TASK_CHECK_SUCCESS;
             } else {
                 sid = SysConstant.SERVICE_TASK_CHECK_FAILED;
@@ -418,6 +431,8 @@ public class IMFileManager extends IMBaseManager {
             } else {
                 IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, header.getSeqnum());
             }
+            isTransmit = true;
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -429,7 +444,7 @@ public class IMFileManager extends IMBaseManager {
     /**
      * 接收保存文件
      */
-    void receiveData(Header header, byte[] bodyData) {
+    void dispatchReceiveData(Header header, byte[] bodyData) {
         try {
             final XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
             String savePath = XFileUtils.getStoragePathByExtension(requestFile.getExtension());
@@ -494,6 +509,7 @@ public class IMFileManager extends IMBaseManager {
                     writePercent = 100;
                     event.setFileInfo(tFile);
                     EventBus.getDefault().post(event);
+                    isTransmit = false;
                 }
                 if (isCancelReceive) {
                     sid = SysConstant.SERVICE_FILE_SET_STOP;
@@ -763,6 +779,15 @@ public class IMFileManager extends IMBaseManager {
             logger.e(e.getMessage());
         }
 
+    }
+
+    private XFileProtocol.File verifyTask(XFileProtocol.File requestFile) {
+        for (XFileProtocol.File file : taskFile) {
+            if (file.getTaskId().equals(requestFile.getTaskId())) {
+                return file;
+            }
+        }
+        return null;
     }
 
 

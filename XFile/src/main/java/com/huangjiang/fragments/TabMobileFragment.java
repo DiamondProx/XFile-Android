@@ -24,6 +24,7 @@ import com.huangjiang.adapter.StorageRootAdapter;
 import com.huangjiang.business.audio.AudioInterface;
 import com.huangjiang.business.model.FileInfo;
 import com.huangjiang.business.model.StorageRootInfo;
+import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.core.ResponseCallback;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.utils.XFileUtils;
@@ -182,7 +183,7 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
     }
 
     @Override
-    public void onItemSelected(MenuItem item) {
+    public void onItemSelected(MenuItem item, TFileInfo tFileInfo) {
 
     }
 

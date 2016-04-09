@@ -208,11 +208,11 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             sendFile.setPosition(0);
             sendFile.setPath(file.getAbsolutePath());
             sendFile.setExtension("mp3");
-            sendFile.setTaskId(SysConstant.TEMP_TASK_ID);
+            sendFile.setTaskId(XFileUtils.buildTaskId());
             sendFile.setData(ByteString.copyFrom("1".getBytes()));
             sendFile.setLength(file.length());
             sendFile.setFrom(android.os.Build.MODEL);
-            IMFileManager.getInstance().startTransferFile(sendFile.build());
+            IMFileManager.getInstance().createTask(sendFile.build());
         }
 
 
@@ -327,6 +327,15 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 //                }
 //            }
 //        }
+
+        public TFileInfo getWaitFile() {
+            for (TFileInfo fileInfo : listMessage) {
+                if (fileInfo.getStateEvent().equals(FileEvent.WAITING)) {
+                    return fileInfo;
+                }
+            }
+            return null;
+        }
 
         public void setTFileInfo(TFileInfo tFileInfo) {
             for (TFileInfo fileInfo : listMessage) {
@@ -450,6 +459,9 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                             break;
                         case SET_FILE:
                             stateStr = "传输中";
+                            break;
+                        case WAITING:
+                            stateStr = "排队中";
                             break;
                     }
                     videoHolder.status.setText(stateStr);
@@ -581,6 +593,13 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         viewPager.setCurrentItem(index);
     }
 
+
+    void goOnSend() {
+        TFileInfo waitingFile = adpater.getWaitFile();
+        IMFileManager.getInstance().resumeReceive(waitingFile);
+
+    }
+
     /*
      * 接收文件
      */
@@ -602,6 +621,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 TFileInfo receiveFile = fileEvent.getFileInfo();
                 adpater.setState(receiveFile.getTask_id(), e);
                 adpater.notifyDataSetChanged();
+                Toast.makeText(getActivity(), "接收完成22222", Toast.LENGTH_SHORT).show();
             }
             break;
             case SET_FILE:
@@ -617,7 +637,12 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 adpater.cancelTask(setFile);
                 adpater.notifyDataSetChanged();
             }
-
+            break;
+            case WAITING: {
+                TFileInfo setFile = fileEvent.getFileInfo();
+                adpater.setState(setFile.getTask_id(), e);
+                adpater.notifyDataSetChanged();
+            }
             break;
         }
     }
@@ -642,8 +667,10 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             break;
             case CHECK_TASK_FAILED: {
                 TFileInfo receiveFile = fileEvent.getFileInfo();
-                adpater.setState(receiveFile.getTask_id(), e);
-                adpater.notifyDataSetChanged();
+                if (receiveFile != null) {
+                    adpater.setState(receiveFile.getTask_id(), e);
+                    adpater.notifyDataSetChanged();
+                }
             }
 
             break;
@@ -651,6 +678,14 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 TFileInfo receiveFile = fileEvent.getFileInfo();
                 adpater.setState(receiveFile.getTask_id(), e);
                 adpater.notifyDataSetChanged();
+                Toast.makeText(getActivity(), "发送完成11111", Toast.LENGTH_SHORT).show();
+
+                // 发送完成之后查看是否有等待的任务
+                TFileInfo waitFile = adpater.getWaitFile();
+                if (waitFile != null) {
+                    XFileProtocol.File reqFile = XFileUtils.buildSendFile(waitFile);
+                    IMFileManager.getInstance().checkTask(reqFile);
+                }
             }
 
             break;
@@ -661,12 +696,18 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
                 adpater.setState(setFile.getTask_id(), e);
                 adpater.notifyDataSetChanged();
             }
+            break;
             case CANCEL_FILE: {
                 TFileInfo setFile = fileEvent.getFileInfo();
                 adpater.cancelTask(setFile);
                 adpater.notifyDataSetChanged();
             }
-
+            break;
+            case WAITING: {
+                TFileInfo setFile = fileEvent.getFileInfo();
+                adpater.setState(setFile.getTask_id(), e);
+                adpater.notifyDataSetChanged();
+            }
             break;
         }
     }

@@ -14,7 +14,8 @@ public enum FileEvent {
     SET_FILE_STOP,
     SET_FILE_RESUME,
     SET_FILE,
-    CANCEL_FILE
+    CANCEL_FILE,
+    WAITING
 
 
 }
