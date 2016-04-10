@@ -6,14 +6,19 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
 
 import com.huangjiang.business.model.AppInfo;
+import com.huangjiang.utils.Logger;
 
 public class AppScanner {
+
+	Logger logger=Logger.getLogger(AppScanner.class);
+
 	private Context mContext;
 
 	public AppScanner(Context context) {
@@ -43,13 +48,17 @@ public class AppScanner {
 				List<PackageInfo> packs = pm.getInstalledPackages(0);
 
 				for (PackageInfo pi : packs) {
-					AppInfo appInfo = new AppInfo();
-					appInfo.setAppIcon(pi.applicationInfo.loadIcon(pm));//程序图标
-					appInfo.setAppName(pi.applicationInfo.loadLabel(pm).toString());//程序名称
-					appInfo.setPackageName(pi.applicationInfo.packageName);//包名
-					int appSize= Integer.valueOf((int) new File(pi.applicationInfo.publicSourceDir).length()); 
-					appInfo.setAppSize(appSize);
-					list.add(appInfo);
+					if((pi.applicationInfo.flags& ApplicationInfo.FLAG_SYSTEM)==0){
+						AppInfo appInfo = new AppInfo();
+						appInfo.setAppIcon(pi.applicationInfo.loadIcon(pm));//程序图标
+						appInfo.setAppName(pi.applicationInfo.loadLabel(pm).toString());//程序名称
+						appInfo.setPackageName(pi.applicationInfo.packageName);//包名
+						int appSize= Integer.valueOf((int) new File(pi.applicationInfo.publicSourceDir).length());
+						logger.e("****sourceDir:"+pi.applicationInfo.sourceDir);
+						appInfo.setAppSize(appSize);
+						list.add(appInfo);
+					}
+
 				}
 				if (list.size() > 0) {
 					Message msg = mHandler.obtainMessage();
