@@ -175,6 +175,7 @@ public class IMFileManager extends IMBaseManager {
                     // 判断是接受者还是发送者
                     if (rspTask.getIsSend()) {
                         // 如果当前是发送者,继续发送
+                        readPercent = 0;
                         transferFile(rspTask);
                     } else {
 
@@ -244,6 +245,7 @@ public class IMFileManager extends IMBaseManager {
             ByteString byteString = ByteString.copyFrom(readBytes);
             XFileProtocol.File.Builder responseFile = requestFile.toBuilder();
             responseFile.setData(byteString);
+//            responseFile.setFrom(Build.MODEL);
 //            responseFile.setPosition(readBytes.length + responseFile.getPosition());
             Packetlistener packetlistener = new Packetlistener() {
                 @Override
@@ -385,7 +387,8 @@ public class IMFileManager extends IMBaseManager {
             }
             // 创建成功
             FileReceiveEvent createEvent = new FileReceiveEvent(FileEvent.CREATE_FILE_SUCCESS);
-            TFileInfo tFile1 = XFileUtils.buildTFile(responseFile.build());
+            TFileInfo tFile1 = XFileUtils.buildTFile(requestFile);
+            tFile1.setIs_send(false);
             createEvent.setFileInfo(tFile1);
             EventBus.getDefault().post(createEvent);
 
@@ -466,6 +469,7 @@ public class IMFileManager extends IMBaseManager {
                 responseFile.setExtension(requestFile.getExtension());
                 responseFile.setFullName(requestFile.getFullName());
                 responseFile.setTaskId(requestFile.getTaskId());
+//                responseFile.setFrom(Build.MODEL);
 
                 Packetlistener packetlistener = new Packetlistener() {
                     @Override
@@ -639,10 +643,11 @@ public class IMFileManager extends IMBaseManager {
     }
 
     public void cancelTask(TFileInfo tFileInfo) {
-        if (!SysConstant.TEMP_TASK_ID.equals(tFileInfo.getTask_id())) {
+
+        final XFileProtocol.File requestFile = XFileUtils.buildSendFile(tFileInfo);
+        if (verifyTask(XFileUtils.buildSendFile(tFileInfo)) == null) {
             return;
         }
-        final XFileProtocol.File requestFile = XFileUtils.buildSendFile(tFileInfo);
         Packetlistener packetlistener = new Packetlistener() {
             @Override
             public void onSuccess(short service, Object response) {
