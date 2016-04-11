@@ -19,18 +19,62 @@ public class TFileInfo {
     required string task_id = 9;
     */
 
+    /**
+     * 文件名称
+     */
     private String name;
+    /**
+     * 文件标示
+     */
     private String md5;
-    private long postion;
+    /**
+     * 传输位置
+     */
+    private long position;
+    /**
+     * 文件长度
+     */
     private long length;
+    /**
+     * 路径
+     */
     private String path;
+    /**
+     * 后缀名
+     */
     private String extension;
-    private String full_name;
-    private String task_id;
-    private boolean is_send;// 是否发送方
-    private String from;//发送方
-    private long percent;// 百分比
-    private FileEvent stateEvent;//传输状态
+    /**
+     * 文件全名
+     */
+    private String fullName;
+    /**
+     * 任务编号
+     */
+    private String taskId;
+    /**
+     * 是否发送方,true发送方,false接收方
+     */
+    private boolean isSend;
+    /**
+     * 发送方
+     */
+    private String from;
+    /**
+     * 传输百分比
+     */
+    private long percent;
+    /**
+     * 传输状态
+     */
+    private FileEvent fileEvent = FileEvent.NONE;
+    /*
+    * 文件类型
+     */
+    private FileType fileType = FileType.Normal;
+    /*
+     *创建时间
+     */
+    private String createTime;
 
     public String getName() {
         return name;
@@ -48,12 +92,12 @@ public class TFileInfo {
         this.md5 = md5;
     }
 
-    public long getPostion() {
-        return postion;
+    public long getPosition() {
+        return position;
     }
 
-    public void setPostion(long postion) {
-        this.postion = postion;
+    public void setPosition(long position) {
+        this.position = position;
     }
 
     public long getLength() {
@@ -80,28 +124,28 @@ public class TFileInfo {
         this.extension = extension;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public String getTask_id() {
-        return task_id;
+    public String getTaskId() {
+        return taskId;
     }
 
-    public void setTask_id(String task_id) {
-        this.task_id = task_id;
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
-    public boolean is_send() {
-        return is_send;
+    public boolean isSend() {
+        return isSend;
     }
 
-    public void setIs_send(boolean is_send) {
-        this.is_send = is_send;
+    public void setIsSend(boolean isSend) {
+        this.isSend = isSend;
     }
 
     public String getFrom() {
@@ -120,11 +164,27 @@ public class TFileInfo {
         this.percent = percent;
     }
 
-    public FileEvent getStateEvent() {
-        return stateEvent;
+    public FileEvent getFileEvent() {
+        return fileEvent;
     }
 
-    public void setStateEvent(FileEvent stateEvent) {
-        this.stateEvent = stateEvent;
+    public void setFileEvent(FileEvent fileEvent) {
+        this.fileEvent = fileEvent;
+    }
+
+    public FileType getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(FileType fileType) {
+        this.fileType = fileType;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }

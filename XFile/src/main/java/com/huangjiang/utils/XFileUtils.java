@@ -295,13 +295,13 @@ public class XFileUtils {
         XFileProtocol.File.Builder sendFile = XFileProtocol.File.newBuilder();
         sendFile.setName(fileInfo.getName());
         sendFile.setMd5(fileInfo.getMd5());
-        sendFile.setPosition(fileInfo.getPostion());
+        sendFile.setPosition(fileInfo.getPosition());
         sendFile.setLength(fileInfo.getLength());
         sendFile.setPath(fileInfo.getPath());
         sendFile.setExtension(fileInfo.getExtension());
-        sendFile.setFullName(fileInfo.getFull_name());
-        sendFile.setTaskId(fileInfo.getTask_id());
-        sendFile.setIsSend(fileInfo.is_send());
+        sendFile.setFullName(fileInfo.getFullName());
+        sendFile.setTaskId(fileInfo.getTaskId());
+        sendFile.setIsSend(fileInfo.isSend());
         return sendFile.build();
     }
 
@@ -309,13 +309,14 @@ public class XFileUtils {
         TFileInfo tFile = new TFileInfo();
         tFile.setName(fileInfo.getName());
         tFile.setMd5(fileInfo.getMd5());
-        tFile.setPostion(fileInfo.getPosition());
+        tFile.setPosition(fileInfo.getPosition());
         tFile.setLength(fileInfo.getLength());
         tFile.setPath(fileInfo.getPath());
         tFile.setExtension(fileInfo.getExtension());
-        tFile.setFull_name(fileInfo.getFullName());
-        tFile.setTask_id(fileInfo.getTaskId());
+        tFile.setFullName(fileInfo.getFullName());
+        tFile.setTaskId(fileInfo.getTaskId());
         tFile.setFrom(fileInfo.getFrom());
+        tFile.setIsSend(fileInfo.getIsSend());
         return tFile;
     }
 

@@ -5,6 +5,7 @@ package com.huangjiang.manager.event;
  */
 public enum FileEvent {
 
+    NONE,
     CREATE_FILE_SUCCESS,
     CREATE_FILE_FAILED,
     CHECK_TASK_SUCCESS,
@@ -12,7 +13,6 @@ public enum FileEvent {
     SET_FILE_SUCCESS,
     SET_FILE_FAILED,
     SET_FILE_STOP,
-    SET_FILE_RESUME,
     SET_FILE,
     CANCEL_FILE,
     WAITING

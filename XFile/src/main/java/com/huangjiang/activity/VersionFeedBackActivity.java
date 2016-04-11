@@ -10,6 +10,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -47,6 +53,7 @@ public class VersionFeedBackActivity extends BaseActivity implements View.OnClic
         is_new = (ImageView) findViewById(R.id.is_new);
         is_new.setVisibility(View.VISIBLE);
         icon = (ImageView) findViewById(R.id.icon);
+        icon.setOnClickListener(this);
 //        String path=Environment.getExternalStorageDirectory().getAbsolutePath() + "/ES.apk";
 //        icon.setImageDrawable(getApkIcon(this, path));
     }
@@ -64,7 +71,47 @@ public class VersionFeedBackActivity extends BaseActivity implements View.OnClic
             case R.id.contact_us:
                 startActivity(new Intent(this, ContactUsActivity.class));
                 break;
+            case R.id.icon:
+                testAnimSet();
+                break;
         }
+    }
+
+
+    void testMove(){
+
+//        Animation translateAnimation=AnimationUtils.loadAnimation(this, R.anim.transmit_move);
+        Animation translateAnimation=new TranslateAnimation(0,100,0,100);
+        translateAnimation.setDuration(1000);//设置动画持续时间为3秒
+        translateAnimation.setFillAfter(true);
+        icon.startAnimation(translateAnimation);
+    }
+    void testRotate(){
+        Animation rotate=new RotateAnimation(0, 359, Animation.RELATIVE_TO_SELF, 0.5f,  Animation.RELATIVE_TO_SELF,0.5f);
+        rotate.setDuration(1000);//设置动画持续时间为3秒
+        rotate.setFillAfter(true);
+        icon.startAnimation(rotate);
+    }
+    void testScale(){
+
+        Animation rotate=new ScaleAnimation(1.0f, 0f, 1.0f, 0f,  Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(1000);//设置动画持续时间为3秒
+        rotate.setFillAfter(true);
+        icon.startAnimation(rotate);
+    }
+
+    void testAnimSet(){
+        AnimationSet  animationSet=new AnimationSet(false);
+        Animation translateAnimation=new TranslateAnimation(0,100,0,-100);
+        Animation rotateAnimation=new RotateAnimation(0, 359, Animation.RELATIVE_TO_SELF, 0.5f,  Animation.RELATIVE_TO_SELF,0.5f);
+        Animation scaleAnimation=new ScaleAnimation(1.0f, 0f, 1.0f, 0f,  Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+
+        animationSet.addAnimation(rotateAnimation);
+        animationSet.addAnimation(scaleAnimation);
+        animationSet.addAnimation(translateAnimation);
+        animationSet.setDuration(500);
+        animationSet.setFillAfter(false);
+        icon.startAnimation(animationSet);
     }
 
     /*
@@ -90,18 +137,5 @@ public class VersionFeedBackActivity extends BaseActivity implements View.OnClic
     }
 
 
-//    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.check_version:
-//                Toast.makeText(this, R.string.is_new, Toast.LENGTH_SHORT).show();
-//                break;
-//            case R.id.feed_back:
-//                startActivity(new Intent(this, FeedBackActivity.class));
-//                break;
-//            case R.id.contact_us:
-//                startActivity(new Intent(this, ContactUsActivity.class));
-//                break;
-//        }
-//    }
 
 }

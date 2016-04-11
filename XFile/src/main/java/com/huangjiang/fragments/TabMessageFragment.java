@@ -22,13 +22,11 @@ import android.widget.Toast;
 
 import com.google.protobuf.ByteString;
 import com.huangjiang.XFileApplication;
+import com.huangjiang.adapter.TransmitAdapter;
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
-import com.huangjiang.manager.event.FileReceiveEvent;
-import com.huangjiang.manager.event.FileSendEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.XFileUtils;
@@ -47,20 +45,14 @@ import java.util.List;
 public class TabMessageFragment extends Fragment implements TabBar.OnTabListener, ViewPager.OnPageChangeListener, View.OnClickListener, AdapterView.OnItemClickListener, PopupMenu.OnItemSelectedListener {
 
     private Logger logger = Logger.getLogger(IMFileManager.class);
-
     List<View> list;
     ViewPager viewPager;
     TabBar tabBar;
     TextView txt_disk_status, txt_clear;
-
     LinearLayout video_layout, picture_layout, music_layout, other_layout, folder_layout, install_layout;
-
     ListView lv_message;
-
     List<TFileInfo> listMessage;
-
-    TransferMessageAdpater adpater;
-
+    TransmitAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,8 +69,8 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         tabBar.setTabSelectBackground(R.color.tab_green_select);
         View view_message = inflater.inflate(R.layout.page_message, null);
         lv_message = (ListView) view_message.findViewById(R.id.lv_message);
-        adpater = new TransferMessageAdpater(getActivity());
-        lv_message.setAdapter(adpater);
+        adapter = new TransmitAdapter(getActivity());
+        lv_message.setAdapter(adapter);
         lv_message.setOnItemClickListener(this);
 
         View view_inbox = inflater.inflate(R.layout.page_inbox, null);
@@ -112,7 +104,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
         testMessageData();
 
-
+        Toast.makeText(getActivity(), "initView", Toast.LENGTH_SHORT).show();
         return view;
     }
 
@@ -124,39 +116,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
     void testMessageData() {
         listMessage = new ArrayList<>();
-
-
-//        TransferMessageInfo message = new TransferMessageInfo();
-//        message.setMessageType(2);
-//        message.setFrom("R815T");
-//        message.setFileName("4dazxcvbng");
-//        message.setFileSize("12.53kb");
-//        listMessage.add(message);
-//
-//
-//        message = new TransferMessageInfo();
-//        message.setMessageType(1);
-//        message.setFrom("R815T");
-//        message.setFileName("指南针.apk");
-//        message.setFileSize("682kb");
-//        listMessage.add(message);
-//
-//
-//        message = new TransferMessageInfo();
-//        message.setMessageType(1);
-//        message.setFrom("R815T");
-//        message.setFileName("头文字D.mp3");
-//        message.setFileSize("1.65MB");
-//        listMessage.add(message);
-//
-//        message = new TransferMessageInfo();
-//        message.setMessageType(1);
-//        message.setFrom("R815T");
-//        message.setFileName("975124556321");
-//        message.setFileSize("3.65MB");
-//        listMessage.add(message);
-
-        adpater.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -186,14 +146,6 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
 
     void testSendFile() {
 
-//        TFileInfo tFileInfo = new TFileInfo();
-//        tFileInfo.setIs_send(true);
-//        tFileInfo.setFrom("R815T");
-//        tFileInfo.setLength(1024 * 10);
-//        tFileInfo.setFull_name("指南针.apk");
-//        listMessage.add(tFileInfo);
-//        adpater.notifyDataSetChanged();
-
         if (XFileApplication.connect_type == 0) {
             Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             return;
@@ -209,10 +161,10 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             sendFile.setPath(file.getAbsolutePath());
             sendFile.setExtension("mp3");
             sendFile.setTaskId(XFileUtils.buildTaskId());
-            sendFile.setData(ByteString.copyFrom("1".getBytes()));
             sendFile.setLength(file.length());
             sendFile.setFrom(android.os.Build.MODEL);
-            logger.e("****taskId:"+sendFile.getTaskId());
+            sendFile.setIsSend(true);
+            logger.e("****taskId:" + sendFile.getTaskId());
             IMFileManager.getInstance().createTask(sendFile.build());
         }
 
@@ -227,14 +179,10 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         menu.setOnItemSelectedListener(TabMessageFragment.this);
         menu.setTFileInfo(tFileInfo);
         // Add Menu (Android menu like style)
-        menu.add(0, R.string.transfer).setIcon(
-                getResources().getDrawable(R.mipmap.data_downmenu_send));
-        menu.add(1, R.string.multi_select).setIcon(
-                getResources().getDrawable(R.mipmap.data_downmenu_check));
-        menu.add(2, R.string.play).setIcon(
-                getResources().getDrawable(R.mipmap.data_downmenu_open));
-        menu.add(3, R.string.more).setIcon(
-                getResources().getDrawable(R.mipmap.data_downmenu_more));
+        menu.add(0, R.string.transfer).setIcon(getResources().getDrawable(R.mipmap.data_downmenu_send));
+        menu.add(1, R.string.multi_select).setIcon(getResources().getDrawable(R.mipmap.data_downmenu_check));
+        menu.add(2, R.string.play).setIcon(getResources().getDrawable(R.mipmap.data_downmenu_open));
+        menu.add(3, R.string.more).setIcon(getResources().getDrawable(R.mipmap.data_downmenu_more));
         menu.show(view);
     }
 
@@ -298,598 +246,66 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
     }
 
 
-    class TransferMessageAdpater extends BaseAdapter {
-
-        private LayoutInflater mInflater;
-        private Context mContext;
-
-
-        public TransferMessageAdpater(Context context) {
-            mInflater = LayoutInflater.from(context);
-            this.mContext = context;
-        }
-
-        @Override
-        public int getCount() {
-            return listMessage == null ? 0 : listMessage.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return listMessage == null ? null : listMessage.get(position);
-        }
-
-//        public void setPercent(String taskId, long percent) {
-//
-//            for (TFileInfo fileInfo : listMessage) {
-//                if (taskId.equals(fileInfo.getTask_id())) {
-//                    fileInfo.setPercent(percent);
-//                    break;
-//                }
-//            }
-//        }
-
-        public TFileInfo getWaitFile() {
-            for (TFileInfo fileInfo : listMessage) {
-                if (fileInfo.getStateEvent().equals(FileEvent.WAITING)) {
-                    return fileInfo;
-                }
-            }
-            return null;
-        }
-
-        public void setTFileInfo(TFileInfo tFileInfo) {
-            for (TFileInfo fileInfo : listMessage) {
-                if (tFileInfo.getTask_id().equals(fileInfo.getTask_id())) {
-                    fileInfo.setPercent(tFileInfo.getPercent());
-                    fileInfo.setPostion(tFileInfo.getPostion());
-                    break;
-                }
-            }
-        }
-
-        public void setState(String taskId, FileEvent state) {
-            for (TFileInfo fileInfo : listMessage) {
-                if (taskId.equals(fileInfo.getTask_id())) {
-                    fileInfo.setStateEvent(state);
-                    break;
-                }
-            }
-        }
-
-        public TFileInfo getTFileByTaskId(String taskId) {
-            for (TFileInfo fileInfo : listMessage) {
-                if (taskId.equals(fileInfo.getTask_id())) {
-                    return fileInfo;
-                }
-            }
-            return null;
-        }
-
-        public void cancelTask(TFileInfo tFileInfo) {
-            for (TFileInfo fileInfo : listMessage) {
-                if (tFileInfo.getTask_id().equals(fileInfo.getTask_id())) {
-                    listMessage.remove(fileInfo);
-                    break;
-                }
-            }
-        }
-
-        public int getPostion(TFileInfo tFileInfo){
-            int postion=-1;
-            for (TFileInfo fileInfo : listMessage) {
-                postion++;
-                if (tFileInfo.getTask_id().equals(fileInfo.getTask_id())) {
-                    return postion;
-                }
-
-            }
-            return postion;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        int REVICE_MESSAGE;
-        int SEND_MESSAGE;
-
-        @Override
-        public int getItemViewType(int position) {
-            TFileInfo message = listMessage.get(position);
-            if (!message.is_send()) {
-                return REVICE_MESSAGE;
-            } else {
-                return SEND_MESSAGE;
-            }
-        }
-
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            final TFileInfo message = listMessage.get(position);
-            boolean isSend = message.is_send();
-            VideoViewHoler videoHolder = null;
-            if (convertView == null) {
-                videoHolder = new VideoViewHoler();
-                if (!isSend) {
-                    convertView = mInflater.inflate(R.layout.listview_transfer_message_revice, null);
-                    videoHolder.btn_step = (Button) convertView.findViewById(R.id.setup);
-                } else {
-                    convertView = mInflater.inflate(R.layout.listview_transfer_message_send, null);
-                }
-
-                videoHolder.headImg = (ImageView) convertView.findViewById(R.id.head);
-                videoHolder.fileImg = (ImageView) convertView.findViewById(R.id.fileImg);
-                videoHolder.from = (TextView) convertView.findViewById(R.id.from);
-                videoHolder.name = (TextView) convertView.findViewById(R.id.fileName);
-                videoHolder.size = (TextView) convertView.findViewById(R.id.fileSize);
-                videoHolder.remainPercent = (TextView) convertView.findViewById(R.id.remainPercent);
-                videoHolder.status = (TextView) convertView.findViewById(R.id.status);
-                videoHolder.line1 = (TextView) convertView.findViewById(R.id.tv_line1);
-                videoHolder.line2 = (TextView) convertView.findViewById(R.id.tv_line2);
-                convertView.setTag(videoHolder);
-            } else {
-                videoHolder = (VideoViewHoler) convertView.getTag();
-            }
-            if (message != null) {
-                videoHolder.headImg.setImageResource(R.mipmap.avatar_default);
-                videoHolder.fileImg.setImageResource(R.mipmap.data_folder_documents_placeholder);
-                videoHolder.from.setText(message.getFrom());
-                videoHolder.name.setText(message.getFull_name());
-                videoHolder.size.setText(XFileUtils.getFolderSizeString(message.getLength()));
-                videoHolder.remainPercent.setText(String.format(mContext.getString(R.string.percent), message.getPercent()));
-
-                FileEvent stateEvent = message.getStateEvent();
-                String stateStr = "";
-                if (stateEvent != null) {
-                    switch (stateEvent) {
-                        case CREATE_FILE_SUCCESS:
-                            stateStr = "创建成功";
-                            break;
-                        case CREATE_FILE_FAILED:
-                            stateStr = "创建失败";
-                            break;
-                        case CHECK_TASK_SUCCESS:
-                            stateStr = "校验成功";
-                            break;
-                        case CHECK_TASK_FAILED:
-                            stateStr = "校验失败";
-                            break;
-                        case SET_FILE_SUCCESS:
-                            stateStr = "发送完成";
-                            break;
-                        case SET_FILE_FAILED:
-                            stateStr = "发送失败";
-                            break;
-                        case SET_FILE_STOP:
-                            stateStr = "暂停";
-                            break;
-                        case SET_FILE_RESUME:
-                            stateStr = "暂停";
-                            break;
-                        case SET_FILE:
-                            stateStr = "传输中";
-                            break;
-                        case WAITING:
-                            stateStr = "排队中";
-                            break;
-                    }
-                    videoHolder.status.setText(stateStr);
-
-                    if (!isSend) {
-                        switch (stateEvent) {
-                            case CREATE_FILE_SUCCESS:
-                                videoHolder.btn_step.setVisibility(View.GONE);
-                                break;
-                            case CREATE_FILE_FAILED:
-                                videoHolder.btn_step.setText("重试");
-                                videoHolder.btn_step.setVisibility(View.VISIBLE);
-                                break;
-                            case CHECK_TASK_SUCCESS:
-                                videoHolder.btn_step.setVisibility(View.GONE);
-                                break;
-                            case CHECK_TASK_FAILED:
-                                videoHolder.btn_step.setText("重试");
-                                videoHolder.btn_step.setVisibility(View.VISIBLE);
-                                break;
-                            case SET_FILE_SUCCESS:
-                                videoHolder.btn_step.setText("查看");
-                                videoHolder.btn_step.setVisibility(View.VISIBLE);
-                                break;
-                            case SET_FILE_FAILED:
-                                videoHolder.btn_step.setText("重试");
-                                videoHolder.btn_step.setVisibility(View.VISIBLE);
-                                break;
-                            case SET_FILE_STOP:
-                                videoHolder.btn_step.setText("继续");
-                                videoHolder.btn_step.setVisibility(View.VISIBLE);
-                                break;
-                            case SET_FILE_RESUME:
-                                videoHolder.btn_step.setText("继续");
-                                videoHolder.btn_step.setVisibility(View.VISIBLE);
-                                break;
-                            case SET_FILE:
-                                videoHolder.btn_step.setText("暂停");
-                                videoHolder.btn_step.setVisibility(View.VISIBLE);
-                                break;
-                        }
-                        videoHolder.btn_step.setTag(message.getTask_id());
-                        videoHolder.btn_step.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (v.getTag() != null) {
-                                    String taskId = (String) v.getTag();
-                                    TFileInfo taskInfo = getTFileByTaskId(taskId);
-                                    FileEvent stateEvent = taskInfo.getStateEvent();
-                                    if (stateEvent != null) {
-                                        switch (stateEvent) {
-                                            case CREATE_FILE_SUCCESS:
-
-                                                break;
-                                            case CREATE_FILE_FAILED:
-
-                                                break;
-                                            case CHECK_TASK_SUCCESS:
-
-                                                break;
-                                            case CHECK_TASK_FAILED:
-
-                                                break;
-                                            case SET_FILE_SUCCESS:
-
-                                                break;
-                                            case SET_FILE_FAILED:
-
-                                                break;
-                                            case SET_FILE_STOP:
-                                                Toast.makeText(getActivity(), "点了继续", Toast.LENGTH_SHORT).show();
-                                                IMFileManager.getInstance().resumeReceive(taskInfo);
-                                                break;
-                                            case SET_FILE_RESUME:
-
-                                                break;
-                                            case SET_FILE:
-                                                IMFileManager.getInstance().stopReceive();
-                                                break;
-                                        }
-                                    }
-                                }
-
-                            }
-                        });
-                    }
-
-
-                } else {
-                    videoHolder.status.setVisibility(View.GONE);
-                    videoHolder.line1.setVisibility(View.GONE);
-                }
-            }
-            return convertView;
-        }
-
-        final class VideoViewHoler {
-            ImageView headImg;
-            ImageView fileImg;
-            TextView from;
-            TextView name;
-            TextView size;
-            TextView remainPercent;
-            TextView status;
-            TextView line1, line2;
-            Button btn_step;
-        }
-
-    }
-
-//    @Subscribe
-//    public void onEventMainThread(MyEvent event) {
-//        if (event != null) {
-//            TransferMessageInfo message = new TransferMessageInfo();
-//            message.setMessageType(1);
-//            message.setFrom("R815T");
-//            message.setFileName("event.apkkkkkkk");
-//            message.setFileSize("682kb");
-//            listMessage.add(message);
-//            adpater.notifyDataSetChanged();
-//        }
-//    }
-
-
     @Override
     public void onTabSelect(int index) {
         viewPager.setCurrentItem(index);
     }
 
 
-    void goOnSend() {
-        TFileInfo waitingFile = adpater.getWaitFile();
-        IMFileManager.getInstance().resumeReceive(waitingFile);
-
-    }
-
-    void upDownLoadStatus(TFileInfo tFileInfo){
+    void updateTransmitState(TFileInfo tFileInfo) {
         int firstVisible = lv_message.getFirstVisiblePosition();
         int lastVisible = lv_message.getLastVisiblePosition();
-        int postion=adpater.getPostion(tFileInfo);
-        TFileInfo currentFile=(TFileInfo)adpater.getItem(postion);
-        if (postion >= firstVisible && postion <= lastVisible) {
-            TransferMessageAdpater.VideoViewHoler holder = (TransferMessageAdpater.VideoViewHoler) (lv_message
-                    .getChildAt(postion - firstVisible).getTag());
-            updateListView(holder, currentFile);
+        int position = adapter.getPosition(tFileInfo);
+        TFileInfo currentFile = (TFileInfo) adapter.getItem(position);
+        if (currentFile != null && position >= firstVisible && position <= lastVisible) {
+            TransmitAdapter.ViewHolder holder = (TransmitAdapter.ViewHolder) (lv_message.getChildAt(position - firstVisible).getTag());
+            adapter.updateTransmitState(holder, currentFile);
         }
     }
 
-    void updateListView(TransferMessageAdpater.VideoViewHoler videoHolder,TFileInfo tFileInfo){
-        if (tFileInfo != null) {
-            videoHolder.headImg.setImageResource(R.mipmap.avatar_default);
-            videoHolder.fileImg.setImageResource(R.mipmap.data_folder_documents_placeholder);
-            videoHolder.from.setText(tFileInfo.getFrom());
-            videoHolder.name.setText(tFileInfo.getFull_name());
-            videoHolder.size.setText(XFileUtils.getFolderSizeString(tFileInfo.getLength()));
-            videoHolder.remainPercent.setText(String.format(getString(R.string.percent), tFileInfo.getPercent()));
+    /*
+     * 文件传输状态
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(TFileInfo tFileInfo) {
 
-            FileEvent stateEvent = tFileInfo.getStateEvent();
-            String stateStr = "";
-            if (stateEvent != null) {
-                switch (stateEvent) {
-                    case CREATE_FILE_SUCCESS:
-                        stateStr = "创建成功";
-                        break;
-                    case CREATE_FILE_FAILED:
-                        stateStr = "创建失败";
-                        break;
-                    case CHECK_TASK_SUCCESS:
-                        stateStr = "校验成功";
-                        break;
-                    case CHECK_TASK_FAILED:
-                        stateStr = "校验失败";
-                        break;
-                    case SET_FILE_SUCCESS:
-                        stateStr = "发送完成";
-                        break;
-                    case SET_FILE_FAILED:
-                        stateStr = "发送失败";
-                        break;
-                    case SET_FILE_STOP:
-                        stateStr = "暂停";
-                        break;
-                    case SET_FILE_RESUME:
-                        stateStr = "暂停";
-                        break;
-                    case SET_FILE:
-                        stateStr = "传输中";
-                        break;
-                    case WAITING:
-                        stateStr = "排队中";
-                        break;
+        FileEvent fileEvent = tFileInfo.getFileEvent();
+        switch (fileEvent) {
+            case CREATE_FILE_SUCCESS: {
+                if (tFileInfo.isSend()) {
+                    tFileInfo.setFrom(getString(R.string.send_to, tFileInfo.getFrom()));
+                } else {
+                    tFileInfo.setFrom(getString(R.string.receive_from, tFileInfo.getFrom()));
                 }
-                videoHolder.status.setText(stateStr);
-
-                if (!tFileInfo.is_send()) {
-                    switch (stateEvent) {
-                        case CREATE_FILE_SUCCESS:
-                            videoHolder.btn_step.setVisibility(View.GONE);
-                            break;
-                        case CREATE_FILE_FAILED:
-                            videoHolder.btn_step.setText("重试");
-                            videoHolder.btn_step.setVisibility(View.VISIBLE);
-                            break;
-                        case CHECK_TASK_SUCCESS:
-                            videoHolder.btn_step.setVisibility(View.GONE);
-                            break;
-                        case CHECK_TASK_FAILED:
-                            videoHolder.btn_step.setText("重试");
-                            videoHolder.btn_step.setVisibility(View.VISIBLE);
-                            break;
-                        case SET_FILE_SUCCESS:
-                            videoHolder.btn_step.setText("查看");
-                            videoHolder.btn_step.setVisibility(View.VISIBLE);
-                            break;
-                        case SET_FILE_FAILED:
-                            videoHolder.btn_step.setText("重试");
-                            videoHolder.btn_step.setVisibility(View.VISIBLE);
-                            break;
-                        case SET_FILE_STOP:
-                            videoHolder.btn_step.setText("继续");
-                            videoHolder.btn_step.setVisibility(View.VISIBLE);
-                            break;
-                        case SET_FILE_RESUME:
-                            videoHolder.btn_step.setText("继续");
-                            videoHolder.btn_step.setVisibility(View.VISIBLE);
-                            break;
-                        case SET_FILE:
-                            videoHolder.btn_step.setText("暂停");
-                            videoHolder.btn_step.setVisibility(View.VISIBLE);
-                            break;
+                adapter.addTFileInfo(tFileInfo);
+                adapter.notifyDataSetChanged();
+            }
+            break;
+            case SET_FILE_SUCCESS: {
+                adapter.updateTFileInfo(tFileInfo);
+                updateTransmitState(tFileInfo);
+                if (tFileInfo.isSend()) {
+                    // 发送完成之后查看是否有等待的任务
+                    TFileInfo waitFile = adapter.getWaitFile();
+                    if (waitFile != null) {
+                        XFileProtocol.File reqFile = XFileUtils.buildSendFile(waitFile);
+                        IMFileManager.getInstance().checkTask(reqFile);
                     }
-                    videoHolder.btn_step.setTag(tFileInfo.getTask_id());
-                    videoHolder.btn_step.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (v.getTag() != null) {
-                                String taskId = (String) v.getTag();
-                                TFileInfo taskInfo = adpater.getTFileByTaskId(taskId);
-                                FileEvent stateEvent = taskInfo.getStateEvent();
-                                if (stateEvent != null) {
-                                    switch (stateEvent) {
-                                        case CREATE_FILE_SUCCESS:
-
-                                            break;
-                                        case CREATE_FILE_FAILED:
-
-                                            break;
-                                        case CHECK_TASK_SUCCESS:
-
-                                            break;
-                                        case CHECK_TASK_FAILED:
-
-                                            break;
-                                        case SET_FILE_SUCCESS:
-
-                                            break;
-                                        case SET_FILE_FAILED:
-
-                                            break;
-                                        case SET_FILE_STOP:
-                                            Toast.makeText(getActivity(), "点了继续", Toast.LENGTH_SHORT).show();
-                                            IMFileManager.getInstance().resumeReceive(taskInfo);
-                                            break;
-                                        case SET_FILE_RESUME:
-
-                                            break;
-                                        case SET_FILE:
-                                            IMFileManager.getInstance().stopReceive();
-                                            break;
-                                    }
-                                }
-                            }
-
-                        }
-                    });
                 }
 
-
-            } else {
-                videoHolder.status.setVisibility(View.GONE);
-                videoHolder.line1.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    /*
-     * 接收文件
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(FileReceiveEvent fileEvent) {
-
-        FileEvent e = fileEvent.getEvent();
-        switch (e) {
-            case CREATE_FILE_SUCCESS: {
-                TFileInfo receiveFile = fileEvent.getFileInfo();
-                receiveFile.setFrom(getString(R.string.receive_from, receiveFile.getFrom()));
-                receiveFile.setIs_send(false);
-                listMessage.add(receiveFile);
-                adpater.setState(receiveFile.getTask_id(), e);
-                adpater.notifyDataSetChanged();
-//                upDownLoadStatus(receiveFile);
-            }
-            break;
-            case SET_FILE_SUCCESS: {
-                TFileInfo receiveFile = fileEvent.getFileInfo();
-                adpater.setTFileInfo(receiveFile);
-                receiveFile.setStateEvent(e);
-                adpater.setState(receiveFile.getTask_id(), e);
-//                adpater.notifyDataSetChanged();
-                upDownLoadStatus(receiveFile);
-                Toast.makeText(getActivity(), "接收完成22222", Toast.LENGTH_SHORT).show();
             }
             break;
             case SET_FILE:
-            case SET_FILE_STOP: {
-                TFileInfo setFile = fileEvent.getFileInfo();
-                setFile.setStateEvent(e);
-                adpater.setTFileInfo(setFile);
-                adpater.setState(setFile.getTask_id(), e);
-//                adpater.notifyDataSetChanged();
-                upDownLoadStatus(setFile);
-            }
-
-            break;
-            case CANCEL_FILE: {
-                TFileInfo setFile = fileEvent.getFileInfo();
-                adpater.cancelTask(setFile);
-                adpater.notifyDataSetChanged();
-//                upDownLoadStatus(setFile);
-            }
-            break;
-            case WAITING: {
-                TFileInfo setFile = fileEvent.getFileInfo();
-                setFile.setStateEvent(e);
-                adpater.setState(setFile.getTask_id(), e);
-//                adpater.notifyDataSetChanged();
-                upDownLoadStatus(setFile);
-            }
-            break;
+            case SET_FILE_STOP:
+            case WAITING:
+                adapter.updateTFileInfo(tFileInfo);
+                updateTransmitState(tFileInfo);
+                break;
+            case CANCEL_FILE:
+                adapter.cancelTask(tFileInfo);
+                updateTransmitState(tFileInfo);
+                break;
         }
     }
 
-    /*
-     *  发送文件
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(FileSendEvent fileEvent) {
-
-        FileEvent e = fileEvent.getEvent();
-        switch (e) {
-            case CREATE_FILE_SUCCESS: {
-                TFileInfo receiveFile = fileEvent.getFileInfo();
-                receiveFile.setIs_send(true);
-                receiveFile.setFrom(getString(R.string.send_to, receiveFile.getFrom()));
-                listMessage.add(receiveFile);
-                adpater.setState(receiveFile.getTask_id(), e);
-                adpater.notifyDataSetChanged();
-//                upDownLoadStatus(receiveFile);
-            }
-
-            break;
-            case CHECK_TASK_FAILED: {
-                TFileInfo receiveFile = fileEvent.getFileInfo();
-                receiveFile.setStateEvent(e);
-                if (receiveFile != null) {
-                    adpater.setState(receiveFile.getTask_id(), e);
-//                    adpater.notifyDataSetChanged();
-                    upDownLoadStatus(receiveFile);
-                }
-            }
-
-            break;
-            case SET_FILE_SUCCESS: {
-                TFileInfo receiveFile = fileEvent.getFileInfo();
-                receiveFile.setStateEvent(e);
-                adpater.setTFileInfo(receiveFile);
-                adpater.setState(receiveFile.getTask_id(), e);
-//                adpater.notifyDataSetChanged();
-                upDownLoadStatus(receiveFile);
-                Toast.makeText(getActivity(), "发送完成11111", Toast.LENGTH_SHORT).show();
-
-                // 发送完成之后查看是否有等待的任务
-                TFileInfo waitFile = adpater.getWaitFile();
-                if (waitFile != null) {
-                    XFileProtocol.File reqFile = XFileUtils.buildSendFile(waitFile);
-                    IMFileManager.getInstance().checkTask(reqFile);
-                }
-            }
-
-            break;
-            case SET_FILE:
-            case SET_FILE_STOP: {
-                TFileInfo setFile = fileEvent.getFileInfo();
-                setFile.setStateEvent(e);
-                adpater.setTFileInfo(setFile);
-                adpater.setState(setFile.getTask_id(), e);
-//                adpater.notifyDataSetChanged();
-                upDownLoadStatus(setFile);
-            }
-            break;
-            case CANCEL_FILE: {
-                TFileInfo setFile = fileEvent.getFileInfo();
-                adpater.cancelTask(setFile);
-                adpater.notifyDataSetChanged();
-//                upDownLoadStatus(setFile);
-            }
-            break;
-            case WAITING: {
-                TFileInfo setFile = fileEvent.getFileInfo();
-                setFile.setStateEvent(e);
-                adpater.setState(setFile.getTask_id(), e);
-//                adpater.notifyDataSetChanged();
-                upDownLoadStatus(setFile);
-            }
-            break;
-        }
-    }
 }

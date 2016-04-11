@@ -54,4 +54,17 @@
     <string name="send_to">发送给 %1$s</string>
     <string name="receive_from">接收自 %1$s</string>
     <string name="percent">%1$s%%</string>
+    <string name="create_file_success">创建成功</string>
+    <string name="create_file_failed">创建失败</string>
+    <string name="check_task_success">校验成功</string>
+    <string name="check_task_failed">校验失败</string>
+    <string name="set_file_complete">发送完成</string>
+    <string name="set_file_failed">发送失败</string>
+    <string name="set_file_stop">暂停</string>
+    <string name="set_file_transmit">传输中</string>
+    <string name="set_file_waiting">排队中</string>
+    <string name="retry">重试</string>
+    <string name="view">查看</string>
+    <string name="resume">继续</string>
+    <string name="stop">暂停</string>
 </resources>
