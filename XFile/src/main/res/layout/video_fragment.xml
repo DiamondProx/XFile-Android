@@ -3,14 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <com.huangjiang.view.AppBrowserControl
-        android:id="@+id/sgv"
+    <com.huangjiang.view.VideoBrowerControl
+        android:id="@+id/videoBrowser"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:listSelector="@android:color/transparent"
-        android:numColumns="4" >
-    </com.huangjiang.view.AppBrowserControl>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -30,14 +32,14 @@ import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
-import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMClientFileManager;
+import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMServerFileManager;
 import com.huangjiang.manager.IMServerMessageManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
-import com.huangjiang.manager.event.ConnectSuccessEvent;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.service.IMService;
+import com.huangjiang.view.AnimationHelper;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import org.greenrobot.eventbus.EventBus;
@@ -62,14 +64,13 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     private FragmentTransaction transaction;
     private RadioGroup radioGroup;
 
-    // TabComputerFragment tabComputerFragment;
     TabMobileFragment tabMobileFragment;
     TabMessageFragment tabMessageFragment;
 
     private SlidingMenu slidingMenu = null;
 
-    private int mTabindex;
-    RadioButton rdb_home, rdb_userinfo;
+    private int mTabIndex;
+    RadioButton rdb_home, rdb_message;
     CheckBox cb;
     TextView tvPersonNumber, tvCountNumber, tvFileNumber;
 
@@ -82,6 +83,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     Button btn_share, btn_close;
 
     RelativeLayout top_main_layout, top_connect_layout;
+    FrameLayout head_layout;
+    ImageView fileThumb;
 
 
     @Override
@@ -129,24 +132,20 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         tvCountNumber = (TextView) slidingMenu.findViewById(R.id.count_number);
         tvFileNumber = (TextView) slidingMenu.findViewById(R.id.file_number);
         slidingMenu.findViewById(R.id.edit_user_layout).setOnClickListener(this);
+        head_layout = (FrameLayout) findViewById(R.id.head_layout);
 
 
         // 选择按钮列表
         radioGroup = (RadioGroup) findViewById(R.id.rg_tab);
         radioGroup.setOnCheckedChangeListener(this);
         // 单选按钮
-        // rdb_curriculum = (RadioButton) findViewById(R.id.rdb_tabcurriculum);
-        rdb_home = (RadioButton) findViewById(R.id.rdb_tabhome);
-        rdb_userinfo = (RadioButton) findViewById(R.id.rdb_tabuserinfo);
+        rdb_home = (RadioButton) findViewById(R.id.rdb_mobile);
+        rdb_message = (RadioButton) findViewById(R.id.rdb_message);
 
         // 初始化标签
         fragmentManager = getSupportFragmentManager();
-
-        // tabComputerFragment = new TabComputerFragment();
         tabMobileFragment = new TabMobileFragment();
         tabMessageFragment = new TabMessageFragment();
-
-        // fragments.add(tabComputerFragment);
         fragments.add(tabMobileFragment);
         fragments.add(tabMessageFragment);
 
@@ -156,6 +155,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
         btn_share = (Button) findViewById(R.id.btn_share);
         btn_share.setOnClickListener(this);
+
+        fileThumb = (ImageView) findViewById(R.id.fileThumb);
 
     }
 
@@ -186,14 +187,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 startActivity(intent);
                 break;
             case R.id.btn_share:
-//                sendBonjour();
-//                tranferFile();
-//                testReadFile();
-//                sendFile();
-//                sendMessage();
                 showConnect();
-//                testConnect();
-//                testFile();
                 break;
             case R.id.btn_close:
                 closeConnect();
@@ -203,7 +197,6 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         }
 
     }
-
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkId) {
@@ -220,7 +213,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 }
                 showTab(i, transaction);
                 transaction.commit();
-                mTabindex = i;
+                mTabIndex = i;
             }
 
         }
@@ -230,32 +223,32 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         int one = 2 * offset + cursorWidth;
         switch (originalIndex) {
             case 0:
-                if (mTabindex == 1) {
+                if (mTabIndex == 1) {
                     animation = new TranslateAnimation(0, one, 0, 0);
                 }
                 break;
             case 1:
-                if (mTabindex == 0) {
+                if (mTabIndex == 0) {
                     animation = new TranslateAnimation(one, 0, 0, 0);
                 }
                 break;
         }
-        if (originalIndex != mTabindex) {
+        if (originalIndex != mTabIndex) {
             animation.setFillAfter(true);
             animation.setDuration(100);
             cursor.startAnimation(animation);
-            originalIndex = mTabindex;
+            originalIndex = mTabIndex;
         }
-        switch (mTabindex) {
+        switch (mTabIndex) {
             case 0:
                 cursor.setImageResource(R.mipmap.tab_mobile_arrow_down_blue);
                 rdb_home.setTextColor(blue_color);
-                rdb_userinfo.setTextColor(gray_color);
+                rdb_message.setTextColor(gray_color);
                 break;
             case 1:
                 cursor.setImageResource(R.mipmap.tab_computer_arrow_down_green);
                 rdb_home.setTextColor(gray_color);
-                rdb_userinfo.setTextColor(green_color);
+                rdb_message.setTextColor(green_color);
                 break;
 
             default:
@@ -265,7 +258,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     }
 
     public Fragment getCurrentFragment() {
-        return fragments.get(mTabindex);
+        return fragments.get(mTabIndex);
     }
 
     private void showTab(int idx, FragmentTransaction ft) {
@@ -277,11 +270,11 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 ft.hide(fragment);
             }
         }
-        mTabindex = idx; // 更新目标tab为当前tab
+        mTabIndex = idx; // 更新目标tab为当前tab
     }
 
-    /**
-     * 根据tagd的数量初始化游标的位置
+    /*
+     * 根据tag的数量初始化游标的位置
      *
      * @param tagNum
      */
@@ -310,6 +303,26 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         stopService(new Intent(HomeActivity.this, IMService.class));
+    }
+
+    public void initFileThumbView(Drawable drawable, int width, int height, int locationX, int locationY) {
+        // 修改坐标位置,图标大小
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) fileThumb.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = height;
+        layoutParams.setMargins(locationX, locationY - height / 2, 0, 0);
+        fileThumb.setLayoutParams(layoutParams);
+        fileThumb.setImageDrawable(drawable);
+        fileThumb.setVisibility(View.VISIBLE);
+        // 更新图标大小
+        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        fileThumb.measure(w, h);
+        // 读取头像坐标
+        int[] endLocation = new int[2];
+        head_layout.getLocationOnScreen(endLocation);
+
+        AnimationHelper.startSendFileAnimation(fileThumb, head_layout, locationX, locationY, endLocation[0], endLocation[1]);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -358,33 +371,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         }
     }
 
-    //---------------------------TEST------------------------------------
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(ConnectSuccessEvent event) {
-        if (event != null && IMClientMessageManager.getInstance() != null) {
-            System.out.println("*****connect.ip:" + event.getIpAddress());
-            // 发送消息
-//            XFileProtocol.Chat.Builder chatBuilder = XFileProtocol.Chat.newBuilder();
-//            chatBuilder.setContent("hi,im client");
-//            chatBuilder.setFrom("client");
-//            chatBuilder.setMessagetype(1);
-//            IMClientMessageManager.getInstance().sendMessage(chatBuilder.build(), SysConstant.SERVICE_DEFAULT, SysConstant.CMD_SEND_MESSAGE);
-            // 发送文件
-
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    File sendFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/doufu.mp3");
-//                    if (sendFile.exists()) {
-//                        IMFileManager.getInstance().sendFile(sendFile);
-//                    }
-//                }
-//            }).start();
-
-
-        }
-    }
+    //---------------------TEST---------------------------
 
     // 发送广播发现设备
     void sendBonjour() {

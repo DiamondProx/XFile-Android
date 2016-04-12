@@ -22,24 +22,21 @@ public class FileListAdapter extends BaseAdapter {
 
 	public FileListAdapter(Context context) {
 		inflater = LayoutInflater.from(context);
-		mList = new ArrayList<FileInfo>();
+		mList = new ArrayList<>();
 	}
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return mList.size();
 	}
 
 	@Override
 	public Object getItem(int arg0) {
-		// TODO Auto-generated method stub
 		return mList.get(arg0);
 	}
 
 	@Override
 	public long getItemId(int arg0) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

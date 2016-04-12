@@ -40,7 +40,7 @@
     <string name="music">音乐</string>
     <string name="video">视频</string>
     <string name="application">应用</string>
-    <string name="message">历史消息</string>
+    <string name="history_message">历史消息</string>
     <string name="inbox">收件箱</string>
     <string name="other">其他</string>
     <string name="folder">文件夹</string>
@@ -67,4 +67,6 @@
     <string name="view">查看</string>
     <string name="resume">继续</string>
     <string name="stop">暂停</string>
+    <string name="mobile">手机</string>
+    <string name="message">消息</string>
 </resources>

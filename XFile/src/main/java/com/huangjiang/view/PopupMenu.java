@@ -46,6 +46,7 @@ public class PopupMenu {
     int dp_90;
     int margin_top;
     int margin_buttom;
+    private int outPosition = 0;
     /**
      * 资源对象
      */
@@ -113,6 +114,11 @@ public class PopupMenu {
         return item;
     }
 
+    public void setOutPosition(int outPosition) {
+        this.outPosition = outPosition;
+    }
+
+
     /**
      * Show popup menu.
      */
@@ -141,7 +147,7 @@ public class PopupMenu {
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
                 if (mListener != null) {
-                    mListener.onItemSelected(mItems.get(position),tFileInfo);
+                    mListener.onItemSelected(position, mItems.get(position), tFileInfo);
                 }
                 mPopupWindow.dismiss();
             }
@@ -247,7 +253,7 @@ public class PopupMenu {
      * an item in this PopupMenu has been selected.
      */
     public interface OnItemSelectedListener {
-        public void onItemSelected(MenuItem item, TFileInfo tFileInfo);
+        public void onItemSelected(int position,MenuItem item, TFileInfo tFileInfo);
     }
 
     static class ViewHolder {
@@ -334,7 +340,7 @@ public class PopupMenu {
                 @Override
                 public void onClick(View v) {
                     if (mListener != null) {
-                        mListener.onItemSelected(mItems.get(position),tFileInfo);
+                        mListener.onItemSelected(outPosition,mItems.get(position), tFileInfo);
                     }
                     dismiss();
                 }

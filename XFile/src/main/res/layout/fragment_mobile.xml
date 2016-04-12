@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
@@ -10,12 +10,12 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:focusable="true" />
+
     <com.huangjiang.view.TabBar
         android:id="@+id/tab_mobile"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:background="#16C9E9"/>
-
+        android:background="#16C9E9" />
 
 
 </LinearLayout>

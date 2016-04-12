@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_background"
-    android:orientation="vertical" >
+    android:orientation="vertical">
+
 
     <ListView
         android:id="@+id/list_root"
@@ -11,15 +12,13 @@
         android:layout_height="match_parent"
         android:divider="@color/listview_divider_color"
         android:dividerHeight="0.1dp"
-        android:listSelector="@color/tab_btn_normal" >
-    </ListView>
+        android:listSelector="@color/tab_btn_normal" />
 
     <com.huangjiang.view.FileBrowserControl
         android:id="@+id/fileBrowser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
-        android:visibility="gone" >
-    </com.huangjiang.view.FileBrowserControl>
+        android:visibility="gone" />
 
 </FrameLayout>
