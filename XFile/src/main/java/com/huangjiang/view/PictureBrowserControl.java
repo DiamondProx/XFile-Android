@@ -22,12 +22,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huangjiang.business.model.PictureInfo;
-import com.huangjiang.business.picture.ImageScanner;
-import com.huangjiang.business.picture.ImageScanner.ScanCompleteCallBack;
-import com.huangjiang.business.picture.LocalImageView;
-import com.huangjiang.business.picture.LocalImageView.OnMeasureListener;
-import com.huangjiang.business.picture.NativeImageLoader;
-import com.huangjiang.business.picture.NativeImageLoader.NativeImageCallBack;
+import com.huangjiang.business.image.ImageScanner;
+import com.huangjiang.business.image.ImageScanner.ScanCompleteCallBack;
+import com.huangjiang.business.image.LocalImageView;
+import com.huangjiang.business.image.LocalImageView.OnMeasureListener;
+import com.huangjiang.business.image.NativeImageLoader;
+import com.huangjiang.business.image.NativeImageLoader.NativeImageCallBack;
 import com.huangjiang.utils.XFileUtils;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;

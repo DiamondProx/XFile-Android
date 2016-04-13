@@ -17,61 +17,61 @@ import com.huangjiang.utils.Logger;
 
 public class AppScanner {
 
-	Logger logger=Logger.getLogger(AppScanner.class);
+    Logger logger = Logger.getLogger(AppScanner.class);
 
-	private Context mContext;
+    private Context mContext;
 
-	public AppScanner(Context context) {
-		this.mContext = context;
-	}
+    public AppScanner(Context context) {
+        this.mContext = context;
+    }
 
-	@SuppressLint("HandlerLeak")
-	public void scanImages(final ScanAppsCompleteCallBack callback) {
-		final Handler mHandler = new Handler() {
+    @SuppressLint("HandlerLeak")
+    public void scanImages(final ScanAppsCompleteCallBack callback) {
+        final Handler mHandler = new Handler() {
 
-			@SuppressWarnings("unchecked")
-			@Override
-			public void handleMessage(Message msg) {
-				super.handleMessage(msg);
-				callback.scanComplete((ArrayList<AppInfo>) msg.obj);
-			}
-		};
+            @SuppressWarnings("unchecked")
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                callback.scanComplete((ArrayList<AppInfo>) msg.obj);
+            }
+        };
 
-		new Thread(new Runnable() {
+        new Thread(new Runnable() {
 
-			@Override
-			public void run() {
+            @Override
+            public void run() {
 
-				List<AppInfo> list = new ArrayList<AppInfo>();
-				PackageManager pm = mContext.getPackageManager();
-				//	获取读取已安装程序列表服务
-				List<PackageInfo> packs = pm.getInstalledPackages(0);
+                List<AppInfo> list = new ArrayList<AppInfo>();
+                PackageManager pm = mContext.getPackageManager();
+                //	获取读取已安装程序列表服务
+                List<PackageInfo> packs = pm.getInstalledPackages(0);
 
-				for (PackageInfo pi : packs) {
-					if((pi.applicationInfo.flags& ApplicationInfo.FLAG_SYSTEM)==0){
-						AppInfo appInfo = new AppInfo();
-						appInfo.setAppIcon(pi.applicationInfo.loadIcon(pm));//程序图标
-						appInfo.setAppName(pi.applicationInfo.loadLabel(pm).toString());//程序名称
-						appInfo.setPackageName(pi.applicationInfo.packageName);//包名
-						int appSize= Integer.valueOf((int) new File(pi.applicationInfo.publicSourceDir).length());
-						logger.e("****sourceDir:"+pi.applicationInfo.sourceDir);
-						appInfo.setAppSize(appSize);
-						list.add(appInfo);
-					}
+                for (PackageInfo pi : packs) {
+                    if ((pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                        AppInfo appInfo = new AppInfo();
+                        appInfo.setAppIcon(pi.applicationInfo.loadIcon(pm));//程序图标
+                        appInfo.setAppName(pi.applicationInfo.loadLabel(pm).toString());//程序名称
+                        appInfo.setPackageName(pi.applicationInfo.packageName);//包名
+                        int appSize = Integer.valueOf((int) new File(pi.applicationInfo.publicSourceDir).length());
+                        logger.e("****sourceDir:" + pi.applicationInfo.sourceDir);
+                        appInfo.setAppSize(appSize);
+                        list.add(appInfo);
+                    }
 
-				}
-				if (list.size() > 0) {
-					Message msg = mHandler.obtainMessage();
-					msg.obj = list;
-					mHandler.sendMessage(msg);
-				}
+                }
+                if (list.size() > 0) {
+                    Message msg = mHandler.obtainMessage();
+                    msg.obj = list;
+                    mHandler.sendMessage(msg);
+                }
 
-			}
-		}).start();
+            }
+        }).start();
 
-	}
+    }
 
-	public static interface ScanAppsCompleteCallBack {
-		public void scanComplete(List<AppInfo> list);
-	}
+    public static interface ScanAppsCompleteCallBack {
+        public void scanComplete(List<AppInfo> list);
+    }
 }

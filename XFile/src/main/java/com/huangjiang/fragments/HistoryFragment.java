@@ -74,10 +74,10 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
     }
 
     @Override
-    public void onItemSelected(int position, MenuItem item, TFileInfo tFileInfo) {
-        if (tFileInfo != null) {
+    public void onItemSelected(PopupMenu menu, MenuItem item) {
+        if (menu.getTFileInfo() != null) {
             Toast.makeText(getActivity(), "clickMemu", Toast.LENGTH_SHORT).show();
-            IMFileManager.getInstance().cancelTask(tFileInfo);
+            IMFileManager.getInstance().cancelTask(menu.getTFileInfo());
         }
     }
 

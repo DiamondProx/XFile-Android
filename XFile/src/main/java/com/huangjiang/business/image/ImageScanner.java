@@ -1,4 +1,4 @@
-package com.huangjiang.business.picture;
+package com.huangjiang.business.image;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;

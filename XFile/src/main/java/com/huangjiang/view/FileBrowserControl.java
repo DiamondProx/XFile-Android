@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huangjiang.adapter.FileListAdapter;
-import com.huangjiang.business.files.FileManager;
+import com.huangjiang.business.explorer.FileManager;
 import com.huangjiang.business.model.FileInfo;
 
 import com.huangjiang.filetransfer.R;

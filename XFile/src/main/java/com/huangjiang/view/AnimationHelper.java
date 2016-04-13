@@ -13,6 +13,16 @@ import android.view.animation.TranslateAnimation;
 public class AnimationHelper {
 
 
+    /**
+     * 发送文件时候的扔文件动画效果
+     *
+     * @param startView      开始视图
+     * @param endView        结束视图
+     * @param startLocationX 开始X坐标
+     * @param startLocationY 开始Y坐标
+     * @param endLocationX   结束X坐标
+     * @param endLocationY   结束Y坐标
+     */
     public static void startSendFileAnimation(final View startView, final View endView, int startLocationX, int startLocationY, int endLocationX, int endLocationY) {
         // 目标位置
         int endX = endLocationX + endView.getMeasuredWidth() / 2;

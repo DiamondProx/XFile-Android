@@ -38,19 +38,19 @@ public class PopupMenu {
     private View mContentView;
     private ListViewForScrollView mItemsView;
     private OnItemSelectedListener mListener;
-    private TFileInfo tFileInfo;
 
     private List<MenuItem> mItems;
-    private int mWidth = 240;
-    private float mScale;
     int dp_90;
     int margin_top;
-    int margin_buttom;
-    private int outPosition = 0;
+    int margin_bottom;
+    private int itemPosition = 0;
+    private int groupPosition = 0;
+    private TFileInfo tFileInfo = null;
     /**
      * 资源对象
      */
     protected Resources resources;
+
 
     public PopupMenu(Context context) {
         mContext = context;
@@ -58,14 +58,11 @@ public class PopupMenu {
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metrics = new DisplayMetrics();
         mWindowManager.getDefaultDisplay().getMetrics(metrics);
-        mScale = metrics.scaledDensity;
         resources = context.getResources();
         dp_90 = (int) resources.getDimension(R.dimen.dp_90);
         margin_top = (int) resources.getDimension(R.dimen.dp_20);
-        margin_buttom = (int) resources.getDimension(R.dimen.dp_20);
-
-        mItems = new ArrayList<MenuItem>();
-
+        margin_bottom = (int) resources.getDimension(R.dimen.dp_20);
+        mItems = new ArrayList<>();
         mPopupWindow = new PopupWindow(context);
         mPopupWindow.setTouchInterceptor(new OnTouchListener() {
 
@@ -78,12 +75,18 @@ public class PopupMenu {
                 return false;
             }
         });
-
         setContentView(mInflater.inflate(R.layout.popup_menu, null));
     }
 
-    public void setTFileInfo(TFileInfo tFileInfo) {
+    public PopupMenu(Context context, int itemPosition, TFileInfo tFileInfo) {
+        this(context);
+        this.itemPosition = itemPosition;
         this.tFileInfo = tFileInfo;
+    }
+
+    public PopupMenu(Context context, int itemPosition, int groupPosition, TFileInfo tFileInfo) {
+        this(context, itemPosition, tFileInfo);
+        this.groupPosition = groupPosition;
     }
 
     /**
@@ -114,10 +117,29 @@ public class PopupMenu {
         return item;
     }
 
-    public void setOutPosition(int outPosition) {
-        this.outPosition = outPosition;
+    public void setItemPosition(int itemPosition) {
+        this.itemPosition = itemPosition;
     }
 
+    public int getItemPosition() {
+        return itemPosition;
+    }
+
+    public void setGroupPosition(int groupPosition) {
+        this.groupPosition = groupPosition;
+    }
+
+    public int getGroupPosition() {
+        return groupPosition;
+    }
+
+    public TFileInfo getTFileInfo() {
+        return tFileInfo;
+    }
+
+    public void setTFileInfo(TFileInfo tFileInfo) {
+        this.tFileInfo = tFileInfo;
+    }
 
     /**
      * Show popup menu.
@@ -147,7 +169,7 @@ public class PopupMenu {
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
                 if (mListener != null) {
-                    mListener.onItemSelected(position, mItems.get(position), tFileInfo);
+                    mListener.onItemSelected(PopupMenu.this, mItems.get(position));
                 }
                 mPopupWindow.dismiss();
             }
@@ -175,7 +197,7 @@ public class PopupMenu {
 
         // My popup style
         xPos = anchorRect.centerX() - mPopupWindow.getWidth() / 2;
-        if (rootHeight < screenHeight - (anchorRect.top + (anchorRect.bottom / 2)) + margin_buttom) {
+        if (rootHeight < screenHeight - (anchorRect.top + (anchorRect.bottom / 2)) + margin_bottom) {
             adapter.setShowUp(true);
             yPos = anchorRect.top + (anchorRect.bottom / 2);
         } else {
@@ -184,38 +206,18 @@ public class PopupMenu {
         }
 
 
-//        // Set x-coordinate to display the popup menu
-//        xPos = anchorRect.centerX() - mPopupWindow.getWidth() / 2;
-//
-//        int dyTop = anchorRect.top;
-//        int dyBottom = screenHeight + rootHeight;
-//        boolean onTop = dyTop > dyBottom;
-//
-//        // Set y-coordinate to display the popup menu
-//        if (onTop) {
-//            yPos = anchorRect.top - rootHeight;
-//        } else {
-//            if (anchorRect.bottom > dyTop) {
-//                yPos = anchorRect.bottom - 20;
-//            } else {
-//                yPos = anchorRect.top - anchorRect.bottom + 50;
-//            }
-//        }
         adapter.notifyDataSetChanged();
         mPopupWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
 
     }
 
     private void preShow() {
-//        int width = (int) (mWidth * mScale);
-//        mPopupWindow.setWidth(width);
         mPopupWindow.setWidth(dp_90);
         mPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
         mPopupWindow.setTouchable(true);
         mPopupWindow.setFocusable(true);
         mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
-        //mPopupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.panel_background));
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
     }
 
@@ -228,15 +230,6 @@ public class PopupMenu {
         }
     }
 
-
-    /**
-     * Change the popup's width.
-     *
-     * @param width
-     */
-    public void setWidth(int width) {
-        mWidth = width;
-    }
 
     /**
      * Register a callback to be invoked when an item in this PopupMenu has
@@ -253,7 +246,7 @@ public class PopupMenu {
      * an item in this PopupMenu has been selected.
      */
     public interface OnItemSelectedListener {
-        public void onItemSelected(int position,MenuItem item, TFileInfo tFileInfo);
+        void onItemSelected(PopupMenu menu, MenuItem item);
     }
 
     static class ViewHolder {
@@ -304,7 +297,6 @@ public class PopupMenu {
                     holder.arrow_up.setVisibility(View.GONE);
                     holder.arrow_down.setVisibility(View.VISIBLE);
                 }
-                //holder.content_layout.setBackgroundResource(R.drawable.menu_blue_selector);
             } else if (position == 0) {
                 if (showUp) {
                     holder.arrow_up.setVisibility(View.VISIBLE);
@@ -340,7 +332,7 @@ public class PopupMenu {
                 @Override
                 public void onClick(View v) {
                     if (mListener != null) {
-                        mListener.onItemSelected(outPosition,mItems.get(position), tFileInfo);
+                        mListener.onItemSelected(PopupMenu.this, mItems.get(position));
                     }
                     dismiss();
                 }

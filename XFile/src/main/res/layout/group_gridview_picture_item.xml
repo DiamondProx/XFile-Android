@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <com.huangjiang.business.picture.LocalImageView
+    <com.huangjiang.business.image.LocalImageView
         android:id="@+id/group_item"
         android:layout_width="match_parent"
         android:layout_height="100dp"

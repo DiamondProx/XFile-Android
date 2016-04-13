@@ -1,4 +1,4 @@
-package com.huangjiang.business.picture;
+package com.huangjiang.business.image;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -19,17 +19,19 @@ import android.widget.TextView;
 
 import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.business.audio.AudioInterface;
-import com.huangjiang.business.model.FileInfo;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.core.ResponseCallback;
 import com.huangjiang.filetransfer.R;
+import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
+import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.view.PopupMenu;
 
 import java.util.List;
 
 /**
- * 查找
+ * 查找-图片,音频,视频三种类型
  */
 public class SearchFragment extends Fragment implements PopupMenu.OnItemSelectedListener {
 
@@ -48,42 +50,42 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                PopupMenu menu = new PopupMenu(getActivity());
-                menu.setOnItemSelectedListener(SearchFragment.this);
-                menu.setOutPosition(position);
-                menu.add(0, R.string.transfer).setIcon(getResources().getDrawable(R.mipmap.data_downmenu_send));
-                menu.add(1, R.string.play).setIcon(getResources().getDrawable(R.mipmap.data_downmenu_open));
-                menu.add(2, R.string.more).setIcon(getResources().getDrawable(R.mipmap.data_downmenu_more));
-                menu.show(view);
-
-
+                TFileInfo tFileInfo = (TFileInfo) searchAdapter.getItem(position);
+                MenuHelper.showMenu(getActivity(), view, position, tFileInfo, SearchFragment.this);
             }
         });
         return view;
     }
 
     @Override
-    public void onItemSelected(int position, MenuItem item, TFileInfo tFileInfo) {
-        ImageView image = (ImageView) listView.getChildAt(position).findViewById(R.id.img);
-        if (image != null) {
-            Drawable drawable = image.getDrawable();
-            HomeActivity homeActivity = (HomeActivity) getActivity();
-            int[] location = new int[2];
-            image.getLocationOnScreen(location);
-            homeActivity.initFileThumbView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+    public void onItemSelected(PopupMenu menu, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_transfer:
+                ImageView image = (ImageView) listView.getChildAt(menu.getItemPosition()).findViewById(R.id.img);
+                if (image != null) {
+                    Drawable drawable = image.getDrawable();
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    int[] location = new int[2];
+                    image.getLocationOnScreen(location);
+                    homeActivity.initFileThumbView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+                }
+                break;
+            case R.id.menu_open:
+                OpenFileHelper.openFile(getActivity(), menu.getTFileInfo());
+                break;
         }
+
     }
 
     class SearchAdapter extends BaseAdapter {
         private LayoutInflater mInflater;
-        private List<FileInfo> mList;
+        private List<TFileInfo> mList;
 
         public SearchAdapter(Context context) {
             mInflater = LayoutInflater.from(context);
         }
 
-        public void setList(List<FileInfo> mList) {
+        public void setList(List<TFileInfo> mList) {
             this.mList = mList;
         }
 
@@ -115,11 +117,11 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
             } else {
                 videoHolder = (ViewHolder) convertView.getTag();
             }
-            FileInfo file = mList.get(position);
+            TFileInfo file = mList.get(position);
             if (file != null) {
                 videoHolder.Img.setImageResource(R.mipmap.data_folder_documents_placeholder);
                 videoHolder.Name.setText(file.getName());
-                videoHolder.Size.setText(file.getSpace());
+                videoHolder.Size.setText(XFileUtils.getFolderSizeString(file.getLength()));
             }
             return convertView;
         }
@@ -147,9 +149,9 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
         public void afterTextChanged(Editable s) {
             if (s.length() > 0) {
                 AudioInterface audioInterface = new AudioInterface(getActivity());
-                audioInterface.getAudioByKey("doufu", new ResponseCallback<List<FileInfo>>() {
+                audioInterface.searchAudio("doufu", new ResponseCallback<List<TFileInfo>>() {
                     @Override
-                    public void onResponse(int stateCode, int code, String msg, List<FileInfo> fileInfos) {
+                    public void onResponse(int stateCode, int code, String msg, List<TFileInfo> fileInfos) {
                         if (fileInfos != null) {
                             searchAdapter.setList(null);
                             searchAdapter.setList(fileInfos);

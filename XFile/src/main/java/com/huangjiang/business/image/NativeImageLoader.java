@@ -1,4 +1,4 @@
-package com.huangjiang.business.picture;
+package com.huangjiang.business.image;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

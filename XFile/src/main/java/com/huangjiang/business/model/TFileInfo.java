@@ -76,6 +76,11 @@ public class TFileInfo {
      */
     private String createTime;
 
+    /**
+     * 播放时长
+     */
+    private int playTime;
+
     public String getName() {
         return name;
     }
@@ -186,5 +191,13 @@ public class TFileInfo {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public int getPlayTime() {
+        return playTime;
+    }
+
+    public void setPlayTime(int playTime) {
+        this.playTime = playTime;
     }
 }

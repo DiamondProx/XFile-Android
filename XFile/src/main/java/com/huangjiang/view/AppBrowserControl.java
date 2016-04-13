@@ -17,8 +17,8 @@ import android.widget.TextView;
 import com.huangjiang.business.apk.AppScanner;
 import com.huangjiang.business.apk.AppScanner.ScanAppsCompleteCallBack;
 import com.huangjiang.business.model.AppInfo;
-import com.huangjiang.business.picture.LocalImageView;
-import com.huangjiang.business.picture.LocalImageView.OnMeasureListener;
+import com.huangjiang.business.image.LocalImageView;
+import com.huangjiang.business.image.LocalImageView.OnMeasureListener;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
 
