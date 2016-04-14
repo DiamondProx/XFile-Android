@@ -18,15 +18,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.huangjiang.activity.HomeActivity;
-import com.huangjiang.business.audio.AudioInterface;
+import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.core.ResponseCallback;
+import com.huangjiang.business.search.SearchLogic;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
 import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.view.PopupMenu;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -54,6 +58,7 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
                 MenuHelper.showMenu(getActivity(), view, position, tFileInfo, SearchFragment.this);
             }
         });
+        EventBus.getDefault().register(this);
         return view;
     }
 
@@ -75,6 +80,12 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
                 break;
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     class SearchAdapter extends BaseAdapter {
@@ -148,24 +159,30 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
         @Override
         public void afterTextChanged(Editable s) {
             if (s.length() > 0) {
-                AudioInterface audioInterface = new AudioInterface(getActivity());
-                audioInterface.searchAudio("doufu", new ResponseCallback<List<TFileInfo>>() {
-                    @Override
-                    public void onResponse(int stateCode, int code, String msg, List<TFileInfo> fileInfos) {
-                        if (fileInfos != null) {
-                            searchAdapter.setList(null);
-                            searchAdapter.setList(fileInfos);
-                            searchAdapter.notifyDataSetChanged();
-                        } else {
-                            searchAdapter.setList(null);
-                            searchAdapter.notifyDataSetChanged();
-                        }
-                    }
-                });
+                SearchLogic audioLogic = new SearchLogic(getActivity());
+                audioLogic.searchResource("XF");
             } else {
                 searchAdapter.setList(null);
                 searchAdapter.notifyDataSetChanged();
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(FindResEvent searchEvent) {
+        switch (searchEvent.getMimeType()) {
+            case SEARCH:
+                List<TFileInfo> list = searchEvent.getFileInfoList();
+                if (list != null) {
+                    searchAdapter.setList(null);
+                    searchAdapter.setList(list);
+                    searchAdapter.notifyDataSetChanged();
+                } else {
+                    searchAdapter.setList(null);
+                    searchAdapter.notifyDataSetChanged();
+                }
+                break;
+        }
+
     }
 }

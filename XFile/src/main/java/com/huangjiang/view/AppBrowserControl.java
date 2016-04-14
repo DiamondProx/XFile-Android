@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.huangjiang.business.apk.AppScanner;
-import com.huangjiang.business.apk.AppScanner.ScanAppsCompleteCallBack;
+import com.huangjiang.business.app.AppScanner;
+import com.huangjiang.business.app.AppScanner.ScanAppsCompleteCallBack;
 import com.huangjiang.business.model.AppInfo;
 import com.huangjiang.business.image.LocalImageView;
 import com.huangjiang.business.image.LocalImageView.OnMeasureListener;

@@ -1,4 +1,4 @@
-package com.huangjiang.business.apk;
+package com.huangjiang.business.app;
 
 import java.io.File;
 import java.util.ArrayList;

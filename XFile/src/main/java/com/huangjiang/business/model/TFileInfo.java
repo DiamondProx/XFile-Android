@@ -81,6 +81,11 @@ public class TFileInfo {
      */
     private int playTime;
 
+    /**
+     * 包名
+     */
+    private String packageName;
+
     public String getName() {
         return name;
     }
@@ -199,5 +204,13 @@ public class TFileInfo {
 
     public void setPlayTime(int playTime) {
         this.playTime = playTime;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 }

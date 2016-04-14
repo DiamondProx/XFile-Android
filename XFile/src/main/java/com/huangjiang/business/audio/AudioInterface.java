@@ -8,8 +8,6 @@ import android.provider.MediaStore;
 
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.core.ResponseCallback;
-import com.huangjiang.core.StateCode;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.XFileUtils;
 
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 音频
+ * 读取本地音频
  */
 public class AudioInterface {
 
@@ -32,38 +30,37 @@ public class AudioInterface {
     /**
      * 查找所有音频
      */
-    public void searchAudio(final ResponseCallback<List<TFileInfo>> callback) {
+    public List<TFileInfo> searchAudio() {
+
+        List<TFileInfo> list = null;
         try {
             Uri audioUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
             ContentResolver mContentResolver = mContext.getContentResolver();
             Cursor cursor = mContentResolver.query(audioUri, null, null, null, null);
-            List<TFileInfo> list = readAudioCursor(cursor);
-            callback.onResponse(StateCode.REQUEST_SUCCESS, 0, null, list);
+            list = readAudioCursor(cursor);
         } catch (Exception e) {
-            callback.onResponse(StateCode.REQUEST_FAIL, 0, e.getMessage(), null);
             e.printStackTrace();
             logger.e(e.getMessage());
         }
-
+        return list;
 
     }
 
     /**
      * 根据关键字查找音频
      */
-    public void searchAudio(final String searchKey, final ResponseCallback<List<TFileInfo>> callback) {
+    public List<TFileInfo> searchAudio(final String searchKey) {
+        List<TFileInfo> list = null;
         try {
             Uri audioUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
             ContentResolver mContentResolver = mContext.getContentResolver();
             Cursor cursor = mContentResolver.query(audioUri, null, MediaStore.Audio.Media.DISPLAY_NAME + " like '%" + searchKey + "%'", null, null);
-            List<TFileInfo> list = readAudioCursor(cursor);
-            callback.onResponse(StateCode.REQUEST_SUCCESS, 0, null, list);
-            logger.e("****searchAudioCurrentThreadId:" + Thread.currentThread().getId());
+            list = readAudioCursor(cursor);
         } catch (Exception e) {
-            callback.onResponse(StateCode.REQUEST_FAIL, 0, e.getMessage(), null);
             e.printStackTrace();
             logger.e(e.getMessage());
         }
+        return list;
     }
 
     /**
