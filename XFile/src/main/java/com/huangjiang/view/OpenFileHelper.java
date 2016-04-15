@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.huangjiang.activity.ShowImageActivity;
 import com.huangjiang.business.model.TFileInfo;
 
 import java.io.File;
@@ -85,9 +86,6 @@ public class OpenFileHelper {
 
     /**
      * 打开音频文件
-     *
-     * @param context
-     * @param tFileInfo
      */
     static void openAudio(Context context, TFileInfo tFileInfo) {
         Intent intent = new Intent("android.intent.action.VIEW");
@@ -99,10 +97,43 @@ public class OpenFileHelper {
         context.startActivity(intent);
     }
 
+    /**
+     * 打开视频文件
+     */
+    static void openVideo(Context context, TFileInfo tFileInfo) {
+        Intent intent = new Intent("android.intent.action.VIEW");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("oneshot", 0);
+        intent.putExtra("configchange", 0);
+        Uri uri = Uri.fromFile(new File(tFileInfo.getPath()));
+        intent.setDataAndType(uri, "video/*");
+        context.startActivity(intent);
+    }
+
+    static void openApk(Context context, TFileInfo tFileInfo) {
+        Intent LaunchIntent = context.getPackageManager().getLaunchIntentForPackage(tFileInfo.getPackageName());
+        context.startActivity(LaunchIntent);
+    }
+
+    static void openImage(Context context, TFileInfo tFileInfo) {
+        Intent intent = new Intent(context, ShowImageActivity.class);
+        intent.putExtra(ShowImageActivity.URL, tFileInfo.getPath());
+        context.startActivity(intent);
+    }
+
     public static void openFile(Context context, TFileInfo tFileInfo) {
         switch (tFileInfo.getFileType()) {
             case Audio:
                 openAudio(context, tFileInfo);
+                break;
+            case Video:
+                openVideo(context, tFileInfo);
+                break;
+            case Apk:
+                openApk(context, tFileInfo);
+                break;
+            case Image:
+                openImage(context, tFileInfo);
                 break;
         }
     }

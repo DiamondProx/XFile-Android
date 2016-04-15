@@ -19,8 +19,10 @@ import android.widget.TextView;
 
 import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.business.event.FindResEvent;
+import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.search.SearchLogic;
+import com.huangjiang.core.ImageLoader;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.MenuHelper;
@@ -130,7 +132,11 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
             }
             TFileInfo file = mList.get(position);
             if (file != null) {
-                videoHolder.Img.setImageResource(R.mipmap.data_folder_documents_placeholder);
+                if (file.getFileType() == FileType.Apk || file.getFileType() == FileType.Video || file.getFileType() == FileType.Image) {
+                    ImageLoader.getInstance().displayThumb(videoHolder.Img, file);
+                } else {
+                    videoHolder.Img.setImageResource(R.mipmap.data_folder_documents_placeholder);
+                }
                 videoHolder.Name.setText(file.getName());
                 videoHolder.Size.setText(XFileUtils.getFolderSizeString(file.getLength()));
             }

@@ -13,7 +13,7 @@
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_15"
-        android:background="@mipmap/data_folder_documents_placeholder" />
+        android:src="@mipmap/data_folder_documents_placeholder" />
 
     <LinearLayout
         android:layout_width="match_parent"

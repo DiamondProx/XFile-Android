@@ -27,9 +27,10 @@ public class AnimationHelper {
         // 目标位置
         int endX = endLocationX + endView.getMeasuredWidth() / 2;
         int endY = endLocationY + endView.getMeasuredHeight() / 2;
+
         // 起始位置
-        int startX = startLocationX + startView.getMeasuredWidth() / 2;
-        int startY = startLocationY + startView.getMeasuredHeight() / 2;
+        int startX = startLocationX + startView.getWidth() / 2;
+        int startY = startLocationY + startView.getHeight() / 2;
         // 移动偏移位置
         int moveX = endX - startX;
         int moveY = endY - startY;

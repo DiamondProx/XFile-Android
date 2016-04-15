@@ -41,7 +41,7 @@ public class AppInterface {
                 if ((pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                     TFileInfo appFile = new TFileInfo();
                     String display_name = pi.applicationInfo.loadLabel(pm).toString();
-                    appFile.setPath(pi.applicationInfo.dataDir);//程序路径
+                    appFile.setPath(pi.applicationInfo.publicSourceDir);//安装包路径
                     appFile.setName(display_name);//程序名称
                     appFile.setPackageName(pi.applicationInfo.packageName);//包名
                     appFile.setLength(new File(pi.applicationInfo.publicSourceDir).length());//大小
