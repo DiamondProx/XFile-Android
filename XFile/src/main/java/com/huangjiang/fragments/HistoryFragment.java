@@ -11,6 +11,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.huangjiang.adapter.TransmitAdapter;
+import com.huangjiang.business.event.FindResEvent;
+import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMFileManager;
@@ -32,9 +34,10 @@ import java.util.List;
  */
 public class HistoryFragment extends Fragment implements AdapterView.OnItemClickListener, PopupMenu.OnItemSelectedListener {
 
-    List<TFileInfo> listMessage;
+    List<TFileInfo> list_message;
     TransmitAdapter adapter;
     ListView lv_message;
+    HistoryLogic history_logic;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,18 +52,20 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         adapter = new TransmitAdapter(getActivity());
         lv_message.setAdapter(adapter);
         lv_message.setOnItemClickListener(this);
-        listMessage = new ArrayList<>();
+        list_message = new ArrayList<>();
+        history_logic = new HistoryLogic(getActivity());
+        history_logic.getHistory();
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        TFileInfo tFileInfo = listMessage.get(position);
+        TFileInfo tFileInfo = (TFileInfo) adapter.getItem(position);
         PopupMenu menu = new PopupMenu(getActivity());
         // Set Listener
         menu.setOnItemSelectedListener(HistoryFragment.this);
@@ -89,6 +94,17 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         if (currentFile != null && position >= firstVisible && position <= lastVisible) {
             TransmitAdapter.ViewHolder holder = (TransmitAdapter.ViewHolder) (lv_message.getChildAt(position - firstVisible).getTag());
             adapter.updateTransmitState(holder, currentFile);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(FindResEvent searchEvent) {
+        switch (searchEvent.getMimeType()) {
+            case HISTORY:
+                List<TFileInfo> list = searchEvent.getFileInfoList();
+                adapter.setList(list);
+                adapter.notifyDataSetChanged();
+                break;
         }
     }
 

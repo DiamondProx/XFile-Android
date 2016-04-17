@@ -81,12 +81,12 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             return;
         }
-        String testFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "doufu.mp3";
+        String testFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "XFile.mp3";
         File file = new File(testFile);
         if (file.exists()) {
             XFileProtocol.File.Builder sendFile = XFileProtocol.File.newBuilder();
-            sendFile.setName("doufu");
-            sendFile.setFullName("doufu.mp3");
+            sendFile.setName("XFile");
+            sendFile.setFullName("XFile.mp3");
             sendFile.setMd5("md5");
             sendFile.setPosition(0);
             sendFile.setPath(file.getAbsolutePath());

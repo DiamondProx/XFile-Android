@@ -31,7 +31,12 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.huangjiang.XFileApplication;
+import com.huangjiang.business.model.FileInfo;
+import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.dao.DFile;
+import com.huangjiang.filetransfer.R;
+import com.huangjiang.manager.event.FileEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
 
 public class XFileUtils {
@@ -324,5 +329,60 @@ public class XFileUtils {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
     }
+
+    public static FileType getFileType(Context context, String extension) {
+        FileType fileType;
+        if (XFileUtils.checkEndsWithInStringArray(extension, context.getResources().getStringArray(R.array.fileEndingImage))) {
+            fileType = FileType.Image;
+        } else if (XFileUtils.checkEndsWithInStringArray(extension, context.getResources().getStringArray(R.array.fileEndingAudio))) {
+            fileType = FileType.Audio;
+        } else if (XFileUtils.checkEndsWithInStringArray(extension, context.getResources().getStringArray(R.array.fileEndingVideo))) {
+            fileType = FileType.Video;
+        } else {
+            fileType = FileType.Normal;
+        }
+        return fileType;
+    }
+
+    public static DFile buildDFile(TFileInfo tFileInfo) {
+        DFile dFile = new DFile();
+        dFile.setName(tFileInfo.getName());
+        dFile.setTaskId(tFileInfo.getTaskId());
+        dFile.setLength(tFileInfo.getLength());
+        dFile.setPosition(tFileInfo.getPosition());
+        dFile.setPath(tFileInfo.getPath());
+        dFile.setIsSend(tFileInfo.isSend());
+        dFile.setExtension(tFileInfo.getExtension());
+        dFile.setFullName(tFileInfo.getFullName());
+        dFile.setFrom(tFileInfo.getFrom());
+        dFile.setPercent(tFileInfo.getPercent());
+        switch (tFileInfo.getFileEvent()) {
+            case CREATE_FILE_SUCCESS:
+                dFile.setStatus(0);
+                break;
+            case SET_FILE:
+                dFile.setStatus(1);
+                break;
+            case SET_FILE_SUCCESS:
+                dFile.setStatus(2);
+                break;
+        }
+        return dFile;
+    }
+
+    public static DFile buildDFile(XFileProtocol.File fileInfo) {
+        DFile dFile = new DFile();
+        dFile.setName(fileInfo.getName());
+        dFile.setTaskId(fileInfo.getTaskId());
+        dFile.setLength(fileInfo.getLength());
+        dFile.setPosition(fileInfo.getPosition());
+        dFile.setPath(fileInfo.getPath());
+        dFile.setIsSend(fileInfo.getIsSend());
+        dFile.setExtension(fileInfo.getExtension());
+        dFile.setFullName(fileInfo.getFullName());
+        dFile.setFrom(fileInfo.getFrom());
+        return dFile;
+    }
+
 
 }

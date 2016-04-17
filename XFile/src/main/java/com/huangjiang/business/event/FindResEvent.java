@@ -51,7 +51,8 @@ public class FindResEvent {
         IMAGE,
         SEARCH,
         VIDEO,
-        NONE
+        NONE,
+        HISTORY
     }
 
 }

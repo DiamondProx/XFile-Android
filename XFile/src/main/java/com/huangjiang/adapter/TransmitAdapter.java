@@ -52,6 +52,10 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         listTFileInfo = new ArrayList<>();
     }
 
+    public void setList(List<TFileInfo> list) {
+        listTFileInfo = list;
+    }
+
     @Override
     public int getCount() {
         return listTFileInfo == null ? 0 : listTFileInfo.size();
@@ -142,7 +146,8 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         holder.from.setText(tFileInfo.getFrom());
         holder.name.setText(tFileInfo.getFullName());
         holder.size.setText(XFileUtils.getFolderSizeString(tFileInfo.getLength()));
-        holder.remainPercent.setText(String.format(mContext.getString(R.string.percent), tFileInfo.getPercent()));
+        long percent = tFileInfo.getPosition() * 100 / tFileInfo.getLength();
+        holder.remainPercent.setText(String.format(mContext.getString(R.string.percent), percent));
         if (tFileInfo.getFileEvent() == FileEvent.NONE) {
             holder.status.setVisibility(View.GONE);
             holder.line1.setVisibility(View.GONE);
