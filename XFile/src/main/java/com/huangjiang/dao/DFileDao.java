@@ -245,4 +245,9 @@ public class DFileDao extends BaseDao<DFile, Long> {
         return null;
     }
 
+    public void deleteByTaskId(String taskId) {
+        String where = String.format("%s='%s'", Properties.TaskId.columnName, taskId);
+        delete(TABLENAME, where, null);
+    }
+
 }

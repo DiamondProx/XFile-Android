@@ -47,9 +47,14 @@ public class IMFileManager extends IMBaseManager {
     // 取消/暂停发送
     private boolean isCancel = false;
 
-    private List<XFileProtocol.File> taskFile = new ArrayList<>();
+    /**
+     * 任务列表,记录尚未发送的任务
+     */
+    private List<TFileInfo> taskQueue = new ArrayList<>();
 
     private DFileDao fileDao;
+
+    private TFileInfo currentTask = null;
 
     private static IMFileManager inst = null;
 
@@ -75,51 +80,77 @@ public class IMFileManager extends IMBaseManager {
 
     }
 
+    /**
+     * 消息分发
+     */
+    public void dispatchMessage(Header header, byte[] bodyData) {
+        switch (header.getCommandId()) {
+            case SysConstant.CMD_FILE_NEW:
+                // 新建接收文件任务
+                dispatchCreateTask(header, bodyData);
+                break;
+            case SysConstant.CMD_TASK_CHECK:
+                // 检查任务是否存在/任务存在进入文件传输
+                dispatchCheckTask(header, bodyData);
+                break;
+            case SysConstant.CMD_FILE_SET:
+                // 保存文件/断点续传
+                dispatchReceiveData(header, bodyData);
+                break;
+            case SysConstant.CMD_FILE_RESUME:
+                // 断点续传
+                dispatchResume(bodyData);
+                break;
+            case SysConstant.CMD_FILE_CANCEL:
+                dispatchCancel(bodyData);
+                break;
+        }
+    }
 
     /**
      * 创建发送文件任务
      */
-    public void createTask(final XFileProtocol.File createTask) {
+    public void createTask(final TFileInfo createNewFile) {
         short cid = SysConstant.CMD_FILE_NEW;
         short sid = SysConstant.SERVICE_DEFAULT;
-        final TFileInfo reqFile = XFileUtils.buildTFile(createTask);
+        createNewFile.setTaskId(XFileUtils.buildTaskId());
+        createNewFile.setFrom(Build.MODEL);
+        XFileProtocol.File reqFile = XFileUtils.buildSendFile(createNewFile);
         Packetlistener packetlistener = new Packetlistener() {
             @Override
             public void onSuccess(short serviceId, Object response) {
 
                 if (serviceId != SysConstant.SERVICE_FILE_NEW_SUCCESS || response == null) {
-                    reqFile.setFileEvent(FileEvent.CREATE_FILE_FAILED);
-                    triggerEvent(reqFile);
+                    // 创建任务失败
+                    createNewFile.setFileEvent(FileEvent.CREATE_FILE_FAILED);
+                    triggerEvent(createNewFile);
                     return;
                 }
                 try {
                     byte[] rsp = (byte[]) response;
                     XFileProtocol.File rspFile = XFileProtocol.File.parseFrom(rsp);
-                    reqFile.setFileEvent(FileEvent.CREATE_FILE_SUCCESS);
-                    reqFile.setFrom(rspFile.getFrom());
-                    // 创建文件成功,检查是否有传输任务,如果正在传输,添加缓存列表
-                    taskFile.add(createTask);
+                    createNewFile.setFileEvent(FileEvent.CREATE_FILE_SUCCESS);
+                    createNewFile.setFrom(rspFile.getFrom());
 
-                    // 保存数据库
-                    DFile dFile = XFileUtils.buildDFile(reqFile);
-                    fileDao.insert(dFile);
+                    // 保存数据库,记录传输状态
+                    DFile dbFile = XFileUtils.buildDFile(createNewFile);
+                    fileDao.insert(dbFile);
 
-                    triggerEvent(reqFile);
+                    triggerEvent(createNewFile);
                     logger.e("****createTaskSuccess");
 
                     if (!isTransmit) {
                         // 没有正在传输的任务,直接校验任务合法性
                         isTransmit = true;
-                        checkTask(createTask);
+                        checkTask(createNewFile);
                     } else {
-                        // 正在传输文件,保存任务为准备传输状态
-                        // saveTask();
-                        // 发送Event消息,通知界面
-                        reqFile.setFileEvent(FileEvent.WAITING);
-                        triggerEvent(reqFile);
+                        // 创建文件成功,检查是否有传输任务,如果正在传输,添加缓存列表
+                        taskQueue.add(createNewFile);
+                        // 任务等待发送
+                        createNewFile.setFileEvent(FileEvent.WAITING);
+                        triggerEvent(createNewFile);
                         logger.e("****createTaskSuccess");
                     }
-
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -130,55 +161,112 @@ public class IMFileManager extends IMBaseManager {
 
             @Override
             public void onFaild() {
-                reqFile.setFileEvent(FileEvent.CREATE_FILE_FAILED);
-                triggerEvent(reqFile);
+                createNewFile.setFileEvent(FileEvent.CREATE_FILE_FAILED);
+                triggerEvent(createNewFile);
             }
 
             @Override
             public void onTimeout() {
-                reqFile.setFileEvent(FileEvent.CREATE_FILE_FAILED);
-                triggerEvent(reqFile);
+                createNewFile.setFileEvent(FileEvent.CREATE_FILE_FAILED);
+                triggerEvent(createNewFile);
             }
         };
         if (XFileApplication.connect_type == 1) {
-            IMClientMessageManager.getInstance().sendMessage(sid, cid, createTask, packetlistener, (short) 0);
+            IMClientMessageManager.getInstance().sendMessage(sid, cid, reqFile, packetlistener, (short) 0);
         } else if (XFileApplication.connect_type == 2) {
-            IMServerMessageManager.getInstance().sendMessage(sid, cid, createTask, packetlistener, (short) 0);
+            IMServerMessageManager.getInstance().sendMessage(sid, cid, reqFile, packetlistener, (short) 0);
         }
         logger.e("****createTaskSend");
 
     }
 
     /**
+     * 处理创建任务
+     */
+    private void dispatchCreateTask(Header header, byte[] bodyData) {
+        try {
+            XFileProtocol.File reqFile = XFileProtocol.File.parseFrom(bodyData);
+            // 判断是否存在文件,如果不存在则创建
+            String fullPath = XFileUtils.getStoragePathByExtension(reqFile.getExtension()) + reqFile.getFullName();
+            File saveFile = new File(fullPath);
+            if (!saveFile.getParentFile().exists()) {
+                saveFile.getParentFile().mkdirs();
+            }
+            if (!saveFile.exists()) {
+                saveFile.createNewFile();
+            }
+            TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
+            reqTFile.setIsSend(false);
+            // 创建成功
+            reqTFile.setFileEvent(FileEvent.CREATE_FILE_SUCCESS);
+            // 保存数据库
+            DFile dbFile = XFileUtils.buildDFile(reqTFile);
+            fileDao.insert(dbFile);
+            // 答复-本机机型
+            XFileProtocol.File.Builder rspFile = reqFile.toBuilder();
+            rspFile.setFrom(Build.MODEL);
+            rspFile.setIsSend(false);
+
+            short sid = SysConstant.SERVICE_FILE_NEW_SUCCESS;
+            short cid = SysConstant.CMD_FILE_NEW_RSP;
+
+            if (XFileApplication.connect_type == 1) {
+                IMClientMessageManager.getInstance().sendMessage(sid, cid, rspFile.build(), header.getSeqnum());
+            } else {
+                IMServerMessageManager.getInstance().sendMessage(sid, cid, rspFile.build(), null, header.getSeqnum());
+            }
+
+            triggerEvent(reqTFile);
+
+            if (isTransmit) {
+                // 加入任务列表
+                taskQueue.add(reqTFile);
+                // 正在传送,等待
+                reqTFile.setFileEvent(FileEvent.WAITING);
+                triggerEvent(reqTFile);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.e(e.getMessage());
+        }
+    }
+
+    /**
      * 检查接收方任务是否存在
      */
-    public void checkTask(final XFileProtocol.File checkTask) {
+    public void checkTask(final TFileInfo checkFile) {
         short cid = SysConstant.CMD_TASK_CHECK;
         short sid = SysConstant.SERVICE_DEFAULT;
-        final TFileInfo reqFile = XFileUtils.buildTFile(checkTask);
+        final XFileProtocol.File reqFile = XFileUtils.buildSendFile(checkFile);
+        final TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
         Packetlistener packetlistener = new Packetlistener() {
             @Override
             public void onSuccess(short serviceId, Object response) {
+                // 传输任务不合法
                 if (serviceId != SysConstant.SERVICE_TASK_CHECK_SUCCESS || response == null) {
-                    reqFile.setFileEvent(FileEvent.CHECK_TASK_FAILED);
-                    triggerEvent(reqFile);
+                    checkFile.setFileEvent(FileEvent.CHECK_TASK_FAILED);
+                    triggerEvent(checkFile);
                     return;
                 }
                 try {
-                    reqFile.setFileEvent(FileEvent.CHECK_TASK_SUCCESS);
-                    triggerEvent(reqFile);
+                    checkFile.setFileEvent(FileEvent.CHECK_TASK_SUCCESS);
+                    triggerEvent(checkFile);
                     logger.e("***checkTaskSuccess");
 
                     // 判断是接受者还是发送者,只有接受者才能暂停,发送者直接取消操作,所以isSend只能是true
-                    if (checkTask.getIsSend()) {
-                        // 如果当前是发送者,继续发送
+                    if (checkFile.isSend()) {
+                        // 开始发送
+                        readIndex = 0;
                         readPercent = 0;
-                        transferFile(checkTask);
+                        currentTask = reqTFile;
+                        transferFile(reqFile);
                     }
 
                 } catch (Exception e) {
-                    reqFile.setFileEvent(FileEvent.CHECK_TASK_FAILED);
-                    triggerEvent(reqFile);
+                    checkFile.setFileEvent(FileEvent.CHECK_TASK_FAILED);
+                    triggerEvent(checkFile);
                     e.printStackTrace();
                     logger.e(e.getMessage());
                 }
@@ -187,62 +275,101 @@ public class IMFileManager extends IMBaseManager {
 
             @Override
             public void onFaild() {
-                reqFile.setFileEvent(FileEvent.CHECK_TASK_FAILED);
-                triggerEvent(reqFile);
+                checkFile.setFileEvent(FileEvent.CHECK_TASK_FAILED);
+                triggerEvent(checkFile);
             }
 
             @Override
             public void onTimeout() {
-                reqFile.setFileEvent(FileEvent.CHECK_TASK_FAILED);
-                triggerEvent(reqFile);
+                checkFile.setFileEvent(FileEvent.CHECK_TASK_FAILED);
+                triggerEvent(checkFile);
             }
         };
         if (XFileApplication.connect_type == 1) {
-            IMClientMessageManager.getInstance().sendMessage(sid, cid, checkTask, packetlistener, (short) 0);
+            IMClientMessageManager.getInstance().sendMessage(sid, cid, reqFile, packetlistener, (short) 0);
         } else if (XFileApplication.connect_type == 2) {
-            IMServerMessageManager.getInstance().sendMessage(sid, cid, checkTask, packetlistener, (short) 0);
+            IMServerMessageManager.getInstance().sendMessage(sid, cid, reqFile, packetlistener, (short) 0);
         }
         logger.e("****checkTaskSend");
+    }
+
+    /**
+     * 处理检查任务合法性
+     */
+    private void dispatchCheckTask(Header header, byte[] bodyData) {
+        try {
+            XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
+            TFileInfo reqTFile = XFileUtils.buildTFile(requestFile);
+            short sid;
+            short cid = SysConstant.CMD_TASK_CHECK_RSP;
+
+            // 判断本地是否有这个taskId,找不到这个taskId返回失败信息,停止传送/续传
+            if (fileDao.getDFileByTaskId(requestFile.getTaskId()) != null) {
+                sid = SysConstant.SERVICE_TASK_CHECK_SUCCESS;
+                currentTask = reqTFile;
+                isTransmit = true;
+            } else {
+                sid = SysConstant.SERVICE_TASK_CHECK_FAILED;
+                currentTask = null;
+                isTransmit = false;
+            }
+
+            // 答复发送端创建成功
+            if (XFileApplication.connect_type == 1) {
+                IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, header.getSeqnum());
+            } else {
+                IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, header.getSeqnum());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.e(e.getMessage());
+        }
     }
 
 
     /**
      * 发送文件
      */
-    public void transferFile(final XFileProtocol.File reqFile) {
+    private void transferFile(final XFileProtocol.File reqFile) {
+
         short cid = SysConstant.CMD_FILE_SET;
         short sid = SysConstant.SERVICE_DEFAULT;
         final TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
         try {
-            RandomAccessFile randomAccessFile = new RandomAccessFile(reqFile.getPath(), "r");
+
             byte[] readBytes;
             long remain = reqFile.getLength() - reqFile.getPosition();
 
-            // 判断传回来的postion是否等于文件length，相等的情况下，当作已经传输完成
+            // 判断传回来的position是否等于文件length，相等的情况下，当作已经传输完成
             if (remain == 0) {
                 reqTFile.setFileEvent(FileEvent.SET_FILE_SUCCESS);
+                reqTFile.setPercent(100);
+                // 移除发送任务
+                removeTask(reqTFile);
                 // 保存数据库,传送完成
                 DFile dFile = XFileUtils.buildDFile(reqTFile);
                 fileDao.updateTransferStatus(dFile);
-                reqTFile.setPercent(100);
-                readPercent = 100;
+                // 重置标记
+                readPercent = 0;
+                readIndex = 0;
                 isTransmit = false;
                 triggerEvent(reqTFile);
                 return;
             }
-
+            // 继续传输未完成任务
             if (remain >= SysConstant.FILE_SEGMENT_SIZE) {
                 readBytes = new byte[SysConstant.FILE_SEGMENT_SIZE];
             } else {
                 readBytes = new byte[(int) remain];
             }
+            RandomAccessFile randomAccessFile = new RandomAccessFile(reqFile.getPath(), "r");
             randomAccessFile.seek(reqFile.getPosition());
             randomAccessFile.read(readBytes);
             ByteString byteString = ByteString.copyFrom(readBytes);
             XFileProtocol.File.Builder responseFile = reqFile.toBuilder();
             responseFile.setData(byteString);
-//            responseFile.setFrom(Build.MODEL);
-//            responseFile.setPosition(readBytes.length + responseFile.getPosition());
+
             Packetlistener packetlistener = new Packetlistener() {
                 @Override
                 public void onSuccess(short serviceId, Object response) {
@@ -267,11 +394,12 @@ public class IMFileManager extends IMBaseManager {
                             triggerEvent(rspTFile);
                         }
                         // 保存数据库传输位置
-                        DFile dFile = XFileUtils.buildDFile(reqTFile);
-                        dFile.setStatus(1);
-                        fileDao.updateTransferStatus(dFile);
+                        DFile dbFile = XFileUtils.buildDFile(rspTFile);
+                        fileDao.updateTransferStatus(dbFile);
                         // 收到暂停标记
                         if (serviceId == SysConstant.SERVICE_FILE_SET_STOP) {
+                            // 移除发送任务
+                            removeTask(reqTFile);
                             rspTFile.setFileEvent(FileEvent.SET_FILE_STOP);
                             rspTFile.setPercent(readPercent);
                             triggerEvent(rspTFile);
@@ -309,10 +437,6 @@ public class IMFileManager extends IMBaseManager {
                 IMServerFileManager.getInstance().sendMessage(sid, cid, responseFile.build(), packetlistener, (short) 0);
             }
 
-
-            // 保存数据库进度
-
-//            logger.e("****setFileSend");
         } catch (Exception e) {
             reqTFile.setFileEvent(FileEvent.SET_FILE_FAILED);
             triggerEvent(reqTFile);
@@ -324,121 +448,9 @@ public class IMFileManager extends IMBaseManager {
 
 
     /**
-     * 消息分发
-     */
-    public void dispatchMessage(Header header, byte[] bodyData) {
-        switch (header.getCommandId()) {
-            case SysConstant.CMD_FILE_NEW:
-                // 新建接收文件任务
-                dispatchCreateTask(header, bodyData);
-                break;
-            case SysConstant.CMD_TASK_CHECK:
-                // 检查任务是否存在/任务存在进入文件传输
-                dispatchCheckTask(header, bodyData);
-                break;
-            case SysConstant.CMD_FILE_SET:
-                // 保存文件/断点续传
-                dispatchReceiveData(header, bodyData);
-                break;
-            case SysConstant.CMD_FILE_RESUME:
-                // 断点续传
-                dispatchResume(bodyData);
-                break;
-            case SysConstant.CMD_FILE_CANCEL:
-                dispatchCancel(bodyData);
-                break;
-        }
-    }
-
-    /**
-     * 处理创建任务
-     */
-    void dispatchCreateTask(Header header, byte[] bodyData) {
-        try {
-            XFileProtocol.File reqFile = XFileProtocol.File.parseFrom(bodyData);
-            // 判断是否存在文件,如果不存在则创建
-            String fullPath = XFileUtils.getStoragePathByExtension(reqFile.getExtension()) + reqFile.getFullName();
-            File saveFile = new File(fullPath);
-            if (!saveFile.getParentFile().exists()) {
-                saveFile.getParentFile().mkdirs();
-            }
-            if (!saveFile.exists()) {
-                saveFile.createNewFile();
-            }
-            // 保存接收方数据库,记录状态
-            // saveTask();
-            // 答复发送端创建成功
-            XFileProtocol.File.Builder rspFile = reqFile.toBuilder();
-            rspFile.setFrom(Build.MODEL);
-            rspFile.setIsSend(false);
-            TFileInfo rspTFile = XFileUtils.buildTFile(rspFile.build());
-            short sid = SysConstant.SERVICE_FILE_NEW_SUCCESS;
-            short cid = SysConstant.CMD_FILE_NEW_RSP;
-
-            if (XFileApplication.connect_type == 1) {
-                IMClientMessageManager.getInstance().sendMessage(sid, cid, rspFile.build(), header.getSeqnum());
-            } else {
-                IMServerMessageManager.getInstance().sendMessage(sid, cid, rspFile.build(), null, header.getSeqnum());
-            }
-            // 创建成功
-            rspTFile.setFrom(reqFile.getFrom());
-            rspTFile.setFileEvent(FileEvent.CREATE_FILE_SUCCESS);
-            triggerEvent(rspTFile);
-            taskFile.add(rspFile.build());
-
-            // 保存数据库
-            DFile dFile = XFileUtils.buildDFile(rspTFile);
-            fileDao.insert(dFile);
-            if (isTransmit) {
-                // 发送Event消息,通知界面
-                rspTFile.setFileEvent(FileEvent.WAITING);
-                triggerEvent(rspTFile);
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.e(e.getMessage());
-        }
-    }
-
-    /**
-     * 处理检查任务合法性
-     */
-    void dispatchCheckTask(Header header, byte[] bodyData) {
-        try {
-            XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
-
-            short sid;
-            short cid = SysConstant.CMD_TASK_CHECK_RSP;
-
-            // 判断本地是否有这个taskId,找不到这个taskId返回失败信息,停止传送/续传
-            if (fileDao.getDFileByTaskId(requestFile.getTaskId()) != null) {
-                sid = SysConstant.SERVICE_TASK_CHECK_SUCCESS;
-            } else {
-                sid = SysConstant.SERVICE_TASK_CHECK_FAILED;
-            }
-
-            // 答复发送端创建成功
-            if (XFileApplication.connect_type == 1) {
-                IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, header.getSeqnum());
-            } else {
-                IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, header.getSeqnum());
-            }
-            isTransmit = true;
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.e(e.getMessage());
-        }
-    }
-
-
-    /**
      * 接收保存文件
      */
-    void dispatchReceiveData(Header header, byte[] bodyData) {
+    private void dispatchReceiveData(Header header, byte[] bodyData) {
         try {
             final XFileProtocol.File reqFile = XFileProtocol.File.parseFrom(bodyData);
             final TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
@@ -460,9 +472,7 @@ public class IMFileManager extends IMBaseManager {
                 responseFile.setFullName(reqFile.getFullName());
                 responseFile.setTaskId(reqFile.getTaskId());
                 responseFile.setFrom(Build.MODEL);
-
-                // 保存数据库，记录发送到哪了
-                DFile dFile = XFileUtils.buildDFile(responseFile.build());
+                responseFile.setIsSend(false);
 
                 Packetlistener packetlistener = new Packetlistener() {
                     @Override
@@ -486,24 +496,26 @@ public class IMFileManager extends IMBaseManager {
                 long tempPercent = writeIndex * 100 / reqFile.getLength();
                 if (writePercent < tempPercent) {
                     writePercent = tempPercent;
-
-                    dFile.setStatus(1);//正在传输状态
-                    fileDao.updateTransferStatus(dFile);
                     // 更新接收状态
                     reqTFile.setFileEvent(FileEvent.SET_FILE);
                     reqTFile.setPercent(writePercent);
+                    // 保存数据库，记录发送到哪了
+                    DFile dbFile = XFileUtils.buildDFile(reqTFile);
+                    fileDao.updateTransferStatus(dbFile);
                     triggerEvent(reqTFile);
                 }
                 short sid;
                 if (reqFile.getPosition() + fileData.length == reqFile.getLength()) {
                     // 文件发送完成,提醒接收端结束状态
-
                     writePercent = 100;
                     isTransmit = false;
-                    dFile.setStatus(2);//传送完成
-                    fileDao.updateTransferStatus(dFile);
                     reqTFile.setFileEvent(FileEvent.SET_FILE_SUCCESS);
                     reqTFile.setPercent(writePercent);
+                    // 保存数据库，记录发送到哪了
+                    DFile dbFile = XFileUtils.buildDFile(reqTFile);
+                    fileDao.updateTransferStatus(dbFile);
+                    // 移除接收任务
+                    removeTask(reqTFile);
                     triggerEvent(reqTFile);
 
                 }
@@ -512,6 +524,8 @@ public class IMFileManager extends IMBaseManager {
                     // 暂停操作
                     reqTFile.setFileEvent(FileEvent.SET_FILE_STOP);
                     reqTFile.setPercent(writePercent);
+                    // 移除接收任务
+                    removeTask(reqTFile);
                     triggerEvent(reqTFile);
                 } else {
                     sid = SysConstant.SERVICE_FILE_SET_SUCCESS;
@@ -531,46 +545,11 @@ public class IMFileManager extends IMBaseManager {
         }
     }
 
-    /**
-     * 处理断点续传
-     */
-    void dispatchResume(byte[] bodyData) {
-        try {
-            final XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
-            isCancel = false;
-            readIndex = requestFile.getPosition();
-            readPercent = readIndex * 100 / requestFile.getLength();
-            transferFile(requestFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.e(e.getMessage());
-        }
-    }
-
-    /**
-     * 处理取消命令
-     */
-    void dispatchCancel(byte[] bodyData) {
-        try {
-            final XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
-            final TFileInfo reqTFile = XFileUtils.buildTFile(requestFile);
-            if (requestFile.getIsSend()) {
-                reqTFile.setFileEvent(FileEvent.CANCEL_FILE);
-                triggerEvent(reqTFile);
-            } else {
-                reqTFile.setFileEvent(FileEvent.CANCEL_FILE);
-                triggerEvent(reqTFile);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.e(e.getMessage());
-        }
-    }
 
     /**
      * 处理断点续传
      */
-    void resumeReq(final XFileProtocol.File requestFile) {
+    private void resume(final XFileProtocol.File requestFile) {
         final TFileInfo reqTFile = XFileUtils.buildTFile(requestFile);
         Packetlistener packetlistener = new Packetlistener() {
             @Override
@@ -603,12 +582,91 @@ public class IMFileManager extends IMBaseManager {
 
     }
 
+    /**
+     * 处理断点续传
+     */
+    private void dispatchResume(byte[] bodyData) {
+        try {
+            final XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
+            final TFileInfo reqTFile = XFileUtils.buildTFile(requestFile);
+            if (!isTransmit) {
+                isCancel = false;
+                readIndex = requestFile.getPosition();
+                readPercent = readIndex * 100 / requestFile.getLength();
+                transferFile(requestFile);
+            } else {
+                // 加入列队，等待传输
+                reqTFile.setFileEvent(FileEvent.WAITING);
+                taskQueue.add(reqTFile);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.e(e.getMessage());
+        }
+    }
+
+    /**
+     * 取消任务1取消当前任务，2取消等待任务
+     */
+    public void cancelTask(final TFileInfo tFileInfo) {
+
+        final XFileProtocol.File requestFile = XFileUtils.buildSendFile(tFileInfo);
+
+        if (currentTask != null && tFileInfo.getTaskId().equals(currentTask.getTaskId())) {
+            isCancel = true;
+            // 重新定位写入文件标记
+            short sid = SysConstant.SERVICE_DEFAULT;
+            short cid = SysConstant.CMD_FILE_CANCEL;
+            if (XFileApplication.connect_type == 1) {
+                IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, (short) 0);
+            } else if (XFileApplication.connect_type == 2) {
+                IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, (short) 0);
+            }
+        } else {
+            // 移除当前任务
+            removeTask(tFileInfo);
+        }
+        // 数据库删除
+        if (currentTask != null) {
+            fileDao.deleteByTaskId(currentTask.getTaskId());
+        }
+        tFileInfo.setFileEvent(FileEvent.CANCEL_FILE);
+        triggerEvent(tFileInfo);
+
+    }
+
+    /**
+     * 处理取消命令
+     */
+    private void dispatchCancel(byte[] bodyData) {
+        try {
+
+            final XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
+            final TFileInfo reqTFile = XFileUtils.buildTFile(requestFile);
+            if (currentTask != null && reqTFile.getTaskId().equals(currentTask.getTaskId())) {
+                // 删除当前任务
+                isCancel = true;
+            } else {
+                // 删除等待的任务
+                removeTask(reqTFile);
+            }
+            fileDao.deleteByTaskId(reqTFile.getTaskId());
+            reqTFile.setFileEvent(FileEvent.CANCEL_FILE);
+            triggerEvent(reqTFile);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.e(e.getMessage());
+        }
+    }
+
 
     /**
      * 暂停接收数据
      */
     public void stopReceive() {
-        if (!isCancel) {
+        if (isTransmit && !isCancel) {
             isCancel = true;
         }
     }
@@ -617,73 +675,16 @@ public class IMFileManager extends IMBaseManager {
      * 继续接收数据/短点续传
      */
     public void resumeReceive(TFileInfo tFileInfo) {
-        if (isCancel) {
-            XFileProtocol.File.Builder fileBuilder = XFileProtocol.File.newBuilder();
-            fileBuilder.setName(tFileInfo.getName());
-            fileBuilder.setMd5(tFileInfo.getMd5());
-            fileBuilder.setData(ByteString.copyFrom("1".getBytes()));
-            fileBuilder.setPosition(tFileInfo.getPosition());
-            fileBuilder.setLength(tFileInfo.getLength());
-            fileBuilder.setPath(tFileInfo.getPath());
-            fileBuilder.setExtension(tFileInfo.getExtension());
-            fileBuilder.setFullName(tFileInfo.getFullName());
-            fileBuilder.setTaskId(tFileInfo.getTaskId());
-            fileBuilder.setFrom(Build.MODEL);
-            resumeReq(fileBuilder.build());
+        if (!isTransmit) {
+            XFileProtocol.File reqFile = XFileUtils.buildSendFile(tFileInfo);
+            isTransmit = true;
             isCancel = false;
+            resume(reqFile);
+        } else {
+            tFileInfo.setFileEvent(FileEvent.WAITING);
+            taskQueue.add(tFileInfo);
+            triggerEvent(tFileInfo);
         }
-    }
-
-    /**
-     * 取消任务
-     */
-    public void cancelTask(final TFileInfo tFileInfo) {
-
-        final XFileProtocol.File requestFile = XFileUtils.buildSendFile(tFileInfo);
-        if (verifyTask(XFileUtils.buildSendFile(tFileInfo)) == null) {
-            return;
-        }
-        Packetlistener packetlistener = new Packetlistener() {
-            @Override
-            public void onSuccess(short service, Object response) {
-
-            }
-
-            @Override
-            public void onFaild() {
-                tFileInfo.setFileEvent(FileEvent.SET_FILE_FAILED);
-                triggerEvent(tFileInfo);
-            }
-
-            @Override
-            public void onTimeout() {
-                tFileInfo.setFileEvent(FileEvent.SET_FILE_FAILED);
-                triggerEvent(tFileInfo);
-            }
-        };
-        // 重新定位写入文件标记
-        short sid = SysConstant.SERVICE_DEFAULT;
-        short cid = SysConstant.CMD_FILE_CANCEL;
-        if (XFileApplication.connect_type == 1) {
-            IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, packetlistener, (short) 0);
-        } else if (XFileApplication.connect_type == 2) {
-            IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, packetlistener, (short) 0);
-        }
-        tFileInfo.setFileEvent(FileEvent.CANCEL_FILE);
-        triggerEvent(tFileInfo);
-
-    }
-
-    /**
-     * 任务校验
-     */
-    private XFileProtocol.File verifyTask(XFileProtocol.File requestFile) {
-        for (XFileProtocol.File file : taskFile) {
-            if (file.getTaskId().equals(requestFile.getTaskId())) {
-                return file;
-            }
-        }
-        return null;
     }
 
     /**
@@ -693,6 +694,19 @@ public class IMFileManager extends IMBaseManager {
         EventBus.getDefault().post(tFileInfo);
     }
 
+
+    /**
+     * 移除等待任务
+     */
+    private void removeTask(TFileInfo task) {
+        for (int i = 0; i < taskQueue.size(); i++) {
+            TFileInfo currentTask = taskQueue.get(i);
+            if (currentTask.getTaskId().equals(task.getTaskId())) {
+                taskQueue.remove(i);
+                break;
+            }
+        }
+    }
 
     //------------------------------TEST--------------------------------------------
 

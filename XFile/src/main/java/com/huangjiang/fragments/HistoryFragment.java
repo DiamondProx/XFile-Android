@@ -133,8 +133,8 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                     // 发送完成之后查看是否有等待的任务
                     TFileInfo waitFile = adapter.getWaitFile();
                     if (waitFile != null) {
-                        XFileProtocol.File reqFile = XFileUtils.buildSendFile(waitFile);
-                        IMFileManager.getInstance().checkTask(reqFile);
+//                        XFileProtocol.File reqFile = XFileUtils.buildSendFile(waitFile);
+                        IMFileManager.getInstance().checkTask(waitFile);
                     }
                 }
 

@@ -358,13 +358,13 @@ public class XFileUtils {
         dFile.setPercent(tFileInfo.getPercent());
         switch (tFileInfo.getFileEvent()) {
             case CREATE_FILE_SUCCESS:
+            case SET_FILE:
+                // 正在传送
                 dFile.setStatus(0);
                 break;
-            case SET_FILE:
-                dFile.setStatus(1);
-                break;
             case SET_FILE_SUCCESS:
-                dFile.setStatus(2);
+                // 传输完成
+                dFile.setStatus(1);
                 break;
         }
         return dFile;
