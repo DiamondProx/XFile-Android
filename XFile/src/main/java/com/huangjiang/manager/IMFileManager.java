@@ -231,15 +231,13 @@ public class IMFileManager extends IMBaseManager {
                     triggerEvent(checkFile);
                     logger.e("***checkTaskSuccess");
                     if (!isTransmit) {
-                        // 判断是接受者还是发送者,只有接受者才能暂停,发送者直接取消操作,所以isSend只能是true
-                        if (checkFile.isSend()) {
-                            // 开始发送
-                            isTransmit = true;
-                            readIndex = 0;
-                            readPercent = 0;
-                            currentTask = reqTFile;
-                            transferFile(reqFile);
-                        }
+                        // 开始发送
+                        isTransmit = true;
+                        isCancel = false;
+                        readIndex = 0;
+                        readPercent = 0;
+                        currentTask = reqTFile;
+                        transferFile(reqFile);
 
                     } else {
                         // 创建文件成功,检查是否有传输任务,如果正在传输,添加缓存列表
@@ -424,12 +422,14 @@ public class IMFileManager extends IMBaseManager {
 
                 @Override
                 public void onFaild() {
+                    logger.e("****onFaild222222222222222");
                     reqTFile.setFileEvent(FileEvent.SET_FILE_FAILED);
                     triggerEvent(reqTFile);
                 }
 
                 @Override
                 public void onTimeout() {
+                    logger.e("****onFaild444444444444444444");
                     reqTFile.setFileEvent(FileEvent.SET_FILE_FAILED);
                     triggerEvent(reqTFile);
                 }
@@ -484,12 +484,14 @@ public class IMFileManager extends IMBaseManager {
 
                     @Override
                     public void onFaild() {
+                        logger.e("*****Faild5555555555555");
                         rspTFile.setFileEvent(FileEvent.SET_FILE_FAILED);
                         triggerEvent(rspTFile);
                     }
 
                     @Override
                     public void onTimeout() {
+                        logger.e("*****Faild666666666666666666");
                         rspTFile.setFileEvent(FileEvent.SET_FILE_FAILED);
                         triggerEvent(rspTFile);
                     }
@@ -497,7 +499,7 @@ public class IMFileManager extends IMBaseManager {
                 writeIndex = reqFile.getPosition();
                 long tempPercent = writeIndex * 100 / reqFile.getLength();
 
-                logger.e("****writePercent:" + writePercent + ",tempPercent" + tempPercent);
+//                logger.e("****writePercent:" + writePercent + ",tempPercent" + tempPercent);
                 if (writePercent < tempPercent) {
                     writePercent = tempPercent;
                     // 更新接收状态
@@ -558,34 +560,15 @@ public class IMFileManager extends IMBaseManager {
      * 处理断点续传
      */
     private void resume(final XFileProtocol.File requestFile) {
-        final TFileInfo reqTFile = XFileUtils.buildTFile(requestFile);
-        Packetlistener packetlistener = new Packetlistener() {
-            @Override
-            public void onSuccess(short service, Object response) {
-
-            }
-
-            @Override
-            public void onFaild() {
-                reqTFile.setFileEvent(FileEvent.SET_FILE_FAILED);
-                triggerEvent(reqTFile);
-            }
-
-            @Override
-            public void onTimeout() {
-                reqTFile.setFileEvent(FileEvent.SET_FILE_FAILED);
-                triggerEvent(reqTFile);
-            }
-        };
         // 重新定位写入文件标记
         writeIndex = requestFile.getPosition();
         writePercent = writeIndex * 100 / requestFile.getLength();
         short sid = SysConstant.SERVICE_DEFAULT;
         short cid = SysConstant.CMD_FILE_RESUME;
         if (XFileApplication.connect_type == 1) {
-            IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, packetlistener, (short) 0);
+            IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, (short) 0);
         } else if (XFileApplication.connect_type == 2) {
-            IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, packetlistener, (short) 0);
+            IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, (short) 0);
         }
 
     }
@@ -597,16 +580,7 @@ public class IMFileManager extends IMBaseManager {
         try {
             final XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
             final TFileInfo reqTFile = XFileUtils.buildTFile(requestFile);
-            if (!isTransmit) {
-                isCancel = false;
-                readIndex = requestFile.getPosition();
-                readPercent = readIndex * 100 / requestFile.getLength();
-                transferFile(requestFile);
-            } else {
-                // 加入列队，等待传输
-                reqTFile.setFileEvent(FileEvent.WAITING);
-                taskQueue.add(reqTFile);
-            }
+            checkTask(reqTFile);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -689,9 +663,6 @@ public class IMFileManager extends IMBaseManager {
     public void resumeReceive(TFileInfo tFileInfo) {
         if (!isTransmit) {
             XFileProtocol.File reqFile = XFileUtils.buildSendFile(tFileInfo);
-            isTransmit = true;
-            isCancel = false;
-            currentTask = tFileInfo;
             resume(reqFile);
         } else {
             tFileInfo.setFileEvent(FileEvent.WAITING);
