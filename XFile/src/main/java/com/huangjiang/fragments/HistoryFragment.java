@@ -1,5 +1,6 @@
 package com.huangjiang.fragments;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,19 +8,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.adapter.TransmitAdapter;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.dao.DFile;
+import com.huangjiang.dao.DFileDao;
+import com.huangjiang.dao.DaoMaster;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
+import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.view.PopupMenu;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,6 +46,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
     TransmitAdapter adapter;
     ListView lv_message;
     HistoryLogic history_logic;
+    DFileDao dFileDao;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +64,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         list_message = new ArrayList<>();
         history_logic = new HistoryLogic(getActivity());
         history_logic.getHistory();
+        dFileDao = DaoMaster.getInstance().newSession().getDFileDao();
     }
 
     @Override
@@ -66,23 +76,39 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TFileInfo tFileInfo = (TFileInfo) adapter.getItem(position);
-        PopupMenu menu = new PopupMenu(getActivity());
-        // Set Listener
-        menu.setOnItemSelectedListener(HistoryFragment.this);
-        menu.setTFileInfo(tFileInfo);
-        // Add Menu (Android menu like style)
-        menu.add(0, R.string.transfer).setIcon(getResources().getDrawable(R.mipmap.data_downmenu_send));
-        menu.add(1, R.string.multi_select).setIcon(getResources().getDrawable(R.mipmap.data_downmenu_check));
-        menu.add(2, R.string.play).setIcon(getResources().getDrawable(R.mipmap.data_downmenu_open));
-        menu.add(3, R.string.more).setIcon(getResources().getDrawable(R.mipmap.data_downmenu_more));
-        menu.show(view);
+        MenuHelper.showMenu(getActivity(), view, position, tFileInfo, HistoryFragment.this);
     }
 
     @Override
     public void onItemSelected(PopupMenu menu, MenuItem item) {
-        if (menu.getTFileInfo() != null) {
-            Toast.makeText(getActivity(), "clickMemu", Toast.LENGTH_SHORT).show();
-            IMFileManager.getInstance().cancelTask(menu.getTFileInfo());
+        switch (item.getItemId()) {
+            case R.id.menu_transfer:
+                ImageView image = (ImageView) lv_message.getChildAt(menu.getItemPosition()).findViewById(R.id.img);
+                if (image != null) {
+                    Drawable drawable = image.getDrawable();
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    int[] location = new int[2];
+                    image.getLocationOnScreen(location);
+                    homeActivity.initFileThumbView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+                }
+                break;
+            case R.id.menu_open:
+                OpenFileHelper.openFile(getActivity(), menu.getTFileInfo());
+                break;
+            case R.id.menu_cancel:
+                IMFileManager.getInstance().cancelTask(menu.getTFileInfo());
+                break;
+            case R.id.menu_delete:
+                dFileDao.deleteByTaskId(menu.getTFileInfo().getTaskId());
+                adapter.cancelTask(menu.getTFileInfo());
+                adapter.notifyDataSetChanged();
+                break;
+            case R.id.menu_resume:
+                IMFileManager.getInstance().resumeReceive(menu.getTFileInfo());
+                break;
+            case R.id.menu_stop:
+                IMFileManager.getInstance().stopReceive();
+                break;
         }
     }
 
@@ -90,10 +116,12 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         int firstVisible = lv_message.getFirstVisiblePosition();
         int lastVisible = lv_message.getLastVisiblePosition();
         int position = adapter.getPosition(tFileInfo);
-        TFileInfo currentFile = (TFileInfo) adapter.getItem(position);
-        if (currentFile != null && position >= firstVisible && position <= lastVisible) {
-            TransmitAdapter.ViewHolder holder = (TransmitAdapter.ViewHolder) (lv_message.getChildAt(position - firstVisible).getTag());
-            adapter.updateTransmitState(holder, currentFile);
+        if (position != -1) {
+            TFileInfo currentFile = (TFileInfo) adapter.getItem(position);
+            if (currentFile != null && position >= firstVisible && position <= lastVisible) {
+                TransmitAdapter.ViewHolder holder = (TransmitAdapter.ViewHolder) (lv_message.getChildAt(position - firstVisible).getTag());
+                adapter.updateTransmitState(holder, currentFile);
+            }
         }
     }
 
@@ -129,17 +157,9 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
             case SET_FILE_SUCCESS: {
                 adapter.updateTFileInfo(tFileInfo);
                 updateTransmitState(tFileInfo);
-                if (tFileInfo.isSend()) {
-                    // 发送完成之后查看是否有等待的任务
-                    TFileInfo waitFile = adapter.getWaitFile();
-                    if (waitFile != null) {
-//                        XFileProtocol.File reqFile = XFileUtils.buildSendFile(waitFile);
-                        IMFileManager.getInstance().checkTask(waitFile);
-                    }
-                }
-
             }
             break;
+            case SET_FILE_FAILED:
             case SET_FILE:
             case SET_FILE_STOP:
             case WAITING:
@@ -148,7 +168,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                 break;
             case CANCEL_FILE:
                 adapter.cancelTask(tFileInfo);
-                updateTransmitState(tFileInfo);
+                adapter.notifyDataSetChanged();
                 break;
         }
     }

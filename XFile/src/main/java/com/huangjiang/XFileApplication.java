@@ -2,10 +2,10 @@ package com.huangjiang;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 
-import com.huangjiang.service.IMService;
 import com.huangjiang.utils.XFileUtils;
+
+import java.util.LinkedList;
 
 public class XFileApplication extends Application {
 
@@ -27,6 +27,8 @@ public class XFileApplication extends Application {
         super.onCreate();
         context = this;
         device_id = XFileUtils.getDeviceId();
+        LinkedList<String> linkedList=new LinkedList<>();
+
     }
 
 }

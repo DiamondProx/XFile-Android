@@ -24,10 +24,6 @@ public class TFileInfo {
      */
     private String name;
     /**
-     * 文件标示
-     */
-    private String md5;
-    /**
      * 传输位置
      */
     private long position;
@@ -94,13 +90,6 @@ public class TFileInfo {
         this.name = name;
     }
 
-    public String getMd5() {
-        return md5;
-    }
-
-    public void setMd5(String md5) {
-        this.md5 = md5;
-    }
 
     public long getPosition() {
         return position;

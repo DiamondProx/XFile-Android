@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.huangjiang.XFileApplication;
 import com.huangjiang.adapter.MessagePagerAdapter;
+import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMFileManager;
@@ -82,20 +83,20 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
             Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             return;
         }
-        String testFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "send.zip";
+        String testFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "XFile.mp3";
         File file = new File(testFile);
         if (file.exists()) {
             TFileInfo sendFile = new TFileInfo();
-            sendFile.setName("send");
-            sendFile.setFullName("send.zip");
-            sendFile.setMd5("md5");
+            sendFile.setName("XFile");
+            sendFile.setFullName("XFile.mp3");
             sendFile.setPosition(0);
             sendFile.setPath(file.getAbsolutePath());
-            sendFile.setExtension("zip");
+            sendFile.setExtension("mp3");
             sendFile.setTaskId(XFileUtils.buildTaskId());
             sendFile.setLength(file.length());
             sendFile.setFrom(android.os.Build.MODEL);
             sendFile.setIsSend(true);
+            sendFile.setFileType(FileType.Audio);
             logger.e("****taskId:" + sendFile.getTaskId());
             IMFileManager.getInstance().createTask(sendFile);
         }

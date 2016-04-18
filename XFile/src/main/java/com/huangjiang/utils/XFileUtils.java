@@ -299,7 +299,6 @@ public class XFileUtils {
     public static XFileProtocol.File buildSendFile(TFileInfo fileInfo) {
         XFileProtocol.File.Builder sendFile = XFileProtocol.File.newBuilder();
         sendFile.setName(fileInfo.getName());
-        sendFile.setMd5(fileInfo.getMd5());
         sendFile.setPosition(fileInfo.getPosition());
         sendFile.setLength(fileInfo.getLength());
         sendFile.setPath(fileInfo.getPath());
@@ -313,7 +312,6 @@ public class XFileUtils {
     public static TFileInfo buildTFile(XFileProtocol.File fileInfo) {
         TFileInfo tFile = new TFileInfo();
         tFile.setName(fileInfo.getName());
-        tFile.setMd5(fileInfo.getMd5());
         tFile.setPosition(fileInfo.getPosition());
         tFile.setLength(fileInfo.getLength());
         tFile.setPath(fileInfo.getPath());

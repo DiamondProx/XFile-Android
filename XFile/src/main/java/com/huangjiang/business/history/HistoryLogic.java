@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.huangjiang.business.BaseLogic;
 import com.huangjiang.business.event.FindResEvent;
+import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.core.ThreadPoolManager;
 import com.huangjiang.dao.DFile;
@@ -46,7 +47,7 @@ public class HistoryLogic extends BaseLogic {
         });
     }
 
-    public void addTMessage(TFileInfo tFileInfo){
+    public void addTMessage(TFileInfo tFileInfo) {
         DFile dFile = XFileUtils.buildDFile(tFileInfo);
         fileDao.insert(dFile);
     }
@@ -76,7 +77,8 @@ public class HistoryLogic extends BaseLogic {
                     tFileInfo.setFileEvent(FileEvent.SET_FILE_SUCCESS);
                     break;
             }
-            tFileInfo.setFileType(XFileUtils.getFileType(context, dFile.getExtension()));
+            FileType fileType = XFileUtils.getFileType(context, dFile.getFullName());
+            tFileInfo.setFileType(fileType);
             list.add(tFileInfo);
         }
         return list;

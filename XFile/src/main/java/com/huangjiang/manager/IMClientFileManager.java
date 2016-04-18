@@ -124,9 +124,6 @@ public class IMClientFileManager extends IMBaseManager implements ClientThread.O
             packetlistener.onSuccess(serviceId, body);
         }
         switch (commandId) {
-            case SysConstant.CMD_TRANSER_FILE_REC:
-                IMFileManager.getInstance().continueSendFile(header, byteBuf);
-                break;
             case SysConstant.CMD_FILE_SET:
                 IMFileManager.getInstance().dispatchMessage(header, body);
                 break;

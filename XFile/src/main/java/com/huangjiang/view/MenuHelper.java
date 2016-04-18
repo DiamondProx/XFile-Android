@@ -52,6 +52,8 @@ public class MenuHelper {
                         menu.add(R.id.menu_property, R.string.property).setIcon(context.getResources().getDrawable(R.mipmap.data_downmenu_detail));
                     }
                     break;
+                case CHECK_TASK_SUCCESS:
+                case CREATE_FILE_SUCCESS:
                 case WAITING:
                     if (tFileInfo.isSend()) {
                         // 等待发送文件:取消,打开,属性
