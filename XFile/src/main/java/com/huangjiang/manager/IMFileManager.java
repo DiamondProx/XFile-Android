@@ -397,6 +397,8 @@ public class IMFileManager extends IMBaseManager {
                             rspTFile.setPercent(readPercent);
                             triggerEvent(rspTFile);
                             // 对方暂停接收文件
+                            readIndex = 0;
+                            readPercent = 0;
                             isCancel = true;
                             isTransmit = false;
                             currentTask = null;
@@ -408,10 +410,6 @@ public class IMFileManager extends IMBaseManager {
                         if (!isCancel) {
                             // 正常收到答复继续传送文件
                             transferFile(rspFile);
-                        } else {
-                            isTransmit = false;
-                            currentTask = null;
-                            isCancel = false;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -499,7 +497,7 @@ public class IMFileManager extends IMBaseManager {
                 writeIndex = reqFile.getPosition();
                 long tempPercent = writeIndex * 100 / reqFile.getLength();
 
-//                logger.e("****writePercent:" + writePercent + ",tempPercent" + tempPercent);
+                logger.e("****writePercent:" + writePercent + ",tempPercent" + tempPercent);
                 if (writePercent < tempPercent) {
                     writePercent = tempPercent;
                     // 更新接收状态
@@ -514,10 +512,10 @@ public class IMFileManager extends IMBaseManager {
                 if (reqFile.getPosition() + fileData.length == reqFile.getLength()) {
                     // 文件发送完成,提醒接收端结束状态
                     writePercent = 0;
+                    writeIndex = 0;
                     isTransmit = false;
                     isCancel = false;
                     rspTFile.setFileEvent(FileEvent.SET_FILE_SUCCESS);
-                    rspTFile.setPercent(writePercent);
                     // 保存数据库，记录发送到哪了
                     DFile dbFile = XFileUtils.buildDFile(rspTFile);
                     fileDao.updateTransferStatus(dbFile);
@@ -534,6 +532,8 @@ public class IMFileManager extends IMBaseManager {
                     isCancel = false;
                     isTransmit = false;
                     currentTask = null;
+                    writePercent = 0;
+                    writeIndex = 0;
                     // 移除接收任务
                     removeTask(rspTFile);
                     triggerEvent(rspTFile);
@@ -596,9 +596,11 @@ public class IMFileManager extends IMBaseManager {
         final XFileProtocol.File requestFile = XFileUtils.buildSendFile(tFileInfo);
 
         if (isTransmit && currentTask != null && currentTask.getTaskId().equals(tFileInfo.getTaskId())) {
-            // 删除的是当前正在传送的任务
-            isCancel = true;
-            currentTask = null;
+            //
+//            if (!tFileInfo.isSend()) {
+//                // 如果是接收方
+//                isCancel = true;
+//            }
         } else {
             // 移除任务列表
             removeTask(tFileInfo);
@@ -609,6 +611,7 @@ public class IMFileManager extends IMBaseManager {
             tFileInfo.setFileEvent(FileEvent.CANCEL_FILE);
             triggerEvent(tFileInfo);
         }
+        // 删除的是当前正在传送的任务
         short sid = SysConstant.SERVICE_DEFAULT;
         short cid = SysConstant.CMD_FILE_CANCEL;
         if (XFileApplication.connect_type == 1) {
@@ -631,6 +634,7 @@ public class IMFileManager extends IMBaseManager {
             if (isTransmit && currentTask != null && reqTFile.getTaskId().equals(currentTask.getTaskId())) {
                 // 删除当前任务
                 isCancel = true;
+                logger.e("****dispatchCancel");
 
             } else {
                 // 删除等待的任务
@@ -665,9 +669,7 @@ public class IMFileManager extends IMBaseManager {
             XFileProtocol.File reqFile = XFileUtils.buildSendFile(tFileInfo);
             resume(reqFile);
         } else {
-            tFileInfo.setFileEvent(FileEvent.WAITING);
-            taskQueue.add(tFileInfo);
-            triggerEvent(tFileInfo);
+            checkTask(tFileInfo);
         }
     }
 
@@ -701,6 +703,17 @@ public class IMFileManager extends IMBaseManager {
             TFileInfo task = taskQueue.pop();
             checkTask(task);
         }
+    }
+
+    private void resetRead() {
+
+    }
+
+    private void resetWrite() {
+        writeIndex = 0;
+        writePercent = 0;
+        currentTask = null;
+
     }
 
 
