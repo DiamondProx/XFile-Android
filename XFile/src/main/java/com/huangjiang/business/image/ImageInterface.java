@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.utils.Logger;
+import com.huangjiang.utils.StringUtils;
 import com.huangjiang.utils.XFileUtils;
 
 import java.util.ArrayList;
@@ -71,7 +72,6 @@ public class ImageInterface {
         List<TFileInfo> list = new ArrayList<>();
         if (cursor != null) {
             while (cursor.moveToNext()) {
-
                 String display_name = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));// 文件名
                 String file_path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));// 路径
                 long create_time = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));// 创建时间
@@ -82,6 +82,12 @@ public class ImageInterface {
                 image_file.setPath(file_path);
                 image_file.setCreateTime(XFileUtils.paserTimeToYMD(create_time));
                 image_file.setLength(size);
+                image_file.setFullName(display_name);
+                if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") != -1) {
+                    image_file.setExtension(display_name.substring(display_name.lastIndexOf(".")));
+                } else {
+                    image_file.setExtension("");
+                }
                 image_file.setFileType(FileType.Image);
                 list.add(image_file);
             }

@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.utils.Logger;
+import com.huangjiang.utils.StringUtils;
 import com.huangjiang.utils.XFileUtils;
 
 import java.util.ArrayList;
@@ -83,6 +84,12 @@ public class VideoInterface {
                 video_file.setCreateTime(XFileUtils.paserTimeToYMD(create_time));
                 video_file.setLength(size);
                 video_file.setPlayTime(play_time);
+                video_file.setFullName(display_name);
+                if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") != -1) {
+                    video_file.setExtension(display_name.substring(display_name.lastIndexOf(".")));
+                } else {
+                    video_file.setExtension("");
+                }
                 video_file.setFileType(FileType.Video);
                 list.add(video_file);
             }

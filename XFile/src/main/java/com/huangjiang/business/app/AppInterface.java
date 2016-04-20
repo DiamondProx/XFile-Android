@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.utils.Logger;
+import com.huangjiang.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,6 +46,12 @@ public class AppInterface {
                     appFile.setName(display_name);//程序名称
                     appFile.setPackageName(pi.applicationInfo.packageName);//包名
                     appFile.setLength(new File(pi.applicationInfo.publicSourceDir).length());//大小
+                    appFile.setFullName(display_name + ".apk");
+                    if (!StringUtils.isEmpty(display_name)) {
+                        appFile.setExtension(".apk");
+                    } else {
+                        appFile.setExtension("");
+                    }
                     appFile.setFileType(FileType.Apk);
                     if (searchKey != null && searchKey.length > 0) {
                         if (display_name.startsWith(searchKey[0])) {

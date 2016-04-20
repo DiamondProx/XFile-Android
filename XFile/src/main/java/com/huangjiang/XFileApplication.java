@@ -3,6 +3,7 @@ package com.huangjiang;
 import android.app.Application;
 import android.content.Context;
 
+import com.huangjiang.utils.NetStateUtils;
 import com.huangjiang.utils.XFileUtils;
 
 import java.util.LinkedList;
@@ -27,7 +28,9 @@ public class XFileApplication extends Application {
         super.onCreate();
         context = this;
         device_id = XFileUtils.getDeviceId();
-        LinkedList<String> linkedList=new LinkedList<>();
+        String ip= NetStateUtils.getIPv4(context);
+        System.out.println("ip:"+ip);
+
 
     }
 

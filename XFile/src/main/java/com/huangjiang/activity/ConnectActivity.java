@@ -217,7 +217,6 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ScanDeviceInfo event) {
-//        logger.e("*****DeviceBroCast:" + event.getName());
         if (event != null && !event.getDevice_id().equals(XFileApplication.device_id)) {
             if (!deviceAdapter.containDevice(event)) {
                 deviceAdapter.addDevice(event);

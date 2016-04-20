@@ -109,6 +109,7 @@ public class IMFileManager extends IMBaseManager {
         short sid = SysConstant.SERVICE_DEFAULT;
         createNewFile.setTaskId(XFileUtils.buildTaskId());
         createNewFile.setFrom(Build.MODEL);
+        createNewFile.setIsSend(true);
         XFileProtocol.File reqFile = XFileUtils.buildSendFile(createNewFile);
         Packetlistener packetlistener = new Packetlistener() {
             @Override
@@ -597,10 +598,10 @@ public class IMFileManager extends IMBaseManager {
 
         if (isTransmit && currentTask != null && currentTask.getTaskId().equals(tFileInfo.getTaskId())) {
             //
-//            if (!tFileInfo.isSend()) {
-//                // 如果是接收方
-//                isCancel = true;
-//            }
+            if (!tFileInfo.isSend()) {
+                // 如果是接收方
+                resetRead();
+            }
         } else {
             // 移除任务列表
             removeTask(tFileInfo);
@@ -631,9 +632,18 @@ public class IMFileManager extends IMBaseManager {
 
             final XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
             final TFileInfo reqTFile = XFileUtils.buildTFile(requestFile);
+            reqTFile.setIsSend(!reqTFile.isSend());
             if (isTransmit && currentTask != null && reqTFile.getTaskId().equals(currentTask.getTaskId())) {
                 // 删除当前任务
-                isCancel = true;
+                if (reqTFile.isSend()) {
+                    // 发送方收到,取消任务
+                    resetWrite();
+                    // 检查是否还有任务尚未完成
+                    checkUndone();
+                } else {
+                    // 接收方收到取消标记,等待下一次传输过来再执行暂停任务
+                    isCancel = true;
+                }
                 logger.e("****dispatchCancel");
 
             } else {
@@ -706,13 +716,19 @@ public class IMFileManager extends IMBaseManager {
     }
 
     private void resetRead() {
-
+        readIndex = 0;
+        readPercent = 0;
+        currentTask = null;
+        isTransmit = false;
+        isCancel = true;
     }
 
     private void resetWrite() {
         writeIndex = 0;
         writePercent = 0;
         currentTask = null;
+        isTransmit = false;
+        isCancel = true;
 
     }
 

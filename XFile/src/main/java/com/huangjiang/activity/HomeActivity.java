@@ -323,6 +323,11 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         head_layout.getLocationOnScreen(endLocation);
 
         AnimationHelper.startSendFileAnimation(fileThumb, head_layout, locationX, locationY, endLocation[0], endLocation[1]);
+        if(XFileApplication.connect_type==1){
+
+        }else{
+
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

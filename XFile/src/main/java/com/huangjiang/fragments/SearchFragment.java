@@ -24,6 +24,7 @@ import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.search.SearchLogic;
 import com.huangjiang.core.ImageLoader;
 import com.huangjiang.filetransfer.R;
+import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
@@ -75,6 +76,8 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
                     int[] location = new int[2];
                     image.getLocationOnScreen(location);
                     homeActivity.initFileThumbView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+                    TFileInfo tFileInfo = menu.getTFileInfo();
+                    IMFileManager.getInstance().createTask(tFileInfo);
                 }
                 break;
             case R.id.menu_open:
