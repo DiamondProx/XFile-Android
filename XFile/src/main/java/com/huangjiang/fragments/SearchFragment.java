@@ -26,6 +26,7 @@ import com.huangjiang.core.ImageLoader;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.view.DialogHelper;
 import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
 import com.huangjiang.view.OpenFileHelper;
@@ -40,7 +41,7 @@ import java.util.List;
 /**
  * 查找-图片,音频,视频三种类型
  */
-public class SearchFragment extends Fragment implements PopupMenu.OnItemSelectedListener {
+public class SearchFragment extends Fragment implements PopupMenu.OnItemSelectedListener, View.OnClickListener {
 
     EditText edtSearch;
     ListView listView;
@@ -83,6 +84,12 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
             case R.id.menu_open:
                 OpenFileHelper.openFile(getActivity(), menu.getTFileInfo());
                 break;
+            case R.id.menu_property:
+                DialogHelper.showProperty(getActivity(), menu.getTFileInfo());
+                break;
+            case R.id.menu_more:
+                DialogHelper.showMore(getActivity(), menu.getTFileInfo());
+                break;
         }
 
     }
@@ -93,7 +100,13 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
         super.onDestroy();
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
+
     class SearchAdapter extends BaseAdapter {
+
         private LayoutInflater mInflater;
         private List<TFileInfo> mList;
 

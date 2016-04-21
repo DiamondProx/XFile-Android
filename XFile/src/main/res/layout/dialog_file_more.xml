@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dp_210"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_shape"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="@dimen/dp_210"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="#ffccff"
+        android:gravity="center"
+        android:text="@string/more"
+        android:textColor="@color/black" />
+
+    <Button
+        android:id="@+id/more_uninstall"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/menu_selector"
+        android:text="@string/uninstall" />
+
+    <Button
+        android:id="@+id/more_del"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/menu_selector"
+        android:text="@string/delete" />
+
+    <Button
+        android:id="@+id/more_rename"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/menu_selector"
+        android:text="@string/rename" />
+
+    <Button
+        android:id="@+id/more_back"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/menu_selector"
+        android:text="@string/back" />
+
+    <Button
+        android:id="@+id/more_property"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/menu_selector"
+        android:text="@string/property" />
+
+
+</LinearLayout>
