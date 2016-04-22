@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -323,9 +324,9 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         head_layout.getLocationOnScreen(endLocation);
 
         AnimationHelper.startSendFileAnimation(fileThumb, head_layout, locationX, locationY, endLocation[0], endLocation[1]);
-        if(XFileApplication.connect_type==1){
+        if (XFileApplication.connect_type == 1) {
 
-        }else{
+        } else {
 
         }
     }

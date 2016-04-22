@@ -37,7 +37,7 @@ public class PopupMenu {
     private PopupWindow mPopupWindow;
     private View mContentView;
     private ListViewForScrollView mItemsView;
-    private OnItemSelectedListener mListener;
+    private MenuCallback mListener;
 
     private List<MenuItem> mItems;
     int dp_90;
@@ -169,7 +169,7 @@ public class PopupMenu {
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
                 if (mListener != null) {
-                    mListener.onItemSelected(PopupMenu.this, mItems.get(position));
+                    mListener.onMenuClick(PopupMenu.this, mItems.get(position));
                 }
                 mPopupWindow.dismiss();
             }
@@ -237,7 +237,7 @@ public class PopupMenu {
      *
      * @param listener
      */
-    public void setOnItemSelectedListener(OnItemSelectedListener listener) {
+    public void setOnItemSelectedListener(MenuCallback listener) {
         mListener = listener;
     }
 
@@ -245,8 +245,8 @@ public class PopupMenu {
      * Interface definition for a callback to be invoked when
      * an item in this PopupMenu has been selected.
      */
-    public interface OnItemSelectedListener {
-        void onItemSelected(PopupMenu menu, MenuItem item);
+    public interface MenuCallback {
+        void onMenuClick(PopupMenu menu, MenuItem item);
     }
 
     static class ViewHolder {
@@ -332,7 +332,7 @@ public class PopupMenu {
                 @Override
                 public void onClick(View v) {
                     if (mListener != null) {
-                        mListener.onItemSelected(PopupMenu.this, mItems.get(position));
+                        mListener.onMenuClick(PopupMenu.this, mItems.get(position));
                     }
                     dismiss();
                 }

@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.business.event.FindResEvent;
@@ -25,7 +26,9 @@ import com.huangjiang.business.search.SearchLogic;
 import com.huangjiang.core.ImageLoader;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMFileManager;
+import com.huangjiang.utils.ApkUtils;
 import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.view.CustomDialog;
 import com.huangjiang.view.DialogHelper;
 import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
@@ -41,7 +44,7 @@ import java.util.List;
 /**
  * 查找-图片,音频,视频三种类型
  */
-public class SearchFragment extends Fragment implements PopupMenu.OnItemSelectedListener, View.OnClickListener {
+public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, View.OnClickListener, CustomDialog.DialogCallback {
 
     EditText edtSearch;
     ListView listView;
@@ -66,8 +69,23 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
         return view;
     }
 
+
     @Override
-    public void onItemSelected(PopupMenu menu, MenuItem item) {
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    /**
+     * 弹出菜单选择
+     */
+    @Override
+    public void onMenuClick(PopupMenu menu, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_transfer:
                 ImageView image = (ImageView) listView.getChildAt(menu.getItemPosition()).findViewById(R.id.img);
@@ -88,21 +106,45 @@ public class SearchFragment extends Fragment implements PopupMenu.OnItemSelected
                 DialogHelper.showProperty(getActivity(), menu.getTFileInfo());
                 break;
             case R.id.menu_more:
-                DialogHelper.showMore(getActivity(), menu.getTFileInfo());
+                DialogHelper.showMore(getActivity(), menu.getTFileInfo(), SearchFragment.this);
+                break;
+            case R.id.menu_rename:
+
                 break;
         }
-
     }
 
+    /**
+     * 弹出对话框选择事件
+     */
     @Override
-    public void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-    }
-
-    @Override
-    public void onClick(View v) {
-
+    public void onDialogClick(int id, TFileInfo tFileInfo) {
+        switch (id) {
+            case R.id.more_del:
+                DialogHelper.showDel(getActivity(), tFileInfo, SearchFragment.this);
+                break;
+            case R.id.more_rename:
+                DialogHelper.showRename(getActivity(), tFileInfo, SearchFragment.this);
+                break;
+            case R.id.more_uninstall:
+                ApkUtils.unInstall(getActivity(), tFileInfo);
+                break;
+            case R.id.more_back:
+                Toast.makeText(getActivity(), "点击了备份", Toast.LENGTH_SHORT).show();
+                // TODO 直接备份
+                break;
+            case R.id.more_property:
+                DialogHelper.showProperty(getActivity(), tFileInfo);
+                break;
+            case R.id.dialog_rename_ok:
+                // TODO 执行重命名
+                Toast.makeText(getActivity(), "确认重命名", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.dialog_del_ok:
+                // TODO 执行删除
+                Toast.makeText(getActivity(), "确认删除", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     class SearchAdapter extends BaseAdapter {

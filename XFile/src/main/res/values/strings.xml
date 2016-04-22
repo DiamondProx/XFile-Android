@@ -77,4 +77,17 @@
     <string name="uninstall">卸载</string>
     <string name="rename">重命名</string>
     <string name="back">备份</string>
+    <string name="btn_sure">确定</string>
+    <string name="property_name">名称:%1$s</string>
+    <string name="property_type">类型:%1$s</string>
+    <string name="property_path">位置:%1$s</string>
+    <string name="property_size">大小:%1$s</string>
+    <string name="property_edit_time">修改日期:%1$s</string>
+    <string name="mime_audio">音频</string>
+    <string name="mime_video">视频</string>
+    <string name="mime_image">图片</string>
+    <string name="mime_app">应用</string>
+    <string name="mime_normal">文件</string>
+    <string name="please_input_new_name">请输入新文件名</string>
+    <string name="sure_delete_file">你确定要删除吗?</string>
 </resources>

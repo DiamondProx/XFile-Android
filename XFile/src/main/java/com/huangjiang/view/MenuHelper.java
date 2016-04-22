@@ -1,6 +1,5 @@
 package com.huangjiang.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
@@ -14,11 +13,11 @@ import com.huangjiang.manager.event.FileEvent;
 public class MenuHelper {
 
 
-    public static void showMenu(Context context, View anchorView, int itemPosition, TFileInfo tFileInfo, PopupMenu.OnItemSelectedListener callback) {
+    public static void showMenu(Context context, View anchorView, int itemPosition, TFileInfo tFileInfo, PopupMenu.MenuCallback callback) {
         showMenu(context, anchorView, itemPosition, -1, tFileInfo, callback);
     }
 
-    public static void showMenu(Context context, View anchorView, int itemPosition, int groupPosition, TFileInfo tFileInfo, PopupMenu.OnItemSelectedListener callback) {
+    public static void showMenu(Context context, View anchorView, int itemPosition, int groupPosition, TFileInfo tFileInfo, PopupMenu.MenuCallback callback) {
 
         PopupMenu menu = new PopupMenu(context);
         menu.setItemPosition(itemPosition);

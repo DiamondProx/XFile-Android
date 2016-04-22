@@ -10,21 +10,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.adapter.TransmitAdapter;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.dao.DFile;
 import com.huangjiang.dao.DFileDao;
 import com.huangjiang.dao.DaoMaster;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
-import com.huangjiang.message.protocol.XFileProtocol;
-import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
 import com.huangjiang.view.OpenFileHelper;
@@ -40,7 +36,7 @@ import java.util.List;
 /**
  * 历史消息
  */
-public class HistoryFragment extends Fragment implements AdapterView.OnItemClickListener, PopupMenu.OnItemSelectedListener {
+public class HistoryFragment extends Fragment implements AdapterView.OnItemClickListener, PopupMenu.MenuCallback {
 
     List<TFileInfo> list_message;
     TransmitAdapter adapter;
@@ -80,7 +76,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
     }
 
     @Override
-    public void onItemSelected(PopupMenu menu, MenuItem item) {
+    public void onMenuClick(PopupMenu menu, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_transfer:
                 ImageView image = (ImageView) lv_message.getChildAt(menu.getItemPosition()).findViewById(R.id.img);
