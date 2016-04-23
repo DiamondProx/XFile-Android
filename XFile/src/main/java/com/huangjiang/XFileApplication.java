@@ -12,15 +12,9 @@ public class XFileApplication extends Application {
 
     public static Context context;
 
-    public static int broadcast_port;
-
-    public static int message_port;
-
-    public static int file_port;
-
     public static String device_id;
 
-    public static int connect_type = 1;//0 未连接,1 客户端连接,2 服务端连接
+    public static int connect_type = 0;//0 未连接,1 客户端连接,2 服务端连接
 
 
     @Override

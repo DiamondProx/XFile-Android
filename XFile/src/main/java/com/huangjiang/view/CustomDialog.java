@@ -122,8 +122,9 @@ public class CustomDialog extends Dialog {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
-                    if (onListener != null) {
-                        onListener.onDialogClick(v.getId(), tFileInfo);
+                    String newName = edt_file_name.getText().toString();
+                    if (onListener != null && !newName.equals(tFileInfo.getFullName())) {
+                        onListener.onDialogClick(v.getId(), tFileInfo, newName);
                     }
                 }
             });
@@ -318,7 +319,7 @@ public class CustomDialog extends Dialog {
     }
 
     public interface DialogCallback {
-        void onDialogClick(int id, TFileInfo tFileInfo);
+        void onDialogClick(int id, TFileInfo tFileInfo, Object... params);
     }
 
 }

@@ -78,6 +78,7 @@ public class ImageInterface {
                 long size = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.SIZE));// 文件大小
 
                 TFileInfo image_file = new TFileInfo();
+                image_file.setTaskId(XFileUtils.buildTaskId());
                 image_file.setName(display_name);
                 image_file.setPath(file_path);
                 image_file.setCreateTime(XFileUtils.paserTimeToYMD(create_time));

@@ -90,4 +90,5 @@
     <string name="mime_normal">文件</string>
     <string name="please_input_new_name">请输入新文件名</string>
     <string name="sure_delete_file">你确定要删除吗?</string>
+    <string name="backup_success">备份成功</string>
 </resources>

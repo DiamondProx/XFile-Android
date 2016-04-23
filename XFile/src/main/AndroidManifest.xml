@@ -64,12 +64,19 @@
         <activity
             android:name="com.huangjiang.activity.ShowImageActivity"
             android:label="@string/title_activity_show_image" />
-
         <activity
             android:name="com.huangjiang.activity.ConnectActivity"
             android:theme="@style/Theme.Translucent" />
 
         <service android:name="com.huangjiang.service.IMService" />
+        <receiver android:name="com.huangjiang.broadcast.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -79,6 +79,7 @@ public class AudioInterface {
                 int play_time = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));// 播放时长
 
                 TFileInfo audio_file = new TFileInfo();
+                audio_file.setTaskId(XFileUtils.buildTaskId());
                 audio_file.setName(display_name);
                 audio_file.setPath(file_path);
                 audio_file.setCreateTime(XFileUtils.paserTimeToYMD(create_time));

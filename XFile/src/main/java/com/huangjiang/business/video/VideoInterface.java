@@ -79,6 +79,7 @@ public class VideoInterface {
                 int play_time = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));// 播放时长
 
                 TFileInfo video_file = new TFileInfo();
+                video_file.setTaskId(XFileUtils.buildTaskId());
                 video_file.setName(display_name);
                 video_file.setPath(file_path);
                 video_file.setCreateTime(XFileUtils.paserTimeToYMD(create_time));

@@ -1,6 +1,7 @@
 package com.huangjiang.business;
 
 import com.huangjiang.business.event.FindResEvent;
+import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.model.TFileInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -14,4 +15,9 @@ public class BaseLogic {
         FindResEvent searchTFileInfoEvent = new FindResEvent(mimeType, fileInfoList);
         EventBus.getDefault().post(searchTFileInfoEvent);
     }
+
+    public void triggerEvent(OpFileEvent event) {
+        EventBus.getDefault().post(event);
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.huangjiang.fragments;
 
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,23 +11,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.huangjiang.XFileApplication;
+import com.huangjiang.activity.ConnectActivity;
 import com.huangjiang.activity.HomeActivity;
+import com.huangjiang.adapter.SearchAdapter;
 import com.huangjiang.business.event.FindResEvent;
-import com.huangjiang.business.model.FileType;
+import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.business.opfile.OpLogic;
 import com.huangjiang.business.search.SearchLogic;
-import com.huangjiang.core.ImageLoader;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMFileManager;
-import com.huangjiang.utils.ApkUtils;
-import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.CustomDialog;
 import com.huangjiang.view.DialogHelper;
 import com.huangjiang.view.MenuHelper;
@@ -44,42 +43,48 @@ import java.util.List;
 /**
  * 查找-图片,音频,视频三种类型
  */
-public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, View.OnClickListener, CustomDialog.DialogCallback {
+public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, CustomDialog.DialogCallback, AdapterView.OnItemClickListener {
 
     EditText edtSearch;
     ListView listView;
     SearchAdapter searchAdapter;
+    OpLogic opLogic;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_fragment, null);
+        opLogic = new OpLogic(getActivity());
         edtSearch = (EditText) view.findViewById(R.id.edt_search);
-        edtSearch.addTextChangedListener(new SearchKeyChange());
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    SearchLogic audioLogic = new SearchLogic(getActivity());
+                    audioLogic.searchResource(s.toString());
+                } else {
+                    searchAdapter.setList(null);
+                    searchAdapter.notifyDataSetChanged();
+                }
+            }
+        });
         listView = (ListView) view.findViewById(R.id.listview);
         searchAdapter = new SearchAdapter(getActivity());
         listView.setAdapter(searchAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TFileInfo tFileInfo = (TFileInfo) searchAdapter.getItem(position);
-                MenuHelper.showMenu(getActivity(), view, position, tFileInfo, SearchFragment.this);
-            }
-        });
+        listView.setOnItemClickListener(this);
         EventBus.getDefault().register(this);
         return view;
     }
 
-
-    @Override
-    public void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-    }
-
-    @Override
-    public void onClick(View v) {
-
-    }
 
     /**
      * 弹出菜单选择
@@ -88,6 +93,10 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
     public void onMenuClick(PopupMenu menu, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_transfer:
+                if (XFileApplication.connect_type == 0) {
+                    startActivity(new Intent(getActivity(), ConnectActivity.class));
+                    return;
+                }
                 ImageView image = (ImageView) listView.getChildAt(menu.getItemPosition()).findViewById(R.id.img);
                 if (image != null) {
                     Drawable drawable = image.getDrawable();
@@ -108,9 +117,6 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
             case R.id.menu_more:
                 DialogHelper.showMore(getActivity(), menu.getTFileInfo(), SearchFragment.this);
                 break;
-            case R.id.menu_rename:
-
-                break;
         }
     }
 
@@ -118,7 +124,7 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
      * 弹出对话框选择事件
      */
     @Override
-    public void onDialogClick(int id, TFileInfo tFileInfo) {
+    public void onDialogClick(int id, TFileInfo tFileInfo, Object... param) {
         switch (id) {
             case R.id.more_del:
                 DialogHelper.showDel(getActivity(), tFileInfo, SearchFragment.this);
@@ -127,111 +133,26 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
                 DialogHelper.showRename(getActivity(), tFileInfo, SearchFragment.this);
                 break;
             case R.id.more_uninstall:
-                ApkUtils.unInstall(getActivity(), tFileInfo);
+                opLogic.unInstall(tFileInfo);
                 break;
             case R.id.more_back:
-                Toast.makeText(getActivity(), "点击了备份", Toast.LENGTH_SHORT).show();
-                // TODO 直接备份
+                opLogic.backUpApk(tFileInfo);
                 break;
             case R.id.more_property:
                 DialogHelper.showProperty(getActivity(), tFileInfo);
                 break;
-            case R.id.dialog_rename_ok:
-                // TODO 执行重命名
-                Toast.makeText(getActivity(), "确认重命名", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.dialog_del_ok:
-                // TODO 执行删除
-                Toast.makeText(getActivity(), "确认删除", Toast.LENGTH_SHORT).show();
+                opLogic.deleteFile(tFileInfo);
+                break;
+            case R.id.dialog_rename_ok:
+                opLogic.renameFile(tFileInfo, (String) param[0]);
                 break;
         }
     }
 
-    class SearchAdapter extends BaseAdapter {
-
-        private LayoutInflater mInflater;
-        private List<TFileInfo> mList;
-
-        public SearchAdapter(Context context) {
-            mInflater = LayoutInflater.from(context);
-        }
-
-        public void setList(List<TFileInfo> mList) {
-            this.mList = mList;
-        }
-
-        @Override
-        public int getCount() {
-            return mList == null ? 0 : mList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder videoHolder = null;
-            if (convertView == null) {
-                videoHolder = new ViewHolder();
-                convertView = mInflater.inflate(R.layout.listview_search_item, null);
-                videoHolder.Img = (ImageView) convertView.findViewById(R.id.img);
-                videoHolder.Name = (TextView) convertView.findViewById(R.id.name);
-                videoHolder.Size = (TextView) convertView.findViewById(R.id.size);
-                convertView.setTag(videoHolder);
-            } else {
-                videoHolder = (ViewHolder) convertView.getTag();
-            }
-            TFileInfo file = mList.get(position);
-            if (file != null) {
-                if (file.getFileType() == FileType.Apk || file.getFileType() == FileType.Video || file.getFileType() == FileType.Image) {
-                    ImageLoader.getInstance().displayThumb(videoHolder.Img, file);
-                } else {
-                    videoHolder.Img.setImageResource(R.mipmap.data_folder_documents_placeholder);
-                }
-                videoHolder.Name.setText(file.getName());
-                videoHolder.Size.setText(XFileUtils.getFolderSizeString(file.getLength()));
-            }
-            return convertView;
-        }
-
-        final class ViewHolder {
-            ImageView Img;
-            TextView Name;
-            TextView Size;
-        }
-    }
-
-    class SearchKeyChange implements TextWatcher {
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (s.length() > 0) {
-                SearchLogic audioLogic = new SearchLogic(getActivity());
-                audioLogic.searchResource("XF");
-            } else {
-                searchAdapter.setList(null);
-                searchAdapter.notifyDataSetChanged();
-            }
-        }
-    }
-
+    /**
+     * 查询数据
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(FindResEvent searchEvent) {
         switch (searchEvent.getMimeType()) {
@@ -248,5 +169,41 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
                 break;
         }
 
+    }
+
+    /**
+     * 文件操作
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(OpFileEvent opFileEvent) {
+        if (!opFileEvent.isSuccess()) {
+            return;
+        }
+        switch (opFileEvent.getOpType()) {
+            case DELETE:
+            case UNINSTALL:
+                searchAdapter.removeFile(opFileEvent.getTFileInfo());
+                break;
+            case RENAME:
+                searchAdapter.updateFile(opFileEvent.getTFileInfo());
+                break;
+            case BACKUP:
+                Toast.makeText(getActivity(), R.string.backup_success, Toast.LENGTH_SHORT).show();
+                break;
+        }
+        searchAdapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        TFileInfo tFileInfo = (TFileInfo) searchAdapter.getItem(position);
+        MenuHelper.showMenu(getActivity(), view, position, tFileInfo, SearchFragment.this);
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 }

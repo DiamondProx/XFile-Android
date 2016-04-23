@@ -9,6 +9,7 @@ import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.StringUtils;
+import com.huangjiang.utils.XFileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class AppInterface {
                 if ((pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                     TFileInfo appFile = new TFileInfo();
                     String display_name = pi.applicationInfo.loadLabel(pm).toString();
+                    appFile.setTaskId(XFileUtils.buildTaskId());
                     appFile.setPath(pi.applicationInfo.publicSourceDir);//安装包路径
                     appFile.setName(display_name);//程序名称
                     appFile.setPackageName(pi.applicationInfo.packageName);//包名
