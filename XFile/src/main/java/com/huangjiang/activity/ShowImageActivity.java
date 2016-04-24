@@ -14,6 +14,7 @@ public class ShowImageActivity extends BaseActivity {
 
     GestureImageView dmImageView;
     public static final String URL = "url";
+    Bitmap bitmap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +23,17 @@ public class ShowImageActivity extends BaseActivity {
         dmImageView = (GestureImageView) findViewById(R.id.dmImageView);
         if (getIntent().hasExtra(URL)) {
             String url = getIntent().getStringExtra(URL);
-            Bitmap bitmap = BitmapFactory.decodeFile(url);
+            bitmap = BitmapFactory.decodeFile(url);
             dmImageView.setImageBitmap(bitmap);
+
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (bitmap != null) {
+            bitmap.recycle();
         }
     }
 }

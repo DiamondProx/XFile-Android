@@ -5,7 +5,7 @@ import com.huangjiang.manager.event.FileEvent;
 /**
  * 传输文件实体
  */
-public class TFileInfo {
+public class TFileInfo implements Comparable<TFileInfo> {
 
     /*
     required string name = 1;
@@ -82,6 +82,11 @@ public class TFileInfo {
      * 包名
      */
     private String packageName;
+
+    /**
+     * 是否目录
+     */
+    private boolean directory = false;
 
     public String getName() {
         return name;
@@ -202,5 +207,21 @@ public class TFileInfo {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    @Override
+    public int compareTo(TFileInfo fileInfo) {
+        if (this.name != null)
+            return this.name.compareTo(fileInfo.getName());
+        else
+            throw new IllegalArgumentException();
+    }
+
+    public boolean isDirectory() {
+        return directory;
+    }
+
+    public void setDirectory(boolean directory) {
+        this.directory = directory;
     }
 }

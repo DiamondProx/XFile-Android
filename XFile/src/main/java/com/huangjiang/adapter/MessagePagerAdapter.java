@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 手机Fragment适配器
+ * 消息Fragment适配器
  */
 public class MessagePagerAdapter extends FragmentStatePagerAdapter {
 

@@ -110,7 +110,7 @@ public class IMFileManager extends IMBaseManager {
         createNewFile.setTaskId(XFileUtils.buildTaskId());
         createNewFile.setFrom(Build.MODEL);
         createNewFile.setIsSend(true);
-        XFileProtocol.File reqFile = XFileUtils.buildSendFile(createNewFile);
+        XFileProtocol.File reqFile = XFileUtils.buildSFile(createNewFile);
         Packetlistener packetlistener = new Packetlistener() {
             @Override
             public void onSuccess(short serviceId, Object response) {
@@ -172,7 +172,7 @@ public class IMFileManager extends IMBaseManager {
         try {
             XFileProtocol.File reqFile = XFileProtocol.File.parseFrom(bodyData);
             // 判断是否存在文件,如果不存在则创建
-            String fullPath = XFileUtils.getStoragePathByExtension(reqFile.getExtension()) + reqFile.getFullName();
+            String fullPath = XFileUtils.getSavePathByExtension(reqFile.getExtension()) + reqFile.getFullName();
             File saveFile = new File(fullPath);
             if (!saveFile.getParentFile().exists()) {
                 saveFile.getParentFile().mkdirs();
@@ -216,7 +216,7 @@ public class IMFileManager extends IMBaseManager {
     public void checkTask(final TFileInfo checkFile) {
         short cid = SysConstant.CMD_TASK_CHECK;
         short sid = SysConstant.SERVICE_DEFAULT;
-        final XFileProtocol.File reqFile = XFileUtils.buildSendFile(checkFile);
+        final XFileProtocol.File reqFile = XFileUtils.buildSFile(checkFile);
         final TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
         Packetlistener packetlistener = new Packetlistener() {
             @Override
@@ -455,7 +455,7 @@ public class IMFileManager extends IMBaseManager {
     private void dispatchReceiveData(Header header, byte[] bodyData) {
         try {
             final XFileProtocol.File reqFile = XFileProtocol.File.parseFrom(bodyData);
-            String fullPath = XFileUtils.getStoragePathByExtension(reqFile.getExtension()) + File.separator + reqFile.getFullName();
+            String fullPath = XFileUtils.getSavePathByExtension(reqFile.getExtension()) + File.separator + reqFile.getFullName();
             byte[] fileData = reqFile.getData().toByteArray();
             RandomAccessFile randomAccessFile = new RandomAccessFile(fullPath, "rw");
             randomAccessFile.seek(reqFile.getPosition());
@@ -594,7 +594,7 @@ public class IMFileManager extends IMBaseManager {
      */
     public void cancelTask(final TFileInfo tFileInfo) {
 
-        final XFileProtocol.File requestFile = XFileUtils.buildSendFile(tFileInfo);
+        final XFileProtocol.File requestFile = XFileUtils.buildSFile(tFileInfo);
 
         if (isTransmit && currentTask != null && currentTask.getTaskId().equals(tFileInfo.getTaskId())) {
             //
@@ -676,7 +676,7 @@ public class IMFileManager extends IMBaseManager {
      */
     public void resumeReceive(TFileInfo tFileInfo) {
         if (!isTransmit) {
-            XFileProtocol.File reqFile = XFileUtils.buildSendFile(tFileInfo);
+            XFileProtocol.File reqFile = XFileUtils.buildSFile(tFileInfo);
             resume(reqFile);
         } else {
             checkTask(tFileInfo);

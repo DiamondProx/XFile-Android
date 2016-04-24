@@ -81,7 +81,7 @@ public class ImageInterface {
                 image_file.setTaskId(XFileUtils.buildTaskId());
                 image_file.setName(display_name);
                 image_file.setPath(file_path);
-                image_file.setCreateTime(XFileUtils.paserTimeToYMD(create_time));
+                image_file.setCreateTime(XFileUtils.parseTimeToYMD(create_time));
                 image_file.setLength(size);
                 image_file.setFullName(display_name);
                 if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") != -1) {

@@ -82,7 +82,7 @@ public class VideoInterface {
                 video_file.setTaskId(XFileUtils.buildTaskId());
                 video_file.setName(display_name);
                 video_file.setPath(file_path);
-                video_file.setCreateTime(XFileUtils.paserTimeToYMD(create_time));
+                video_file.setCreateTime(XFileUtils.parseTimeToYMD(create_time));
                 video_file.setLength(size);
                 video_file.setPlayTime(play_time);
                 video_file.setFullName(display_name);

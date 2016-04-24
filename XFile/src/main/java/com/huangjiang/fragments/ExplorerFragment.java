@@ -7,14 +7,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
-import com.huangjiang.adapter.StorageRootAdapter;
-import com.huangjiang.business.model.StorageRootInfo;
+import com.huangjiang.business.model.Catalog;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.utils.XFileUtils;
-import com.huangjiang.view.FileBrowserControl;
+import com.huangjiang.view.ExplorerControl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,10 +20,9 @@ import java.util.List;
 /**
  * 文件浏览
  */
-public class ExplorerFragment extends Fragment implements AdapterView.OnItemClickListener, FileBrowserControl.FileBrowserListener {
+public class ExplorerFragment extends Fragment {
 
-    StorageRootAdapter rootAdapter;
-    FileBrowserControl fileBrowser;
+    ExplorerControl explorerControl;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -36,60 +32,35 @@ public class ExplorerFragment extends Fragment implements AdapterView.OnItemClic
     }
 
     void init(View view) {
-        ListView listRoot = (ListView) view.findViewById(R.id.list_root);
-        rootAdapter = new StorageRootAdapter(getActivity());
-        listRoot.setAdapter(rootAdapter);
-        listRoot.setOnItemClickListener(this);
-        List<StorageRootInfo> list = new ArrayList<>();
-
-        // 根目录
-        StorageRootInfo rootMemory = new StorageRootInfo();
-        rootMemory.setImg(R.mipmap.data_folder_memory_default);
-        rootMemory.setDesc(this.getString(R.string.root_memory_storage));
-        rootMemory.setFilePath("/");
-        list.add(rootMemory);
-
-        // 内存
+        List<Catalog> list = new ArrayList<>();
+        Catalog rootCatalog = new Catalog();
+        rootCatalog.setImage(R.mipmap.data_folder_memory_default);
+        rootCatalog.setName(this.getString(R.string.root_memory_storage));
+        rootCatalog.setPath(File.separator);
+        list.add(rootCatalog);
         if (XFileUtils.ExistSDCard()) {
-            StorageRootInfo rootSdCard = new StorageRootInfo();
-            rootSdCard.setImg(R.mipmap.data_folder_sdcard_default);
-            rootSdCard.setDesc(this.getString(R.string.root_sdcard_storage));
-            rootSdCard.setFilePath(XFileUtils.getStorageCardPath());
-            list.add(rootSdCard);
+            Catalog inSdCard = new Catalog();
+            inSdCard.setImage(R.mipmap.data_folder_sdcard_default);
+            inSdCard.setName(this.getString(R.string.root_sdcard_storage));
+            inSdCard.setPath(XFileUtils.getStorageCardPath());
+            list.add(inSdCard);
         }
-
-        // TF存储
-        List<String> sdPaths = XFileUtils.getSdCardPaths();
-        for (String string : sdPaths) {
-            StorageRootInfo rootSdCardExten = new StorageRootInfo();
-            rootSdCardExten.setImg(R.mipmap.data_folder_sdcard_default);
-            rootSdCardExten.setDesc(this.getString(R.string.root_sdcard_storage_exten));
-            rootSdCardExten.setFilePath(string);
-            list.add(rootSdCardExten);
+        List<String> outSdCardPaths = XFileUtils.getSdCardPaths();
+        for (String string : outSdCardPaths) {
+            Catalog outSdCard = new Catalog();
+            outSdCard.setImage(R.mipmap.data_folder_sdcard_default);
+            outSdCard.setName(this.getString(R.string.root_sdcard_storage_exten));
+            outSdCard.setPath(string);
+            list.add(outSdCard);
         }
-
-        rootAdapter.getRoots().addAll(list);
-        rootAdapter.notifyDataSetChanged();
-
-        fileBrowser = (FileBrowserControl) view.findViewById(R.id.fileBrowser);
-        fileBrowser.setFileBrowserListener(this);
-        fileBrowser.initFiles(new File(XFileUtils.getStorageCardPath()));
-    }
-
-
-    @Override
-    public void rootDir() {
-        fileBrowser.setVisibility(View.GONE);
+        explorerControl = (ExplorerControl) view.findViewById(R.id.explorer);
+        explorerControl.setActivity(getActivity());
+        explorerControl.setCatalog(list);
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        StorageRootInfo storage = (StorageRootInfo) rootAdapter.getItem(position);
-        if (storage != null) {
-            fileBrowser.initRootPath(storage.getFilePath());
-            fileBrowser.initFiles(new File(storage.getFilePath()));
-            fileBrowser.setVisibility(View.VISIBLE);
-        }
+    public void onDestroy() {
+        super.onDestroy();
+        explorerControl.onDestroy();
     }
-
 }

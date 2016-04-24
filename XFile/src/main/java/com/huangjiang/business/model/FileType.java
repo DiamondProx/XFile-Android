@@ -3,7 +3,7 @@ package com.huangjiang.business.model;
 /**
  * 文件类型
  */
-public enum  FileType {
+public enum FileType {
     Folder,//文件夹
     Normal,//普通文件
     Audio,//视频

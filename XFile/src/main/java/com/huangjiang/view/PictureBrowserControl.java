@@ -44,13 +44,11 @@ public class PictureBrowserControl extends StickyGridHeadersGridView {
 
 	public PictureBrowserControl(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 		initializePicture(context);
 	}
 
 	public PictureBrowserControl(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
 		initializePicture(context);
 	}
 
@@ -75,7 +73,7 @@ public class PictureBrowserControl extends StickyGridHeadersGridView {
 					String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
 					long times = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
 
-					PictureInfo pictureVO = new PictureInfo(path, XFileUtils.paserTimeToYMD(times));
+					PictureInfo pictureVO = new PictureInfo(path, XFileUtils.parseTimeToYMD(times));
 					mList.add(pictureVO);
 
 				}
@@ -120,19 +118,16 @@ public class PictureBrowserControl extends StickyGridHeadersGridView {
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return mList.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
 			return mList.get(position);
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return position;
 		}
 

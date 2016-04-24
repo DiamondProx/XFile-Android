@@ -20,6 +20,7 @@ import java.util.List;
  * 文件搜索
  */
 public class SearchAdapter extends BaseAdapter {
+
     private LayoutInflater mInflater;
     private List<TFileInfo> mList;
 
@@ -67,7 +68,7 @@ public class SearchAdapter extends BaseAdapter {
                 videoHolder.Img.setImageResource(R.mipmap.data_folder_documents_placeholder);
             }
             videoHolder.Name.setText(file.getName());
-            videoHolder.Size.setText(XFileUtils.getFolderSizeString(file.getLength()));
+            videoHolder.Size.setText(XFileUtils.parseSize(file.getLength()));
         }
         return convertView;
     }
@@ -75,12 +76,12 @@ public class SearchAdapter extends BaseAdapter {
     public void removeFile(TFileInfo tFileInfo) {
         for (TFileInfo file : mList) {
             if (tFileInfo.getFileType() == FileType.Apk) {
-                if (file.getPackageName().equals(tFileInfo.getPackageName())) {
+                if (tFileInfo.getPackageName().equals(file.getPackageName())) {
                     mList.remove(file);
                     break;
                 }
             } else {
-                if (file.getTaskId().equals(tFileInfo.getTaskId())) {
+                if (tFileInfo.getTaskId().equals(file.getTaskId())) {
                     mList.remove(file);
                     break;
                 }

@@ -145,7 +145,7 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         holder.fileImg.setImageResource(R.mipmap.data_folder_documents_placeholder);
         holder.from.setText(tFileInfo.getFrom());
         holder.name.setText(tFileInfo.getFullName());
-        holder.size.setText(XFileUtils.getFolderSizeString(tFileInfo.getLength()));
+        holder.size.setText(XFileUtils.parseSize(tFileInfo.getLength()));
         long percent = tFileInfo.getPosition() * 100 / tFileInfo.getLength();
         holder.remainPercent.setText(String.format(mContext.getString(R.string.percent), percent));
         if (tFileInfo.getFileEvent() == FileEvent.NONE) {

@@ -82,7 +82,7 @@ public class AudioInterface {
                 audio_file.setTaskId(XFileUtils.buildTaskId());
                 audio_file.setName(display_name);
                 audio_file.setPath(file_path);
-                audio_file.setCreateTime(XFileUtils.paserTimeToYMD(create_time));
+                audio_file.setCreateTime(XFileUtils.parseTimeToYMD(create_time));
                 audio_file.setLength(size);
                 audio_file.setPlayTime(play_time);
                 audio_file.setFullName(display_name);

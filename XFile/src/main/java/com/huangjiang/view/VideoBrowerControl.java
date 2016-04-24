@@ -67,8 +67,8 @@ public class VideoBrowerControl extends ListView {
 					VideoInfo video = new VideoInfo();
 					video.setFileName(name);
 					video.setFilePath(path);
-					video.setCreateTime(XFileUtils.paserTimeToYMD(addTimes));
-					video.setFileSize(XFileUtils.getFolderSizeString(size));
+					video.setCreateTime(XFileUtils.parseTimeToYMD(addTimes));
+					video.setFileSize(XFileUtils.parseSize(size));
 					video.setTotalTime(XFileUtils.getDuration(playTimes));
 					mList.add(video);
 				}

@@ -5,20 +5,10 @@
     android:background="@color/app_background"
     android:orientation="vertical">
 
-
-    <ListView
-        android:id="@+id/list_root"
+    <com.huangjiang.view.ExplorerControl
+        android:id="@+id/explorer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/listview_divider_color"
-        android:dividerHeight="0.1dp"
-        android:listSelector="@color/tab_btn_normal" />
-
-    <com.huangjiang.view.FileBrowserControl
-        android:id="@+id/fileBrowser"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:visibility="gone" />
+        android:clickable="true" />
 
 </FrameLayout>

@@ -2,7 +2,7 @@
     <string name="app_name">XFile</string>
     <string name="root_memory_storage">手机存储</string>
     <string name="root_sdcard_storage">内部存储</string>
-    <string name="root_sdcard_storage_exten">SD卡</string>
+    <string name="root_sdcard_storage_exten">SD存储卡</string>
     <string name="person_number">%1$s人</string>
     <string name="count_number">%1$s次</string>
     <string name="file_total_b">%1$sB</string>
@@ -91,4 +91,5 @@
     <string name="please_input_new_name">请输入新文件名</string>
     <string name="sure_delete_file">你确定要删除吗?</string>
     <string name="backup_success">备份成功</string>
+    <string name="up_dir">上一级</string>
 </resources>

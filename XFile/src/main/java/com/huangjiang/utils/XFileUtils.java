@@ -1,10 +1,27 @@
 package com.huangjiang.utils;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
+import android.os.Environment;
+import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
+
+import com.huangjiang.XFileApplication;
+import com.huangjiang.business.model.FileType;
+import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.dao.DFile;
+import com.huangjiang.filetransfer.R;
+import com.huangjiang.message.protocol.XFileProtocol;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,36 +37,13 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
-import android.os.Environment;
-import android.telephony.TelephonyManager;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
-
-import com.huangjiang.XFileApplication;
-import com.huangjiang.business.model.FileInfo;
-import com.huangjiang.business.model.FileType;
-import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.dao.DFile;
-import com.huangjiang.filetransfer.R;
-import com.huangjiang.manager.event.FileEvent;
-import com.huangjiang.message.protocol.XFileProtocol;
-
 public class XFileUtils {
 
     /*
      * 是否存在SD存储卡
      */
     public static boolean ExistSDCard() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            return true;
-        } else
-            return false;
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
     /*
@@ -67,7 +61,6 @@ public class XFileUtils {
      * 获取存储卡路径
      */
     public static String getStorageCardPath() {
-
         return Environment.getExternalStorageDirectory().getPath();
     }
 
@@ -75,7 +68,7 @@ public class XFileUtils {
      * 时间转换
      */
     @SuppressLint("SimpleDateFormat")
-    public static String paserTimeToYMD(long time) {
+    public static String parseTimeToYMD(long time) {
         System.setProperty("user.timezone", "Asia/Shanghai");
         TimeZone tz = TimeZone.getTimeZone("Asia/Shanghai");
         TimeZone.setDefault(tz);
@@ -85,12 +78,9 @@ public class XFileUtils {
 
     /**
      * 根据输入的参数大小，进行单位换算，size单位为bit.视情况转换为KB,MB,GB
-     *
-     * @param size
-     * @return
      */
-    public static String getFolderSizeString(long size) {
-        String sizeStr = null;
+    public static String parseSize(long size) {
+        String sizeStr;
         float kb = 1024;
         float mb = kb * 1024;
         float gb = mb * 1024;
@@ -125,7 +115,7 @@ public class XFileUtils {
      * @return 指定大小的视频缩略图
      */
     public static Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         // 获取视频的缩略图
         bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
         System.out.println("w" + bitmap.getWidth());
@@ -135,25 +125,23 @@ public class XFileUtils {
     }
 
     /*
-     * 获取所有存储卡
+     * 获取外置存储卡路径
      */
     public static List<String> getSdCardPaths() {
 
-        List<String> paths = new ArrayList<String>();
-
+        List<String> paths = new ArrayList<>();
         String extFileStatus = Environment.getExternalStorageState();
         File extFile = Environment.getExternalStorageDirectory();
         if (extFileStatus.endsWith(Environment.MEDIA_UNMOUNTED) && extFile.exists() && extFile.isDirectory() && extFile.canWrite()) {
             paths.add(extFile.getAbsolutePath());
         }
-
         try {
             Runtime runtime = Runtime.getRuntime();
             Process process = runtime.exec("mount");
             InputStream is = process.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
-            String line = null;
+            String line;
             int mountPathIndex = 1;
             while ((line = br.readLine()) != null) {
                 // format of sdcard file system: vfat/fuse
@@ -167,7 +155,7 @@ public class XFileUtils {
                     continue;
                 }
                 String mountPath = parts[mountPathIndex];
-                if (!mountPath.contains("/") || mountPath.contains("data") || mountPath.contains("Data")) {
+                if (!mountPath.contains("/") || mountPath.contains("data") || mountPath.contains("Data") || mountPath.contains("usbotg") || mountPath.contains("uicc")) {
                     continue;
                 }
                 File mountRoot = new File(mountPath);
@@ -186,41 +174,34 @@ public class XFileUtils {
         return paths;
     }
 
+
     /**
      * 获取视频时长
-     *
-     * @param durationSeconds
-     * @return
      */
     public static String getDuration(int durationSeconds) {
         int hours = durationSeconds / (60 * 60);
         int leftSeconds = durationSeconds % (60 * 60);
         int minutes = leftSeconds / 60;
         int seconds = leftSeconds % 60;
-
-        StringBuffer sBuffer = new StringBuffer();
-        sBuffer.append(addZeroPrefix(hours));
-        sBuffer.append(":");
-        sBuffer.append(addZeroPrefix(minutes));
-        sBuffer.append(":");
-        sBuffer.append(addZeroPrefix(seconds));
-
-        return sBuffer.toString();
+        String duration;
+        duration = addZeroPrefix(hours);
+        duration += ":";
+        duration += addZeroPrefix(minutes);
+        duration += ":";
+        duration += addZeroPrefix(seconds);
+        return duration;
     }
 
-    public static String addZeroPrefix(int number) {
+    static String addZeroPrefix(int number) {
         if (number < 10) {
             return "0" + number;
         } else {
             return "" + number;
         }
-
     }
 
     /**
      * 获取版本号
-     *
-     * @return 当前应用的版本号
      */
     public static String getVersion(Context context) {
         String version = "";
@@ -234,23 +215,21 @@ public class XFileUtils {
         return version;
     }
 
+    /**
+     * 获取屏幕宽度
+     */
     public static int getScreenWidth(Context context) {
-        WindowManager wm = (WindowManager) context
-                .getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(dm);
-        int mScreenWidth = dm.widthPixels;// 获取屏幕分辨率宽度
-        return mScreenWidth;
+        // 获取屏幕分辨率宽度
+        return dm.widthPixels;
     }
 
     /**
-     * 获取文件md5值
-     *
-     * @param file
-     * @return
-     * @throws FileNotFoundException
+     * 获取文件MD5值
      */
-    public static String getMd5ByFile(File file) throws FileNotFoundException {
+    public static String getMD5(File file) throws FileNotFoundException {
         String value = null;
         FileInputStream in = new FileInputStream(file);
         try {
@@ -262,42 +241,69 @@ public class XFileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (null != in) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         return value;
     }
 
+    /**
+     * 读取设备号
+     */
     public static String getDeviceId() {
         TelephonyManager tm = (TelephonyManager) XFileApplication.context.getSystemService(Context.TELEPHONY_SERVICE);
-        String deviceId = tm.getDeviceId();
-        return deviceId;
+        return tm.getDeviceId();
     }
 
-    public static String getStoragePathByExtension(String extension) {
+    /**
+     * 根据后缀生成保存路径
+     */
+    public static String getSavePathByExtension(String extension) {
         StringBuilder sb = new StringBuilder();
-        sb.append(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator);
-        sb.append("XFile" + File.separator);
+        sb.append(Environment.getExternalStorageDirectory().getAbsolutePath());
+        sb.append(File.separator);
+        sb.append("XFile");
+        sb.append(File.separator);
         switch (extension) {
             case "doc":
-                sb.append("doc" + File.separator);
+                sb.append("doc");
+                sb.append(File.separator);
                 break;
             case "mp3":
-                sb.append("music" + File.separator);
+                sb.append("music");
+                sb.append(File.separator);
                 break;
             default:
-                sb.append("other" + File.separator);
+                sb.append("other");
+                sb.append(File.separator);
                 break;
         }
         return sb.toString();
     }
 
-    public static XFileProtocol.File buildSendFile(TFileInfo fileInfo) {
+    public static String buildTaskId() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
+
+    public static FileType getFileType(Context context, String extension) {
+        FileType fileType;
+        if (XFileUtils.checkEndsWithInStringArray(extension, context.getResources().getStringArray(R.array.fileEndingImage))) {
+            fileType = FileType.Image;
+        } else if (XFileUtils.checkEndsWithInStringArray(extension, context.getResources().getStringArray(R.array.fileEndingAudio))) {
+            fileType = FileType.Audio;
+        } else if (XFileUtils.checkEndsWithInStringArray(extension, context.getResources().getStringArray(R.array.fileEndingVideo))) {
+            fileType = FileType.Video;
+        } else {
+            fileType = FileType.Normal;
+        }
+        return fileType;
+    }
+
+    public static XFileProtocol.File buildSFile(TFileInfo fileInfo) {
         XFileProtocol.File.Builder sendFile = XFileProtocol.File.newBuilder();
         sendFile.setName(fileInfo.getName());
         sendFile.setPosition(fileInfo.getPosition());
@@ -322,25 +328,6 @@ public class XFileUtils {
         tFile.setFrom(fileInfo.getFrom());
         tFile.setIsSend(fileInfo.getIsSend());
         return tFile;
-    }
-
-    public static String buildTaskId() {
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString();
-    }
-
-    public static FileType getFileType(Context context, String extension) {
-        FileType fileType;
-        if (XFileUtils.checkEndsWithInStringArray(extension, context.getResources().getStringArray(R.array.fileEndingImage))) {
-            fileType = FileType.Image;
-        } else if (XFileUtils.checkEndsWithInStringArray(extension, context.getResources().getStringArray(R.array.fileEndingAudio))) {
-            fileType = FileType.Audio;
-        } else if (XFileUtils.checkEndsWithInStringArray(extension, context.getResources().getStringArray(R.array.fileEndingVideo))) {
-            fileType = FileType.Video;
-        } else {
-            fileType = FileType.Normal;
-        }
-        return fileType;
     }
 
     public static DFile buildDFile(TFileInfo tFileInfo) {
@@ -368,52 +355,5 @@ public class XFileUtils {
         }
         return dFile;
     }
-
-    public static DFile buildDFile(XFileProtocol.File fileInfo) {
-        DFile dFile = new DFile();
-        dFile.setName(fileInfo.getName());
-        dFile.setTaskId(fileInfo.getTaskId());
-        dFile.setLength(fileInfo.getLength());
-        dFile.setPosition(fileInfo.getPosition());
-        dFile.setPath(fileInfo.getPath());
-        dFile.setIsSend(fileInfo.getIsSend());
-        dFile.setExtension(fileInfo.getExtension());
-        dFile.setFullName(fileInfo.getFullName());
-        dFile.setFrom(fileInfo.getFrom());
-        return dFile;
-    }
-
-    /**
-     * 复制单个文件
-     * @param oldPath String 原文件路径 如：c:/fqf.txt
-     * @param newPath String 复制后路径 如：f:/fqf.txt
-     * @return boolean
-     */
-    public void copyFile(String oldPath, String newPath) {
-        try {
-            int byte_sum = 0;
-            int byte_read = 0;
-            File old_file = new File(oldPath);
-            if (old_file.exists()) { //文件存在时
-                InputStream inStream = new FileInputStream(oldPath); //读入原文件
-                FileOutputStream fs = new FileOutputStream(newPath);
-                byte[] buffer = new byte[1444];
-                int length;
-                while ( (byte_read = inStream.read(buffer)) != -1) {
-                    byte_sum += byte_read; //字节数 文件大小
-                    System.out.println(byte_sum);
-                    fs.write(buffer, 0, byte_read);
-                }
-                inStream.close();
-            }
-        }
-        catch (Exception e) {
-            System.out.println("复制单个文件操作出错");
-            e.printStackTrace();
-
-        }
-
-    }
-
 
 }

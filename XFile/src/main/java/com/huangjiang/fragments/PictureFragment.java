@@ -11,7 +11,7 @@ import com.huangjiang.filetransfer.R;
 import com.huangjiang.view.PictureBrowserControl;
 
 /**
- * 图片
+ * 图片资源
  */
 public class PictureFragment extends Fragment {
 

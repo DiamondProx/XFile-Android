@@ -197,7 +197,7 @@ public class CustomDialog extends Dialog {
                 }
                 txt_type.setText(String.format(context.getString(R.string.property_type), mime_type));
                 txt_path.setText(String.format(context.getString(R.string.property_path), tFileInfo.getPath()));
-                txt_size.setText(String.format(context.getString(R.string.property_size), XFileUtils.getFolderSizeString(tFileInfo.getLength())));
+                txt_size.setText(String.format(context.getString(R.string.property_size), XFileUtils.parseSize(tFileInfo.getLength())));
                 txt_edit_time.setText(String.format(context.getString(R.string.property_edit_time), tFileInfo.getCreateTime()));
 
 

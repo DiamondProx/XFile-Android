@@ -20,7 +20,7 @@ public class AppInfo {
 	}
 
 	public String getAppSizeStr() {
-		return XFileUtils.getFolderSizeString(appSize);
+		return XFileUtils.parseSize(appSize);
 	}
 
 	public String getAppName() {
