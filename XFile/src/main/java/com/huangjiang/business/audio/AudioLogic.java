@@ -14,7 +14,6 @@ import java.util.List;
  */
 public class AudioLogic extends BaseLogic {
 
-
     private AudioInterface audioInterface;
 
     public AudioLogic(Context context) {

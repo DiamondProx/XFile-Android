@@ -187,7 +187,7 @@ public class PopupMenu {
 
         Rect anchorRect = new Rect(location[0], location[1],
                 location[0] + anchor.getWidth(),
-                location[0] + anchor.getHeight());
+                location[1] + anchor.getHeight());
 
         mContentView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         mContentView.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -197,14 +197,13 @@ public class PopupMenu {
 
         // My popup style
         xPos = anchorRect.centerX() - mPopupWindow.getWidth() / 2;
-        if (rootHeight < screenHeight - (anchorRect.top + (anchorRect.bottom / 2)) + margin_bottom) {
+        if (rootHeight < screenHeight - (anchorRect.top + (anchorRect.bottom - anchorRect.top) / 2) + margin_bottom) {
             adapter.setShowUp(true);
-            yPos = anchorRect.top + (anchorRect.bottom / 2);
+            yPos = anchorRect.top + (anchorRect.bottom - anchorRect.top) / 2;
         } else {
             adapter.setShowUp(false);
-            yPos = anchorRect.top + (anchorRect.bottom / 2) - rootHeight;
+            yPos = anchorRect.top + (anchorRect.bottom - anchorRect.top) / 2 - rootHeight;
         }
-
 
         adapter.notifyDataSetChanged();
         mPopupWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);

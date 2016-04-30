@@ -53,6 +53,7 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_fragment, null);
+        EventBus.getDefault().register(this);
         opLogic = new OpLogic(getActivity());
         edtSearch = (EditText) view.findViewById(R.id.edt_search);
         edtSearch.addTextChangedListener(new TextWatcher() {
@@ -81,7 +82,6 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
         searchAdapter = new SearchAdapter(getActivity());
         listView.setAdapter(searchAdapter);
         listView.setOnItemClickListener(this);
-        EventBus.getDefault().register(this);
         return view;
     }
 

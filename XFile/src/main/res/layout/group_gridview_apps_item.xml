@@ -3,20 +3,20 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/menu_selector"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <com.huangjiang.business.image.LocalImageView
-        android:id="@+id/group_item"
+    <ImageView
+        android:id="@+id/image"
         android:layout_width="@dimen/dp_55"
         android:layout_height="@dimen/dp_55"
-        android:layout_margin="@dimen/dp_5"
         android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/dp_5"
         android:contentDescription="@null"
         android:scaleType="fitXY"
         android:src="@mipmap/ic_launcher" />
 
     <TextView
-        android:id="@+id/appName"
+        android:id="@+id/fileName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -26,7 +26,7 @@
         android:textSize="@dimen/sp_11" />
 
     <TextView
-        android:id="@+id/txtSize"
+        android:id="@+id/fileSize"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

@@ -5,10 +5,15 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <com.huangjiang.view.VideoBrowerControl
-        android:id="@+id/videoBrowser"
+    <include
+        android:id="@+id/titleLayout"
+        layout="@layout/group_gridview_picture_header" />
+
+    <ListView
+        android:id="@+id/listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scrollbars="none" />
 
 
 </LinearLayout>

@@ -21,7 +21,7 @@ public class VideoLogic extends BaseLogic {
     }
 
 
-    public void searchImage() {
+    public void searchVideo() {
         ThreadPoolManager.getInstance(VideoLogic.class.getName()).startTaskThread(new Runnable() {
             @Override
             public void run() {

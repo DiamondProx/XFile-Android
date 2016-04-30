@@ -14,6 +14,7 @@ import com.huangjiang.core.ImageLoader;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.utils.XFileUtils;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -64,6 +65,8 @@ public class SearchAdapter extends BaseAdapter {
         if (file != null) {
             if (file.getFileType() == FileType.Apk || file.getFileType() == FileType.Video || file.getFileType() == FileType.Image) {
                 ImageLoader.getInstance().displayThumb(videoHolder.Img, file);
+            } else if (file.getFileType() == FileType.Audio) {
+                videoHolder.Img.setImageResource(R.mipmap.data_music_play_cover_placeholder);
             } else {
                 videoHolder.Img.setImageResource(R.mipmap.data_folder_documents_placeholder);
             }

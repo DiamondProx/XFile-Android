@@ -20,7 +20,6 @@ public class ImageLogic extends BaseLogic {
         imageInterface = new ImageInterface(context);
     }
 
-
     public void searchImage() {
         ThreadPoolManager.getInstance(ImageLogic.class.getName()).startTaskThread(new Runnable() {
             @Override
