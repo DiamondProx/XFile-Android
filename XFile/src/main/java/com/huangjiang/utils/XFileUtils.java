@@ -356,4 +356,20 @@ public class XFileUtils {
         return dFile;
     }
 
+    /**
+     * 获取当前程序安装路径
+     */
+    public static String getProgramPath(Context context) {
+        PackageManager pm = context.getPackageManager();
+        String name = null;
+        try {
+            PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
+            name = packageInfo.applicationInfo.publicSourceDir;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return name;
+    }
+
+
 }

@@ -67,8 +67,13 @@
         <activity
             android:name="com.huangjiang.activity.ConnectActivity"
             android:theme="@style/Theme.Translucent" />
+        <activity
+            android:name="com.huangjiang.activity.SharePCActivity"
+            android:label="@string/title_activity_share_pc" />
+
 
         <service android:name="com.huangjiang.service.IMService" />
+        <service android:name="com.huangjiang.wfs.WebService" />
         <receiver android:name="com.huangjiang.broadcast.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />

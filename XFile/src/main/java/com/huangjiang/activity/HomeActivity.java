@@ -181,7 +181,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 startActivity(new Intent(HomeActivity.this, ShareAppActivity.class));
                 break;
             case R.id.share_pc_layout:
-
+                startActivity(new Intent(HomeActivity.this, SharePCActivity.class));
                 break;
             case R.id.edit_user_layout:
                 Intent intent = new Intent(HomeActivity.this, UserCenterActivity.class);

@@ -16,6 +16,7 @@
     <string name="title_activity_setting">设置</string>
     <string name="title_activity_share_app">给身边的人装快传</string>
     <string name="title_activity_show_image">查看图片</string>
+    <string name="title_activity_share_pc">分享电脑</string>
     <string name="bluetooth_invite">蓝牙邀请</string>
     <string name="zero_traffic_invite">零流量邀请</string>
     <string name="invite_description">扫描二维码可以直接下载快传</string>
@@ -95,4 +96,9 @@
     <string name="local_music">本地音乐(%1$s)</string>
     <string name="local_video">本地视频(%1$s)</string>
     <string name="local_app">本地程序(%1$s)</string>
+
+    <string name="btn_start">开始</string>
+    <string name="btn_stop">停止</string>
+    <string name="msg_net_off">未连接上网络</string>
+
 </resources>
