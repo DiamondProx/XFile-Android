@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -118,11 +117,11 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
 
         // 测试代码
         findViewById(R.id.btn_right).setOnClickListener(this);
+        findViewById(R.id.invite_layout).setOnClickListener(this);
         findViewById(R.id.help_layout).setOnClickListener(this);
         findViewById(R.id.feedback_layout).setOnClickListener(this);
         findViewById(R.id.setting_layout).setOnClickListener(this);
-        findViewById(R.id.share_app_layout).setOnClickListener(this);
-        findViewById(R.id.share_pc_layout).setOnClickListener(this);
+        findViewById(R.id.contact_layout).setOnClickListener(this);
         top_main_layout = (RelativeLayout) findViewById(R.id.top_main_layout);
         top_connect_layout = (RelativeLayout) findViewById(R.id.top_connect_layout);
         btn_close = (Button) findViewById(R.id.btn_close);
@@ -177,11 +176,11 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
             case R.id.setting_layout:
                 startActivity(new Intent(HomeActivity.this, SettingActivity.class));
                 break;
-            case R.id.share_app_layout:
+            case R.id.invite_layout:
                 startActivity(new Intent(HomeActivity.this, ShareAppActivity.class));
                 break;
-            case R.id.share_pc_layout:
-                startActivity(new Intent(HomeActivity.this, SharePCActivity.class));
+            case R.id.contact_layout:
+                startActivity(new Intent(HomeActivity.this, ContactUsActivity.class));
                 break;
             case R.id.edit_user_layout:
                 Intent intent = new Intent(HomeActivity.this, UserCenterActivity.class);

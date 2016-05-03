@@ -71,6 +71,7 @@
             android:orientation="vertical">
 
             <Button
+                android:id="@+id/create_ap"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginBottom="@dimen/dp_5"
@@ -309,9 +310,8 @@
                 android:layout_width="320dp"
                 android:layout_height="@dimen/dp_250"
                 android:layout_centerHorizontal="true"
-                android:divider="@null"
                 android:layout_marginTop="@dimen/dp_50"
-                />
+                android:divider="@null" />
 
 
         </RelativeLayout>
@@ -321,7 +321,6 @@
             android:layout_height="75dp"
             android:gravity="center"
             android:orientation="vertical">
-
 
 
             <Button
@@ -353,16 +352,13 @@
         android:layout_marginRight="@dimen/dp_25"
         android:layout_marginTop="@dimen/_dp_20"
         android:background="@drawable/white_round_shape"
-        android:orientation="vertical"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        android:orientation="vertical">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="230dp">
-
-
-
 
             <ImageView
                 android:id="@+id/iv_connecting"
@@ -370,8 +366,6 @@
                 android:layout_height="230dp"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/progress_connect" />
-
-
         </RelativeLayout>
 
         <LinearLayout
@@ -381,11 +375,13 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/connect_hint1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="全速连接中,请稍后..."
+                android:text="@string/connecting"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_18" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -395,21 +391,22 @@
                 android:background="@color/division_line" />
 
             <TextView
+                android:id="@+id/connect_hint2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="连接成功后,任意文件零流量传输~"
-                android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="@string/connect_success"
                 android:textColor="@color/gray_font"
                 android:textSize="@dimen/sp_13" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:layout_marginLeft="@dimen/dp_30"
                 android:layout_marginRight="@dimen/dp_30"
-                android:layout_marginBottom="@dimen/dp_5"
                 android:background="@color/division_line" />
-
 
 
             <Button
@@ -421,7 +418,7 @@
                 android:layout_marginRight="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/gray_selector"
-                android:text="取消"
+                android:text="@string/cancel"
                 android:textColor="@color/gray_font"
                 android:textSize="@dimen/sp_17" />
 

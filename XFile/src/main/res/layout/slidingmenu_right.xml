@@ -106,14 +106,14 @@
             android:layout_marginBottom="@dimen/dp_5"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_5"
-            android:text="@string/cross_platform_transfer"
+            android:text="@string/invite"
             android:textColor="@color/slider_menu_group_font" />
 
     </LinearLayout>
 
 
     <LinearLayout
-        android:id="@+id/share_pc_layout"
+        android:id="@+id/invite_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_45"
         android:background="@drawable/menu_selector"
@@ -124,12 +124,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@mipmap/icon_pc" />
+            android:background="@mipmap/icon_invite" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/connect_pc"
+            android:text="@string/invite_nearby_friend"
             android:textSize="@dimen/sp_15" />
 
     </LinearLayout>
@@ -150,32 +150,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/share_app_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:background="@drawable/menu_selector"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@mipmap/icon_invite" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="给身边的朋友装XFile" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:background="@color/division_line" />
 
     <LinearLayout
         android:id="@+id/help_layout"
@@ -253,7 +227,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_toRightOf="@id/message"
-            android:text="版本和反馈" />
+            android:text="@string/title_activity_version" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -264,6 +238,33 @@
             android:background="@mipmap/badge_new" />
 
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:background="@color/division_line" />
+
+    <LinearLayout
+        android:id="@+id/contact_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:background="@drawable/menu_selector"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@mipmap/icon_pc" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_activity_contact_us" />
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

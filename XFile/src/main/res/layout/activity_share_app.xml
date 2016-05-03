@@ -32,10 +32,10 @@
         android:textSize="@dimen/sp_18" />
 
     <ImageView
-        android:layout_width="@dimen/dp_120"
-        android:layout_height="@dimen/dp_120"
-        android:layout_marginTop="@dimen/dp_20"
-        android:background="@mipmap/download_app1" />
+        android:layout_width="@dimen/dp_135"
+        android:layout_height="@dimen/dp_135"
+        android:layout_marginTop="@dimen/dp_25"
+        android:background="@mipmap/qr_code" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,6 +43,6 @@
         android:layout_marginTop="@dimen/dp_10"
         android:text="@string/invite_description"
         android:textColor="@color/gray_font"
-        android:textSize="@dimen/sp_15" />
+        android:textSize="@dimen/sp_14" />
 
 </LinearLayout>

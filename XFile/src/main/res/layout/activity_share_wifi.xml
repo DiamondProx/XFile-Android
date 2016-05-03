@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_25"
+        android:text="@string/step1"
+        android:textColor="@color/black_font"
+        android:textSize="@dimen/sp_20" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/step1_hint"
+        android:textColor="@color/black_font"
+        android:textSize="@dimen/sp_14" />
+
+    <TextView
+        android:layout_width="@dimen/dp_230"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@drawable/blue_shape"
+        android:drawableRight="@mipmap/slidemenu_iosguide_wifi"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="@dimen/dp_5"
+        android:text="@string/default_wifi"
+        android:textColor="@color/blue"
+        android:textSize="@dimen/sp_16" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@mipmap/slidemenu_iosguide_arrow" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/step2"
+        android:textColor="@color/black_font"
+        android:textSize="@dimen/sp_20" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/step2_hint"
+        android:textColor="@color/black_font"
+        android:textSize="@dimen/sp_14" />
+
+
+    <TextView
+        android:layout_width="@dimen/dp_230"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@drawable/blue_shape"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="@dimen/dp_5"
+        android:text="@string/default_ap_ip"
+        android:textColor="@color/blue"
+        android:textSize="@dimen/sp_16" />
+
+    <ImageView
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="@dimen/dp_120"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@mipmap/qr_wifi" />
+
+</LinearLayout>

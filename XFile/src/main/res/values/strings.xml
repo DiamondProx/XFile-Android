@@ -19,7 +19,7 @@
     <string name="title_activity_share_pc">分享电脑</string>
     <string name="bluetooth_invite">蓝牙邀请</string>
     <string name="zero_traffic_invite">零流量邀请</string>
-    <string name="invite_description">扫描二维码可以直接下载快传</string>
+    <string name="invite_description">扫描二维码可以直接联系我吧</string>
     <string name="title_activity_find_bluethooth">蓝牙设备选择器</string>
     <string name="search_mobile">扫描查找设备</string>
     <string name="useable_mobile">可用设备</string>
@@ -35,6 +35,7 @@
     <string name="feedback_tip">请输入反馈意见</string>
     <string name="more">更多</string>
     <string name="cross_platform_transfer">跨平台传输</string>
+    <string name="invite">邀请</string>
     <string name="connect_pc">连接电脑</string>
     <string name="connect_firend">连朋友 传文件</string>
     <string name="mobile_all">手机全部</string>
@@ -100,5 +101,16 @@
     <string name="btn_start">开始</string>
     <string name="btn_stop">停止</string>
     <string name="msg_net_off">未连接上网络</string>
+    <string name="invite_nearby_friend">邀请附近的朋友</string>
+    <string name="step1">第1步</string>
+    <string name="step2">第2步</string>
+    <string name="step1_hint">请好友打开手机WIFI,连接到无线网络</string>
+    <string name="step2_hint">打开浏览器输入网址,或扫描二维码</string>
+    <string name="default_wifi">DM-JoinMe</string>
+    <string name="default_ap_ip">http://192.168.43.1:7766</string>
+    <string name="connecting">全速连接中,请稍后...</string>
+    <string name="connect_success">连接成功后,任意文件零流量传输~</string>
+    <string name="create_connect">创建成功,等待朋友搜索加入</string>
+    <string name="let_friend_join">让朋友搜索加入"%1$s"</string>
 
 </resources>

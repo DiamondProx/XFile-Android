@@ -77,6 +77,7 @@ public class SearchAdapter extends BaseAdapter {
     }
 
     public void removeFile(TFileInfo tFileInfo) {
+        if (mList == null) return;
         for (TFileInfo file : mList) {
             if (tFileInfo.getFileType() == FileType.Apk) {
                 if (tFileInfo.getPackageName().equals(file.getPackageName())) {

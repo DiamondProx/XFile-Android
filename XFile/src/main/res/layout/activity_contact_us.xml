@@ -6,8 +6,8 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="@dimen/dp_90"
-        android:layout_height="@dimen/dp_90"
+        android:layout_width="@dimen/dp_135"
+        android:layout_height="@dimen/dp_135"
         android:layout_marginTop="@dimen/dp_40"
         android:src="@mipmap/qr_code" />
 
@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/dp_15"
         android:text="@string/wx_qr_code"
         android:textColor="@color/font_txt_gray"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="@dimen/sp_16" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
         android:layout_marginTop="@dimen/dp_10"
         android:text="@string/contact_qq"
         android:textColor="@color/font_txt_gray"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="@dimen/sp_16" />
 
 
 </LinearLayout>

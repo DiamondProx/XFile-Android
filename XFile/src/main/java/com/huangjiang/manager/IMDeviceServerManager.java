@@ -2,6 +2,7 @@ package com.huangjiang.manager;
 
 import com.google.protobuf.GeneratedMessage;
 import com.huangjiang.XFileApplication;
+import com.huangjiang.config.Config;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.message.DeviceServerThread;
 import com.huangjiang.message.base.DataBuffer;
@@ -62,7 +63,7 @@ public class IMDeviceServerManager extends IMBaseManager {
 
     void startServer() {
         stopServer();
-        this.ip = NetStateUtils.getIPv4(XFileApplication.context);
+        this.ip = Config.is_ap ? SysConstant.DEFAULT_AP_IP : NetStateUtils.getIPv4(XFileApplication.context);
         this.port = SysConstant.BROADCASE_PORT;
         this.device_id = XFileApplication.device_id;
         mDeviceServerThread = new DeviceServerThread();

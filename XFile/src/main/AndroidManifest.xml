@@ -16,6 +16,10 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
     <application
         android:name="com.huangjiang.XFileApplication"
@@ -68,7 +72,7 @@
             android:name="com.huangjiang.activity.ConnectActivity"
             android:theme="@style/Theme.Translucent" />
         <activity
-            android:name="com.huangjiang.activity.SharePCActivity"
+            android:name="com.huangjiang.activity.ShareWIFIActivity"
             android:label="@string/title_activity_share_pc" />
 
 
@@ -80,6 +84,11 @@
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
 
                 <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.huangjiang.broadcast.NetWorkReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
     </application>

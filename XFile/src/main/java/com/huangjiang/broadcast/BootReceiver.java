@@ -3,6 +3,8 @@ package com.huangjiang.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.widget.Toast;
 
 import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.model.FileType;
@@ -28,7 +30,6 @@ public class BootReceiver extends BroadcastReceiver {
             unInstallEvent.setSuccess(true);
             EventBus.getDefault().post(unInstallEvent);
         }
-
     }
 
 }

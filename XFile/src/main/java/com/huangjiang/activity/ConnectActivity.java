@@ -3,6 +3,8 @@ package com.huangjiang.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.huangjiang.XFileApplication;
+import com.huangjiang.config.Config;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMDeviceServerManager;
@@ -29,6 +32,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +41,13 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     private Logger logger = Logger.getLogger(ConnectActivity.class);
 
     ImageView close1, refresh1, refresh2, iv_connecting;
-    Button search_join, search_cancel, search_back, connect_back, connecting_cancel;
+    Button search_join, search_cancel, search_back, connect_back, connecting_cancel, create_ap;
     LinearLayout layout1, layout2, layout3, layout4, layout5;
+    TextView connect_hint1, connect_hint2;
+    String connecting, connect_success, create_connect, let_friend_join;
+
+    int progress_type;
+
 
     int scan_time = 3000;//设备扫描时间
     ListView lv_device;
@@ -95,6 +104,8 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         connect_back.setOnClickListener(this);
         connecting_cancel = (Button) findViewById(R.id.connecting_cancel);
         connecting_cancel.setOnClickListener(this);
+        create_ap = (Button) findViewById(R.id.create_ap);
+        create_ap.setOnClickListener(this);
 
         refresh1 = (ImageView) findViewById(R.id.refresh);
         refresh1.setOnClickListener(this);
@@ -106,6 +117,14 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         layout4 = (LinearLayout) findViewById(R.id.layout4);
         layout5 = (LinearLayout) findViewById(R.id.layout5);
         lv_device = (ListView) findViewById(R.id.lv_device);
+        connect_hint1 = (TextView) findViewById(R.id.connect_hint1);
+        connect_hint2 = (TextView) findViewById(R.id.connect_hint2);
+
+        connecting = getString(R.string.connecting);
+        connect_success = getString(R.string.connect_success);
+        create_connect = getString(R.string.create_connect);
+        let_friend_join = getString(R.string.let_friend_join);
+
         deviceAdapter = new ScanDeviceAdapter(ConnectActivity.this);
         lv_device.setAdapter(deviceAdapter);
         lv_device.setOnItemClickListener(this);
@@ -141,6 +160,10 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
                 break;
             case R.id.connecting_cancel:
                 cancelConnect();
+                closeAP();
+                break;
+            case R.id.create_ap:
+                createAP();
                 break;
         }
     }
@@ -170,6 +193,8 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
     void connectDevice(ScanDeviceInfo deviceInfoEvent) {
 
+        connect_hint1.setText(connecting);
+        connect_hint2.setText(connect_success);
         layout1.setVisibility(View.INVISIBLE);
         layout2.setVisibility(View.INVISIBLE);
         layout3.setVisibility(View.INVISIBLE);
@@ -182,6 +207,45 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         messageClientManager.setPort(deviceInfoEvent.getMessage_port());
         messageClientManager.start();
 
+    }
+
+    void createAP() {
+        connect_hint1.setText(create_connect);
+        connect_hint2.setText(String.format(let_friend_join, android.os.Build.MODEL));
+        layout1.setVisibility(View.INVISIBLE);
+        layout2.setVisibility(View.INVISIBLE);
+        layout3.setVisibility(View.INVISIBLE);
+        layout4.setVisibility(View.INVISIBLE);
+        layout5.setVisibility(View.VISIBLE);
+        animationDrawable.start();
+        // 打开wifi
+        if (setWifiAp(true)) {
+            Config.is_ap = true;
+        }
+    }
+
+    void closeAP() {
+        if (setWifiAp(false)) {
+            Config.is_ap = false;
+        }
+    }
+
+    // wifi热点开关
+    public boolean setWifiAp(boolean state) {
+        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(!state);
+        try {
+            //热点的配置类
+            WifiConfiguration apConfig = new WifiConfiguration();
+            //配置热点的名称(MD5加密名称XFILE-机子型号)
+            apConfig.SSID = "DM-JoinMe";
+            //通过反射调用设置热点
+            Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
+            //返回热点打开状态
+            return (Boolean) method.invoke(wifiManager, apConfig, state);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 
