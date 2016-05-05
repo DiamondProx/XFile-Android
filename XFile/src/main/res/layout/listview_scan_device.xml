@@ -24,6 +24,7 @@
                 android:background="@mipmap/avatar_default" />
 
             <ImageView
+                android:id="@+id/ivConnectType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"

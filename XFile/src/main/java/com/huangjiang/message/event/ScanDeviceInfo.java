@@ -11,6 +11,7 @@ public class ScanDeviceInfo {
     private int message_port;
     private int file_port;
     private String device_id;
+    private int type;//0 wifi连接,1热点连接
 
     public String getIp() {
         return ip;
@@ -58,5 +59,13 @@ public class ScanDeviceInfo {
 
     public void setDevice_id(String device_id) {
         this.device_id = device_id;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

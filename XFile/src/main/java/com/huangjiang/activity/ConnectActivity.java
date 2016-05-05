@@ -1,8 +1,12 @@
 package com.huangjiang.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -21,6 +25,7 @@ import android.widget.TextView;
 
 import com.huangjiang.XFileApplication;
 import com.huangjiang.config.Config;
+import com.huangjiang.config.SysConstant;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMDeviceServerManager;
@@ -55,10 +60,18 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     private AnimationDrawable animationDrawable;
 
 
+    private List<ScanResult> wifiList;
+    private WifiManager wifiManager;
+    private WifiReceiver wifiReceiver;
+    private boolean isConnected = false;
+
+
     Handler ScanDeviceHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             IMDeviceServerManager.getInstance().cancelBonjour();
+            /*销毁时注销广播*/
+            unregisterReceiver(wifiReceiver);
             int scanCount = msg.what;
             if (scanCount > 0) {
                 // 显示设备信息
@@ -132,6 +145,9 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         iv_connecting.setImageResource(R.drawable.progress_connect);
         animationDrawable = (AnimationDrawable) iv_connecting.getDrawable();
 
+        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        wifiReceiver = new WifiReceiver();
+
     }
 
     @Override
@@ -187,7 +203,10 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
             layout3.setVisibility(View.INVISIBLE);
             layout4.setVisibility(View.INVISIBLE);
             layout5.setVisibility(View.INVISIBLE);
+
         }
+        registerReceiver(wifiReceiver,new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        wifiManager.startScan();
     }
 
 
@@ -238,7 +257,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
             //热点的配置类
             WifiConfiguration apConfig = new WifiConfiguration();
             //配置热点的名称(MD5加密名称XFILE-机子型号)
-            apConfig.SSID = "DM-JoinMe";
+            apConfig.SSID = "XFile-Test";
             //通过反射调用设置热点
             Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
             //返回热点打开状态
@@ -283,6 +302,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     public void onEventMainThread(ScanDeviceInfo event) {
         if (event != null && !event.getDevice_id().equals(XFileApplication.device_id)) {
             if (!deviceAdapter.containDevice(event)) {
+                event.setType(0);
                 deviceAdapter.addDevice(event);
             }
         }
@@ -291,7 +311,11 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ScanDeviceInfo deviceInfoEvent = (ScanDeviceInfo) deviceAdapter.getItem(position);
-        connectDevice(deviceInfoEvent);
+        if (deviceInfoEvent.getType() == 0) {
+            connectDevice(deviceInfoEvent);
+        } else {
+            connectToHotpot(deviceInfoEvent);
+        }
     }
 
     class ScanDeviceAdapter extends BaseAdapter {
@@ -324,17 +348,21 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
             if (convertView == null) {
-
                 holder = new ViewHolder();
                 convertView = inflater.inflate(R.layout.listview_scan_device, null);
                 holder.name = (TextView) convertView.findViewById(R.id.device_name);
+                holder.connectType = (ImageView) convertView.findViewById(R.id.ivConnectType);
                 convertView.setTag(holder);
-
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
             ScanDeviceInfo device = mList.get(position);
             holder.name.setText(device.getName());
+            if (device.getType() == 0) {
+                holder.connectType.setBackgroundResource(R.mipmap.connect_wifi);
+            } else {
+                holder.connectType.setBackgroundResource(R.mipmap.connect_hotspot);
+            }
             return convertView;
         }
 
@@ -361,6 +389,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
         final class ViewHolder {
             TextView name;
+            ImageView connectType;
         }
 
         public void setList(List<ScanDeviceInfo> mList) {
@@ -390,5 +419,60 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         }
 
     }
+
+    //-----------
+    /* 监听热点变化 */
+    private final class WifiReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            wifiList = wifiManager.getScanResults();
+            if (wifiList == null || wifiList.size() == 0 || isConnected)
+                return;
+            onReceiveNewNetworks(wifiList);
+        }
+    }
+
+    /*当搜索到新的wifi热点时判断该热点是否符合规格*/
+    public void onReceiveNewNetworks(List<ScanResult> wifiList) {
+        for (ScanResult result : wifiList) {
+            System.out.println(result.SSID);
+            if ((result.SSID).contains("XFile-")) {
+                ScanDeviceInfo d = new ScanDeviceInfo();
+                d.setIp("192.168.43.1");
+                d.setName(result.SSID);
+                d.setDevice_id(result.BSSID);
+                d.setType(1);
+                d.setFile_port(SysConstant.FILE_SERVER_PORT);
+                d.setMessage_port(SysConstant.MESSAGE_PORT);
+                if (!deviceAdapter.containDevice(d)) {
+                    deviceAdapter.addDevice(d);
+                }
+            }
+
+        }
+    }
+
+    /*连接到热点*/
+    public void connectToHotpot(ScanDeviceInfo deviceInfo) {
+        WifiConfiguration wifiConfig = this.setWifiParams(deviceInfo.getName());
+        int wcgID = wifiManager.addNetwork(wifiConfig);
+        boolean flag = wifiManager.enableNetwork(wcgID, true);
+        isConnected = flag;
+        System.out.println("connect success? " + flag);
+        if (flag) {
+            connectDevice(deviceInfo);
+        }
+    }
+
+    /*设置要连接的热点的参数*/
+    public WifiConfiguration setWifiParams(String ssid) {
+        WifiConfiguration apConfig = new WifiConfiguration();
+        apConfig.SSID = "\"" + ssid + "\"";
+        apConfig.hiddenSSID = true;
+        apConfig.status = WifiConfiguration.Status.ENABLED;
+        apConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        return apConfig;
+    }
+
 
 }
