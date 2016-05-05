@@ -58,6 +58,15 @@
         android:text="@string/title_activity_feed_back"
         android:textColor="@color/black" />
 
+    <Button
+        android:id="@+id/email_feed_back"
+        android:layout_width="@dimen/dp_220"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@drawable/gray_flat_button"
+        android:text="@string/email_feed_back"
+        android:textColor="@color/black" />
+
 
     <TextView
         android:id="@+id/version"

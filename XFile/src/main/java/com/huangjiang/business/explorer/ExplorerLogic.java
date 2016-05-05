@@ -42,30 +42,32 @@ public class ExplorerLogic {
             return tFileInfoList;
         }
         for (File file : dirFiles) {
-            TFileInfo tFileInfo = new TFileInfo();
-            tFileInfo.setName(file.getName());
-            tFileInfo.setPath(file.getPath());
-            tFileInfo.setDirectory(file.isDirectory());
-            String fileName = file.getName();
-            if (file.isDirectory()) {
-                tFileInfo.setFileType(FileType.Folder);
-            } else {
-                tFileInfo.setTaskId(XFileUtils.buildTaskId());
-                tFileInfo.setLength(file.length());
-                tFileInfo.setCreateTime(XFileUtils.parseTimeToYMD(file.lastModified()));
-                if (XFileUtils.checkEndsWithInStringArray(fileName, mContext.getResources().getStringArray(R.array.fileEndingImage))) {
-                    tFileInfo.setFileType(FileType.Image);
-                } else if (XFileUtils.checkEndsWithInStringArray(fileName, mContext.getResources().getStringArray(R.array.fileEndingAudio))) {
-                    tFileInfo.setFileType(FileType.Audio);
-                } else if (XFileUtils.checkEndsWithInStringArray(fileName, mContext.getResources().getStringArray(R.array.fileEndingVideo))) {
-                    tFileInfo.setFileType(FileType.Video);
-                } else if (XFileUtils.checkEndsWithInStringArray(fileName, mContext.getResources().getStringArray(R.array.fileEndingApk))) {
-                    tFileInfo.setFileType(FileType.Apk);
+            if (!file.isHidden()) {
+                TFileInfo tFileInfo = new TFileInfo();
+                tFileInfo.setName(file.getName());
+                tFileInfo.setPath(file.getPath());
+                tFileInfo.setDirectory(file.isDirectory());
+                String fileName = file.getName();
+                if (file.isDirectory()) {
+                    tFileInfo.setFileType(FileType.Folder);
                 } else {
-                    tFileInfo.setFileType(FileType.Normal);
+                    tFileInfo.setTaskId(XFileUtils.buildTaskId());
+                    tFileInfo.setLength(file.length());
+                    tFileInfo.setCreateTime(XFileUtils.parseTimeToYMD(file.lastModified()));
+                    if (XFileUtils.checkEndsWithInStringArray(fileName, mContext.getResources().getStringArray(R.array.fileEndingImage))) {
+                        tFileInfo.setFileType(FileType.Image);
+                    } else if (XFileUtils.checkEndsWithInStringArray(fileName, mContext.getResources().getStringArray(R.array.fileEndingAudio))) {
+                        tFileInfo.setFileType(FileType.Audio);
+                    } else if (XFileUtils.checkEndsWithInStringArray(fileName, mContext.getResources().getStringArray(R.array.fileEndingVideo))) {
+                        tFileInfo.setFileType(FileType.Video);
+                    } else if (XFileUtils.checkEndsWithInStringArray(fileName, mContext.getResources().getStringArray(R.array.fileEndingApk))) {
+                        tFileInfo.setFileType(FileType.Apk);
+                    } else {
+                        tFileInfo.setFileType(FileType.Normal);
+                    }
                 }
+                tFileInfoList.add(tFileInfo);
             }
-            tFileInfoList.add(tFileInfo);
 
         }
         return tFileInfoList;

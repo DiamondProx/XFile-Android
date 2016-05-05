@@ -30,6 +30,7 @@ import com.huangjiang.filetransfer.R;
 import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMDeviceServerManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
+import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.message.event.ScanDeviceInfo;
 import com.huangjiang.utils.Logger;
 
@@ -205,7 +206,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
             layout5.setVisibility(View.INVISIBLE);
 
         }
-        registerReceiver(wifiReceiver,new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiManager.startScan();
     }
 
@@ -420,7 +421,15 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
 
     }
 
-    //-----------
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(ServerFileSocketEvent event) {
+        switch (event.getEvent()) {
+            case SHAKE_HAND_SUCCESS:
+                finish();
+                break;
+        }
+    }
+
     /* 监听热点变化 */
     private final class WifiReceiver extends BroadcastReceiver {
         @Override
@@ -436,7 +445,7 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
     public void onReceiveNewNetworks(List<ScanResult> wifiList) {
         for (ScanResult result : wifiList) {
             System.out.println(result.SSID);
-            if ((result.SSID).contains("XFile-")) {
+            if ((result.SSID).startsWith("XFile")) {
                 ScanDeviceInfo d = new ScanDeviceInfo();
                 d.setIp("192.168.43.1");
                 d.setName(result.SSID);

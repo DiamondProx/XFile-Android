@@ -39,6 +39,7 @@ import com.huangjiang.manager.IMServerMessageManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.service.IMService;
+import com.huangjiang.utils.SoundHelper;
 import com.huangjiang.view.AnimationHelper;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -321,13 +322,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         // 读取头像坐标
         int[] endLocation = new int[2];
         head_layout.getLocationOnScreen(endLocation);
-
+        SoundHelper.playDragThrow();
         AnimationHelper.startSendFileAnimation(fileThumb, head_layout, locationX, locationY, endLocation[0], endLocation[1]);
-        if (XFileApplication.connect_type == 1) {
-
-        } else {
-
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -376,58 +372,6 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         }
     }
 
-    //---------------------TEST---------------------------
-
-    // 发送广播发现设备
-    void sendBonjour() {
-//        if (DeviceClient.getInstance().getChannel() != null) {
-//            try {
-//                Channel channel = DeviceClient.getInstance().getChannel();
-//                Header header = new Header();
-//                header.setCommandId(SysConstant.CMD_Bonjour);
-//                String ip = NetStateUtils.getIPv4(HomeActivity.this);
-//                XFileProtocol.Bonjour.Builder bonjour = XFileProtocol.Bonjour.newBuilder();
-//                bonjour.setIp(ip);
-//                bonjour.setBrocast_port(SysConstant.BROADCASE_PORT);
-//                byte[] body = bonjour.build().toByteArray();
-//                header.setLength(SysConstant.HEADER_LENGTH + body.length);
-//                byte[] data = new byte[SysConstant.HEADER_LENGTH + body.length];
-//                System.arraycopy(header.toByteArray(), 0, data, 0, SysConstant.HEADER_LENGTH);
-//                System.arraycopy(body, 0, data, SysConstant.HEADER_LENGTH, body.length);
-//                channel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), new InetSocketAddress(SysConstant.BROADCASE_ADDRESS, SysConstant.BROADCASE_PORT))).sync();
-//            } catch (Exception e) {
-//                Logger.getLogger(HomeActivity.class).d("sendBonjourMessage", e.getMessage());
-//            }
-//        }
-    }
-
-    void tranferFile() {
-//        FileClient client = new FileClient();
-//        client.connect();
-//        byte[] req = "t".getBytes();
-//        ByteBuf byteBuf = Unpooled.buffer(req.length);
-//        byteBuf.writeBytes(req);
-//        client.write(byteBuf);
-    }
-
-    void sendMessage() {
-//        MessageClient client = new MessageClient();
-//        client.connect();
-    }
-
-    void testConnect() {
-        IMClientMessageManager messageClientManager = IMClientMessageManager.getInstance();
-        messageClientManager.setHost("172.16.88.208");
-        messageClientManager.setPort(SysConstant.MESSAGE_PORT);
-        messageClientManager.start();
-    }
-
-    void testFile() {
-        IMClientFileManager fileClientManager = IMClientFileManager.getInstance();
-        fileClientManager.setHost("127.0.0.1");
-        fileClientManager.setPort(SysConstant.FILE_SERVER_PORT);
-        fileClientManager.start();
-    }
 
     void closeConnect() {
         switch (XFileApplication.connect_type) {
@@ -443,48 +387,6 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         }
     }
 
-    void testReadFile() {
-        //MappedByteBuffer
-        //RandomAccessFile
-        try {
-            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                File path = Environment.getExternalStorageDirectory();
-                String sendTextPath = path.getAbsolutePath() + "/send.txt";
-                File sendFile = new File(sendTextPath);
-                System.out.println("*****length:" + sendFile.length());
-                if (sendFile.exists()) {
-                    RandomAccessFile rafi = new RandomAccessFile(sendTextPath, "r");
-                    byte[] readData = new byte[19];
-//                    rafi.seek(2);
-//                    rafi.read(readData);
-//                    rafi.readFully(readData);
-                    rafi.read(readData, 1, 2);
-                    String str = new String(readData, "UTF-8");
-                    System.out.println("*****readData:" + str);
-                }
-                System.out.println("*****sdPath:" + path.getAbsolutePath());
-            }
-        } catch (Exception e) {
-            System.out.println("*****testReadFile.error:" + e.getMessage());
-        }
-
-
-    }
-
-    void sendFile() {
-        try {
-            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                File path = Environment.getExternalStorageDirectory();
-                File sendFile = new File(path.getAbsolutePath() + "/send.txt");
-                System.out.println("*****length:" + sendFile.length());
-                if (sendFile.exists()) {
-
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("*****sendFile.error:" + e.getMessage());
-        }
-    }
 
     void showConnect() {
         Intent connectActivity = new Intent(HomeActivity.this, ConnectActivity.class);
