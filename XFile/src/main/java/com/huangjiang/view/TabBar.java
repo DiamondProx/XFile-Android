@@ -111,8 +111,7 @@ public class TabBar extends HorizontalScrollView implements View.OnClickListener
                 childContainer.setTag(i);
                 childContainer.setOnClickListener(this);
 
-
-            } else if ((resID[i] >= 0x7f060000 && resID[i] <= 0x7f06ffff)) {
+            } else if ((resID[i] >= 0x7f0b0000 && resID[i] <= 0x7f0bffff)) {
                 // 文字资源
                 TextView childView = new TextView(mContext);
                 FrameLayout.LayoutParams childParams = new FrameLayout.LayoutParams(

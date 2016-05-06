@@ -11,33 +11,47 @@ import com.huangjiang.filetransfer.R;
  */
 public class SoundHelper {
 
+    static SoundPool soundPool;
+    static int onlineId;
+    static int receiveFileId;
+    static int dragThrowId;
+
+    public static void init() {
+        soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
+        onlineId = soundPool.load(XFileApplication.context, R.raw.online, 1);
+        receiveFileId = soundPool.load(XFileApplication.context, R.raw.receivefile, 1);
+        dragThrowId = soundPool.load(XFileApplication.context, R.raw.dragthrow, 1);
+    }
 
     /**
      * 连接成功
      */
     public static void plaOnline() {
-//        playSound(R.raw.online);
+        playSound(onlineId);
     }
 
     /**
      * 接收文件
      */
     public static void playReceiveFile() {
-//        playSound(R.raw.receivefile);
+        playSound(receiveFileId);
     }
 
     /**
      * 传输文件
      */
     public static void playDragThrow() {
-//        playSound(R.raw.dragthrow);
+        playSound(dragThrowId);
     }
 
-    public static void playSound(int resId) {
-        SoundPool soundPool;
-        soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
-        soundPool.load(XFileApplication.context, resId, 1);
-        soundPool.play(1, 1, 1, 0, 0, 1);
+
+    public static void playSound(int soundId) {
+        if (soundPool == null) return;
+        AudioManager mgr = (AudioManager) XFileApplication.context.getSystemService(XFileApplication.context.AUDIO_SERVICE);
+        final float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+        final float streamVolumeMax = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        final float volume = streamVolumeCurrent / streamVolumeMax;
+        soundPool.play(soundId, volume, volume, 1, 0, 1);
     }
 
 }

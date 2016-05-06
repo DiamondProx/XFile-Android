@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,8 +18,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="常规设置"
-                android:textColor="@color/slider_menu_group_font"
+                android:text="@string/normal_setting"
+                android:textColor="@color/group_header_name_color"
                 android:textSize="@dimen/sp_15" />
 
         </LinearLayout>
@@ -40,19 +40,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="声音"
+                    android:text="@string/sound"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_15" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="进行操作时播放声音"
+                    android:text="@string/sound_setting_desc"
                     android:textColor="@color/gray_font"
                     android:textSize="@dimen/sp_11" />
             </LinearLayout>
 
             <com.huangjiang.view.SwitchButton
+                android:id="@+id/sb_sound"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -83,19 +84,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="震动"
+                    android:text="@string/vibration"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_15" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="进行操作时震动"
+                    android:text="@string/vibration_setting_desc"
                     android:textColor="@color/gray_font"
                     android:textSize="@dimen/sp_11" />
             </LinearLayout>
 
             <com.huangjiang.view.SwitchButton
+                android:id="@+id/sb_vibration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -126,7 +128,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="自动检测新版本"
+                    android:text="@string/update_setting"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_15" />
 
@@ -139,6 +141,7 @@
             </LinearLayout>
 
             <com.huangjiang.view.SwitchButton
+                android:id="@+id/sb_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -154,7 +157,9 @@
             android:background="@color/division_line" />
 
         <RelativeLayout
+            android:id="@+id/rtl_clear"
             android:layout_width="match_parent"
+            android:background="@drawable/menu_selector"
             android:layout_height="@dimen/dp_55">
 
             <LinearLayout
@@ -169,7 +174,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="清理缓存"
+                    android:text="@string/clear_cache"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_15" />
 
@@ -199,7 +204,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="网络"
+                android:text="@string/net_work"
                 android:textColor="@color/slider_menu_group_font"
                 android:textSize="@dimen/sp_15" />
 
@@ -221,7 +226,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="分享3G网络"
+                    android:text="@string/share_mobile_data"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_15" />
 
@@ -234,13 +239,13 @@
             </LinearLayout>
 
             <com.huangjiang.view.SwitchButton
+                android:id="@+id/sb_mobile_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
-                app:bmChecked="false"
-                />
+                app:bmChecked="false" />
         </RelativeLayout>
 
         <LinearLayout
@@ -252,9 +257,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="隐私"
+                android:text="@string/privacy"
                 android:textColor="@color/slider_menu_group_font"
-                android:textSize="@dimen/sp_15"/>
+                android:textSize="@dimen/sp_15" />
 
         </LinearLayout>
 
@@ -274,7 +279,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="显示隐藏文件"
+                    android:text="@string/show_hidden_file"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_15" />
 
@@ -287,6 +292,7 @@
             </LinearLayout>
 
             <com.huangjiang.view.SwitchButton
+                android:id="@+id/sb_hidden"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -317,7 +323,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="使用密码连接"
+                    android:text="@string/need_pwd"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_15" />
 
@@ -330,6 +336,7 @@
             </LinearLayout>
 
             <com.huangjiang.view.SwitchButton
+                android:id="@+id/sb_need_pwd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -347,7 +354,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="高级"
+                android:text="@string/advanced"
                 android:textColor="@color/slider_menu_group_font"
                 android:textSize="@dimen/sp_15" />
 
@@ -369,19 +376,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="自动安装应用"
+                    android:text="@string/auto_install"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_15" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="接收或者下载完后自动安装应用(root权限)"
+                    android:text="@string/aotu_install_setting_desc"
                     android:textColor="@color/gray_font"
                     android:textSize="@dimen/sp_11" />
             </LinearLayout>
 
             <com.huangjiang.view.SwitchButton
+                android:id="@+id/sb_install_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"

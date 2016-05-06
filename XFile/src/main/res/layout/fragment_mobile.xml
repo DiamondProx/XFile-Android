@@ -13,7 +13,7 @@
 
     <com.huangjiang.view.TabBar
         android:id="@+id/tab_mobile"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="#16C9E9" />
 

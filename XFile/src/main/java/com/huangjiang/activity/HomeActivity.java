@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -28,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huangjiang.XFileApplication;
-import com.huangjiang.config.SysConstant;
+import com.huangjiang.config.Config;
 import com.huangjiang.filetransfer.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
@@ -40,6 +39,7 @@ import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.service.IMService;
 import com.huangjiang.utils.SoundHelper;
+import com.huangjiang.utils.VibratorUtils;
 import com.huangjiang.view.AnimationHelper;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -47,8 +47,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -336,6 +334,12 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 top_main_layout.setVisibility(View.INVISIBLE);
                 top_connect_layout.setVisibility(View.VISIBLE);
                 connect_device_name.setText(event.getDevice_name());
+                if (Config.getSound()) {
+                    SoundHelper.plaOnline();
+                }
+                if (Config.getVibration()) {
+                    VibratorUtils.Vibrate();
+                }
                 break;
             case CONNECT_CLOSE:
                 XFileApplication.connect_type = 0;
@@ -362,6 +366,12 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 top_main_layout.setVisibility(View.INVISIBLE);
                 top_connect_layout.setVisibility(View.VISIBLE);
                 connect_device_name.setText(event.getDevice_name());
+                if (Config.getSound()) {
+                    SoundHelper.plaOnline();
+                }
+                if (Config.getVibration()) {
+                    VibratorUtils.Vibrate();
+                }
                 break;
             case CONNECT_CLOSE:
                 XFileApplication.connect_type = 0;

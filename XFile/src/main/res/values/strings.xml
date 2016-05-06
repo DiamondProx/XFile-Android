@@ -113,5 +113,22 @@
     <string name="create_connect">创建成功,等待朋友搜索加入</string>
     <string name="let_friend_join">让朋友搜索加入"%1$s"</string>
     <string name="email_feed_back">邮件反馈</string>
+    <string name="normal_setting">常规设置</string>
+    <string name="sound">声音</string>
+    <string name="sound_setting_desc">进行操作时播放声音</string>
+    <string name="vibration">震动</string>
+    <string name="vibration_setting_desc">进行操作时震动</string>
+    <string name="update_setting">自动检测新版本</string>
+    <string name="clear_cache">清理缓存</string>
+    <string name="net_work">网络</string>
+    <string name="share_mobile_data">分享3G网络</string>
+    <string name="privacy">隐私</string>
+    <string name="show_hidden_file">显示隐藏文件</string>
+    <string name="need_pwd">使用密码连接</string>
+    <string name="advanced">高级</string>
+    <string name="auto_install">自动安装应用</string>
+    <string name="aotu_install_setting_desc">接收或者下载完后自动安装应用(root权限)</string>
+    <string name="clear_success">清理缓存成功</string>
+
 
 </resources>

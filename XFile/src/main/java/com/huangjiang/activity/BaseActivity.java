@@ -223,7 +223,6 @@ public class BaseActivity extends Activity implements View.OnClickListener {
     /**
      *
      * @Title: rightClick
-     * @Description: TODO(标题栏右边菜单的点击事件)
      * @param: index(索引,因为右边的菜单可能是一个或则多个所以传一个索引过来)
      */
     protected void rightClick(int index) {}
