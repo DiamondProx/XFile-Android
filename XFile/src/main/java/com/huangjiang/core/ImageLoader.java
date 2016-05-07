@@ -16,7 +16,7 @@ import android.widget.ImageView;
 
 import com.huangjiang.XFileApplication;
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 
 /**
  * 图片加载

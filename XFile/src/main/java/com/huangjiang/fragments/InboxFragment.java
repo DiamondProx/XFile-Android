@@ -6,10 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.huangjiang.business.model.Catalog;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.ExplorerControl;
 

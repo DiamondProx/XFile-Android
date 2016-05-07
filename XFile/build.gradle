@@ -7,11 +7,11 @@ android {
     defaultConfig {
         applicationId "com.huangjiang.xfile"
         minSdkVersion 10
-        targetSdkVersion 21
+        targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
-    buildTypes {
+    buildTypes {21
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -23,6 +23,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:21.0.3'
+    compile project(':Pushlib')
     compile files('src/main/libs/protobuf-java-2.6.1.jar')
     compile files('src/main/libs/netty-all-5.0.0.Alpha2.jar')
+    compile files('src/main/libs/umeng-analytics-v5.6.7.jar')
 }

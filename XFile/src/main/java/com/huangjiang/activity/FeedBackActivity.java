@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.utils.StringUtils;
 
 public class FeedBackActivity extends BaseActivity {

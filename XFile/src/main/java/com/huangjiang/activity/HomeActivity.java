@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import com.huangjiang.XFileApplication;
 import com.huangjiang.config.Config;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.manager.IMClientFileManager;
@@ -401,6 +401,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     void showConnect() {
         Intent connectActivity = new Intent(HomeActivity.this, ConnectActivity.class);
         startActivity(connectActivity);
+        throw  new NullPointerException("tt");
     }
 
 

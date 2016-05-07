@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.manager.event.FileEvent;
 
 /**

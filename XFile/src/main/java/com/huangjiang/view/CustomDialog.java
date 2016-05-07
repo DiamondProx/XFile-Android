@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
 
 

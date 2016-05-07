@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.huangjiang.business.model.Catalog;
 
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 
 public class CatalogAdapter extends BaseAdapter {
 

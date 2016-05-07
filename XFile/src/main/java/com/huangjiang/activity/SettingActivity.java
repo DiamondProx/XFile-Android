@@ -7,8 +7,9 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.huangjiang.config.Config;
-import com.huangjiang.filetransfer.R;
 import com.huangjiang.view.SwitchButton;
+import com.huangjiang.xfile.R;
+import com.umeng.message.PushAgent;
 
 public class SettingActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
 
@@ -73,7 +74,7 @@ public class SettingActivity extends BaseActivity implements CompoundButton.OnCh
                 Config.setVibration(isChecked);
                 break;
             case R.id.sb_update:
-                Config.setUpdate(isChecked);
+                setMessageEnable(isChecked);
                 break;
             case R.id.sb_mobile_data:
                 Config.setMobileData(isChecked);
@@ -87,6 +88,19 @@ public class SettingActivity extends BaseActivity implements CompoundButton.OnCh
             case R.id.sb_install_mode:
                 Config.setInstallSilent(isChecked);
                 break;
+        }
+    }
+
+    /**
+     * 设置是否接受新消息
+     */
+    void setMessageEnable(boolean isChecked) {
+        Config.setUpdate(isChecked);
+        PushAgent mPushAgent = PushAgent.getInstance(this);
+        if (isChecked) {
+            mPushAgent.enable();
+        } else {
+            mPushAgent.disable();
         }
     }
 }

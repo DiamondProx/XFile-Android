@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 
 /**
  * BaseActivity

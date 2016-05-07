@@ -9,7 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
 
 public class VersionFeedBackActivity extends BaseActivity implements View.OnClickListener {

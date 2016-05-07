@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.huangjiang.adapter.MobilePagerAdapter;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.view.TabBar;
 
 public class TabMobileFragment extends Fragment implements OnPageChangeListener, TabBar.OnTabListener, View.OnClickListener {

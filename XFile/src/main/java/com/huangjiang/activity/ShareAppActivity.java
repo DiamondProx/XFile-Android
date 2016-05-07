@@ -11,8 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.huangjiang.activity.BaseActivity;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.XFileUtils;
 

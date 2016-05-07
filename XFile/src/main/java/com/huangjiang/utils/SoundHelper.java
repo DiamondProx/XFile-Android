@@ -4,7 +4,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 
 import com.huangjiang.XFileApplication;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 
 /**
  * 播放音效

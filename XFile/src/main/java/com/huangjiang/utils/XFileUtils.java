@@ -15,7 +15,7 @@ import com.huangjiang.XFileApplication;
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.dao.DFile;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.message.protocol.XFileProtocol;
 
 import java.io.BufferedReader;

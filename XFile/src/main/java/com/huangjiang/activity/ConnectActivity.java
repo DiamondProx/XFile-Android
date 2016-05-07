@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.huangjiang.XFileApplication;
 import com.huangjiang.config.Config;
 import com.huangjiang.config.SysConstant;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMDeviceServerManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;

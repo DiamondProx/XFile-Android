@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
 
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 
 public class CustomViewBehind extends ViewGroup {
 

@@ -118,7 +118,7 @@
     <string name="sound_setting_desc">进行操作时播放声音</string>
     <string name="vibration">震动</string>
     <string name="vibration_setting_desc">进行操作时震动</string>
-    <string name="update_setting">自动检测新版本</string>
+    <string name="update_setting">新消息提醒</string>
     <string name="clear_cache">清理缓存</string>
     <string name="net_work">网络</string>
     <string name="share_mobile_data">分享3G网络</string>

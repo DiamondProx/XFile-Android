@@ -2,8 +2,7 @@ package com.huangjiang.activity;
 
 import android.os.Bundle;
 
-import com.huangjiang.activity.BaseActivity;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 
 public class FindBluetoothActivity extends BaseActivity {
 

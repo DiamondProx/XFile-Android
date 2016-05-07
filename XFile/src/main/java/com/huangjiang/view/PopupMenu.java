@@ -23,7 +23,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 
 import java.util.ArrayList;
 import java.util.List;

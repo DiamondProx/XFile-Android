@@ -28,7 +28,7 @@ import com.huangjiang.business.explorer.ExplorerLogic;
 import com.huangjiang.business.model.Catalog;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.opfile.OpLogic;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMFileManager;
 
 import org.greenrobot.eventbus.EventBus;

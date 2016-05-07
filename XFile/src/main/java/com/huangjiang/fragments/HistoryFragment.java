@@ -18,7 +18,7 @@ import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.dao.DFileDao;
 import com.huangjiang.dao.DaoMaster;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
 import com.huangjiang.view.MenuHelper;

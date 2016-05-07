@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.widget.Toast;
 
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.wfs.CopyUtil;
 import com.huangjiang.wfs.WebService;
 

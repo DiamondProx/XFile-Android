@@ -17,7 +17,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewParent;
 import android.widget.CheckBox;
 
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 
 /**
  * 开关按钮

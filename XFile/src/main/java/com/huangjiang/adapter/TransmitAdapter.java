@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
 import com.huangjiang.utils.XFileUtils;

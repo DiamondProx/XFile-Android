@@ -23,7 +23,7 @@ import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.image.ImageLogic;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.opfile.OpLogic;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.view.CustomDialog;
 import com.huangjiang.view.DialogHelper;

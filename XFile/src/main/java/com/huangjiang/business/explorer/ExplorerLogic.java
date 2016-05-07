@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
 
 import java.io.File;

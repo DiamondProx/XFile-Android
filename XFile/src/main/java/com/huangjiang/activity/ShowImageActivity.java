@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 import com.polites.android.GestureImageView;
 
 /**

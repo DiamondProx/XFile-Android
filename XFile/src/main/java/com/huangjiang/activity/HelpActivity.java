@@ -3,7 +3,7 @@ package com.huangjiang.activity;
 import android.os.Bundle;
 import android.webkit.WebView;
 
-import com.huangjiang.filetransfer.R;
+import com.huangjiang.xfile.R;
 
 public class HelpActivity extends BaseActivity {
 
