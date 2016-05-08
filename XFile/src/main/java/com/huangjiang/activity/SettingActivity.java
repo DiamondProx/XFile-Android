@@ -9,10 +9,12 @@ import android.widget.Toast;
 import com.huangjiang.config.Config;
 import com.huangjiang.view.SwitchButton;
 import com.huangjiang.xfile.R;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 
 public class SettingActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
 
+    private final String mPageName = "SettingActivity";
 
     RelativeLayout rtl_clear;
     SwitchButton sb_sound, sb_vibration, sb_update, sb_mobile_data, sb_hidden, sb_need_pwd, sb_install_mode;
@@ -102,5 +104,17 @@ public class SettingActivity extends BaseActivity implements CompoundButton.OnCh
         } else {
             mPushAgent.disable();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 }

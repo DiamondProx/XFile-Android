@@ -11,9 +11,10 @@ import android.view.ViewGroup;
 import com.huangjiang.adapter.MobilePagerAdapter;
 import com.huangjiang.xfile.R;
 import com.huangjiang.view.TabBar;
+import com.umeng.analytics.MobclickAgent;
 
 public class TabMobileFragment extends Fragment implements OnPageChangeListener, TabBar.OnTabListener, View.OnClickListener {
-
+    private final String mPageName = "TabMobileFragment";
     ViewPager viewPager;
     TabBar tabBar;
 
@@ -53,6 +54,18 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 
 }

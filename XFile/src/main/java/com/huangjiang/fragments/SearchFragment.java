@@ -33,6 +33,7 @@ import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
 import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.view.PopupMenu;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -44,7 +45,7 @@ import java.util.List;
  * 查找-图片,音频,视频三种类型
  */
 public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, CustomDialog.DialogCallback, AdapterView.OnItemClickListener {
-
+    private final String mPageName = "SearchFragment";
     EditText edtSearch;
     ListView listView;
     SearchAdapter searchAdapter;
@@ -205,5 +206,17 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 }

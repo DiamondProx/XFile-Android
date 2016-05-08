@@ -6,8 +6,11 @@ import android.widget.Toast;
 
 import com.huangjiang.xfile.R;
 import com.huangjiang.utils.StringUtils;
+import com.umeng.analytics.MobclickAgent;
 
 public class FeedBackActivity extends BaseActivity {
+
+    private final String mPageName = "FeedBackActivity";
 
     EditText edt_feedback;
 
@@ -27,6 +30,18 @@ public class FeedBackActivity extends BaseActivity {
         }
         Toast.makeText(FeedBackActivity.this, R.string.thanks_feedback, Toast.LENGTH_SHORT).show();
         XFileActivityManager.create().finishActivity();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 
 }

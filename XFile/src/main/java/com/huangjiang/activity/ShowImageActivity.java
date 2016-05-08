@@ -6,12 +6,14 @@ import android.os.Bundle;
 
 import com.huangjiang.xfile.R;
 import com.polites.android.GestureImageView;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 图片查看
  */
 public class ShowImageActivity extends BaseActivity {
 
+    private final String mPageName = "ShowImageActivity";
     GestureImageView dmImageView;
     public static final String URL = "url";
     Bitmap bitmap = null;
@@ -35,5 +37,17 @@ public class ShowImageActivity extends BaseActivity {
         if (bitmap != null) {
             bitmap.recycle();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 }

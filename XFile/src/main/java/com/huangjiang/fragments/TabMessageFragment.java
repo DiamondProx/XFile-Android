@@ -20,12 +20,14 @@ import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.TabBar;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 
 public class TabMessageFragment extends Fragment implements TabBar.OnTabListener, ViewPager.OnPageChangeListener, View.OnClickListener {
 
     private Logger logger = Logger.getLogger(IMFileManager.class);
+    private final String mPageName = "TabMessageFragment";
     ViewPager viewPager;
     TabBar tabBar;
     TextView txt_disk_status, txt_clear;
@@ -109,5 +111,17 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         viewPager.setCurrentItem(index);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
+    }
 
 }

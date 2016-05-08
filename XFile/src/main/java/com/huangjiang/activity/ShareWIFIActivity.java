@@ -6,9 +6,12 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
+import com.huangjiang.config.Config;
+import com.huangjiang.utils.MobileDataUtils;
 import com.huangjiang.xfile.R;
 import com.huangjiang.wfs.CopyUtil;
 import com.huangjiang.wfs.WebService;
+import com.umeng.analytics.MobclickAgent;
 
 import java.lang.reflect.Method;
 
@@ -17,6 +20,7 @@ import java.lang.reflect.Method;
  */
 public class ShareWIFIActivity extends BaseActivity {
 
+    private final String mPageName = "ShareWIFIActivity";
     private Intent intent;
 
     @Override
@@ -35,8 +39,16 @@ public class ShareWIFIActivity extends BaseActivity {
     void startService() {
         //如果是打开状态就关闭，如果是关闭就打开
         if (setWifiAp(true)) {
+            if (!Config.getMobileData()) {
+                System.out.println("****setMobileData:false");
+                MobileDataUtils.setMobileData(this, false);
+            } else {
+                System.out.println("****setMobileData:true");
+                MobileDataUtils.setMobileData(this, true);
+            }
             intent = new Intent(this, WebService.class);
             startService(intent);
+
         }
     }
 
@@ -75,6 +87,18 @@ public class ShareWIFIActivity extends BaseActivity {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 
 

@@ -11,6 +11,7 @@ import com.huangjiang.business.model.Catalog;
 import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.ExplorerControl;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
  * 收件箱
  */
 public class InboxFragment extends Fragment {
-
+    private final String mPageName = "InboxFragment";
     ExplorerControl explorerControl;
 
     @Override
@@ -68,6 +69,18 @@ public class InboxFragment extends Fragment {
         explorerControl = (ExplorerControl) view.findViewById(R.id.explorer);
         explorerControl.setActivity(getActivity());
         explorerControl.setCatalog(list);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 
 

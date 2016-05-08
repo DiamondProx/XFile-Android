@@ -11,9 +11,11 @@ import android.widget.Toast;
 
 import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
+import com.umeng.analytics.MobclickAgent;
 
 public class VersionFeedBackActivity extends BaseActivity implements View.OnClickListener {
 
+    private final String mPageName = "VersionFeedBackActivity";
     Button feedBack;
     TextView txtVersion;
     RelativeLayout checkVersion;
@@ -48,6 +50,18 @@ public class VersionFeedBackActivity extends BaseActivity implements View.OnClic
                 startActivity(new Intent(this, FeedBackActivity.class));
                 break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 
 

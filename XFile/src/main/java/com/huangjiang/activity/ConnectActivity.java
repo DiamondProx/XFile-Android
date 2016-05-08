@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.huangjiang.XFileApplication;
 import com.huangjiang.config.Config;
 import com.huangjiang.config.SysConstant;
+import com.huangjiang.utils.MobileDataUtils;
 import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMDeviceServerManager;
@@ -33,6 +34,7 @@ import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.message.event.ScanDeviceInfo;
 import com.huangjiang.utils.Logger;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,6 +47,7 @@ import java.util.List;
 public class ConnectActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private Logger logger = Logger.getLogger(ConnectActivity.class);
+    private final String mPageName = "ConnectActivity";
 
     ImageView close1, refresh1, refresh2, iv_connecting;
     Button search_join, search_cancel, search_back, connect_back, connecting_cancel, create_ap;
@@ -96,6 +99,9 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
         init();
+
+        MobclickAgent.setDebugMode(true);
+        MobclickAgent.openActivityDurationTrack(false);
     }
 
     @Override
@@ -240,6 +246,9 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         animationDrawable.start();
         // 打开wifi
         if (setWifiAp(true)) {
+            if (!Config.getMobileData()) {
+                MobileDataUtils.setMobileData(this, false);
+            }
             Config.is_ap = true;
         }
     }
@@ -483,5 +492,16 @@ public class ConnectActivity extends Activity implements View.OnClickListener, A
         return apConfig;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
+    }
 
 }

@@ -64,9 +64,6 @@
             android:name="com.huangjiang.activity.ShareAppActivity"
             android:label="@string/title_activity_share_app" />
         <activity
-            android:name="com.huangjiang.activity.FindBluetoothActivity"
-            android:label="@string/title_activity_find_bluethooth" />
-        <activity
             android:name="com.huangjiang.activity.ShowImageActivity"
             android:label="@string/title_activity_show_image" />
         <activity

@@ -7,6 +7,7 @@ import com.huangjiang.config.Config;
 import com.huangjiang.utils.CrashHandler;
 import com.huangjiang.utils.SoundHelper;
 import com.huangjiang.utils.XFileUtils;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 
 public class XFileApplication extends Application {
@@ -23,8 +24,8 @@ public class XFileApplication extends Application {
         super.onCreate();
         context = this;
         device_id = XFileUtils.getDeviceId();
+        initUMeg();
         initErrorHandler();
-        initMessageHandler();
         SoundHelper.init();
     }
 
@@ -37,16 +38,26 @@ public class XFileApplication extends Application {
     }
 
     /**
-     * 消息推送
+     * 友盟
      */
-    private void initMessageHandler() {
+    void initUMeg(){
+        // Push
         PushAgent mPushAgent = PushAgent.getInstance(context);
-        mPushAgent.setDebugMode(false);
+        mPushAgent.setDebugMode(true);
         mPushAgent.onAppStart();
         if (Config.getUpdate()) {
             mPushAgent.enable();
+        } else {
+            mPushAgent.disable();
         }
+        // Analytics
+//        MobclickAgent.setDebugMode(true);
+        MobclickAgent.openActivityDurationTrack(false);
     }
+
+
+
+
 
 
 }

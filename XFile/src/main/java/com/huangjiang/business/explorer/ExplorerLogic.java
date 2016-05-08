@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.config.Config;
 import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
 
@@ -36,13 +37,14 @@ public class ExplorerLogic {
                 e.printStackTrace();
             }
         }
+        boolean hiddenSetting = Config.getHidden();
         File[] dirFiles = dirFile.listFiles();
         List<TFileInfo> tFileInfoList = new ArrayList<>();
         if (dirFiles == null) {
             return tFileInfoList;
         }
         for (File file : dirFiles) {
-            if (!file.isHidden()) {
+            if (hiddenSetting || !file.isHidden()) {
                 TFileInfo tFileInfo = new TFileInfo();
                 tFileInfo.setName(file.getName());
                 tFileInfo.setPath(file.getPath());

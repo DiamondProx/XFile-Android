@@ -14,6 +14,7 @@ import android.widget.Button;
 import com.huangjiang.xfile.R;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.XFileUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.HashMap;
@@ -21,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ShareAppActivity extends BaseActivity {
+
+    private final String mPageName = "ShareAppActivity";
 
     Button btn_bluetooth_invite, btn_zero_invite;
     Logger logger = Logger.getLogger(ShareAppActivity.class);
@@ -92,6 +95,18 @@ public class ShareAppActivity extends BaseActivity {
         }
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 
 

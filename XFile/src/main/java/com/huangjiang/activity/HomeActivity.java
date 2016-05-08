@@ -42,6 +42,7 @@ import com.huangjiang.utils.SoundHelper;
 import com.huangjiang.utils.VibratorUtils;
 import com.huangjiang.view.AnimationHelper;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -52,6 +53,8 @@ import java.util.List;
 
 
 public class HomeActivity extends FragmentActivity implements OnClickListener, OnCheckedChangeListener {
+
+    private final String mPageName = "HomeActivity";
 
     private int cursorWidth; // 游标的长度
     private int offset; // 间隔
@@ -86,6 +89,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     ImageView fileThumb;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +97,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         EventBus.getDefault().register(this);
         initializeView();
         initData();
+
     }
 
     void initializeView() {
@@ -401,7 +406,18 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     void showConnect() {
         Intent connectActivity = new Intent(HomeActivity.this, ConnectActivity.class);
         startActivity(connectActivity);
-        throw  new NullPointerException("tt");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 
 

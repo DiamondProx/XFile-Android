@@ -25,6 +25,7 @@ import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
 import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.view.PopupMenu;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -37,7 +38,7 @@ import java.util.List;
  * 历史消息
  */
 public class HistoryFragment extends Fragment implements AdapterView.OnItemClickListener, PopupMenu.MenuCallback {
-
+    private final String mPageName = "HistoryFragment";
     List<TFileInfo> list_message;
     TransmitAdapter adapter;
     ListView lv_message;
@@ -167,5 +168,17 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                 adapter.notifyDataSetChanged();
                 break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 }

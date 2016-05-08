@@ -31,6 +31,7 @@ import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
 import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.view.PopupMenu;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -42,7 +43,7 @@ import java.util.List;
  * 图片资源
  */
 public class PictureFragment extends Fragment implements PictureAdapter.CallBack, PopupMenu.MenuCallback, CustomDialog.DialogCallback {
-
+    private final String mPageName = "PictureFragment";
     RecyclerView recycler_view;
     PictureAdapter adapter;
     ImageLogic imageLogic;
@@ -182,5 +183,17 @@ public class PictureFragment extends Fragment implements PictureAdapter.CallBack
                 break;
         }
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 }

@@ -31,6 +31,7 @@ import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
 import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.view.PopupMenu;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -42,7 +43,7 @@ import java.util.List;
  * 视频
  */
 public class VideoFragment extends Fragment implements PopupMenu.MenuCallback, CustomDialog.DialogCallback, AdapterView.OnItemClickListener {
-
+    private final String mPageName = "VideoFragment";
     ListView listView;
     TextView titleName;
     SearchAdapter adapter;
@@ -189,6 +190,18 @@ public class VideoFragment extends Fragment implements PopupMenu.MenuCallback, C
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(mPageName);
     }
 
 }
