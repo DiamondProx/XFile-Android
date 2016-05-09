@@ -129,6 +129,12 @@
     <string name="auto_install">自动安装应用</string>
     <string name="aotu_install_setting_desc">接收或者下载完后自动安装应用(root权限)</string>
     <string name="clear_success">清理缓存成功</string>
+    <string name="progress_title">提示</string>
+    <string name="upgrade_root_permission">正在获取Root权限</string>
+    <string name="upgrade_root_permission_success">成功获取Root权限</string>
+    <string name="upgrade_root_permission_failure">获取Root权限失败</string>
+    <string name="feed_back_title">快传意见反馈</string>
+    <string name="feed_back_hint">非常感谢您使用改产品,请输入您珍贵的意见,助于提升产品提升,非常感谢!</string>
 
 
 </resources>

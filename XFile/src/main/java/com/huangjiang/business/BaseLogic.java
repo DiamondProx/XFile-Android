@@ -1,7 +1,9 @@
 package com.huangjiang.business;
 
 import com.huangjiang.business.event.FindResEvent;
+import com.huangjiang.business.event.InstallEvent;
 import com.huangjiang.business.event.OpFileEvent;
+import com.huangjiang.business.event.RootEvent;
 import com.huangjiang.business.model.TFileInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -19,5 +21,14 @@ public class BaseLogic {
     public void triggerEvent(OpFileEvent event) {
         EventBus.getDefault().post(event);
     }
+
+    public void triggerEvent(RootEvent event) {
+        EventBus.getDefault().post(event);
+    }
+
+    public void triggerEvent(InstallEvent event) {
+        EventBus.getDefault().post(event);
+    }
+
 
 }

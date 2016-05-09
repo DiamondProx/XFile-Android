@@ -1,16 +1,25 @@
 package com.huangjiang.activity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.huangjiang.business.app.AppLogic;
+import com.huangjiang.business.event.RootEvent;
 import com.huangjiang.config.Config;
+import com.huangjiang.manager.event.ServerFileSocketEvent;
+import com.huangjiang.utils.ApkInstall;
 import com.huangjiang.view.SwitchButton;
 import com.huangjiang.xfile.R;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class SettingActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
 
@@ -18,6 +27,9 @@ public class SettingActivity extends BaseActivity implements CompoundButton.OnCh
 
     RelativeLayout rtl_clear;
     SwitchButton sb_sound, sb_vibration, sb_update, sb_mobile_data, sb_hidden, sb_need_pwd, sb_install_mode;
+    AppLogic appLogic;
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +39,8 @@ public class SettingActivity extends BaseActivity implements CompoundButton.OnCh
     }
 
     void init() {
+        appLogic = new AppLogic(SettingActivity.this);
+        EventBus.getDefault().register(this);
         rtl_clear = (RelativeLayout) findViewById(R.id.rtl_clear);
         rtl_clear.setOnClickListener(this);
         sb_sound = (SwitchButton) findViewById(R.id.sb_sound);
@@ -52,7 +66,6 @@ public class SettingActivity extends BaseActivity implements CompoundButton.OnCh
         sb_hidden.setOnCheckedChangeListener(this);
         sb_need_pwd.setOnCheckedChangeListener(this);
         sb_install_mode.setOnCheckedChangeListener(this);
-
 
     }
 
@@ -88,7 +101,7 @@ public class SettingActivity extends BaseActivity implements CompoundButton.OnCh
                 Config.setNeedPWD(isChecked);
                 break;
             case R.id.sb_install_mode:
-                Config.setInstallSilent(isChecked);
+                setInstallSilent(isChecked);
                 break;
         }
     }
@@ -106,6 +119,16 @@ public class SettingActivity extends BaseActivity implements CompoundButton.OnCh
         }
     }
 
+    void setInstallSilent(boolean isChecked) {
+        if (isChecked) {
+            progressDialog = ProgressDialog.show(SettingActivity.this, getString(R.string.progress_title), getString(R.string.upgrade_root_permission));
+            progressDialog.show();
+            appLogic.upgradeRootPermission(getPackageCodePath());
+        } else {
+            Config.setInstallSilent(false);
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -117,4 +140,26 @@ public class SettingActivity extends BaseActivity implements CompoundButton.OnCh
         super.onPause();
         MobclickAgent.onPageEnd(mPageName);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(RootEvent event) {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        if (event.isResult()) {
+            Config.setInstallSilent(true);
+            Toast.makeText(SettingActivity.this, R.string.upgrade_root_permission_success, Toast.LENGTH_SHORT).show();
+        } else {
+            sb_install_mode.setChecked(false);
+            Toast.makeText(SettingActivity.this, R.string.upgrade_root_permission_failure, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 }
