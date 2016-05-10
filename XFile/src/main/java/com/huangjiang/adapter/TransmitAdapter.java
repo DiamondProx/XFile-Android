@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
@@ -31,6 +32,7 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
     String createFileSuccess, createFileFailed, checkTaskSuccess, checkTaskFailed,
             setFileComplete, setFileFailed, setFileTransmit, setFileStop, setFileWaiting,
             retry, view, resume, stop;
+    int redColor, blackColor;
 
 
     public TransmitAdapter(Context context) {
@@ -49,6 +51,8 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         view = context.getString(R.string.view);
         resume = context.getString(R.string.resume);
         stop = context.getString(R.string.stop);
+        redColor = mContext.getResources().getColor(R.color.red);
+        blackColor = mContext.getResources().getColor(R.color.black);
         listTFileInfo = new ArrayList<>();
     }
 
@@ -125,6 +129,9 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
             case SET_FILE:
                 IMFileManager.getInstance().stopReceive();
                 break;
+            case SET_FILE_SUCCESS:
+                OpenFileHelper.openFile(mContext, taskInfo);
+                break;
         }
     }
 
@@ -143,7 +150,11 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
     void initFileInfoView(ViewHolder holder, TFileInfo tFileInfo) {
         holder.headImg.setImageResource(R.mipmap.avatar_default);
         holder.fileImg.setImageResource(R.mipmap.data_folder_documents_placeholder);
-        holder.from.setText(tFileInfo.getFrom());
+        if (tFileInfo.isSend()) {
+            holder.from.setText(String.format(mContext.getString(R.string.send_to), tFileInfo.getFrom()));
+        } else {
+            holder.from.setText(String.format(mContext.getString(R.string.receive_from), tFileInfo.getFrom()));
+        }
         holder.name.setText(tFileInfo.getFullName());
         holder.size.setText(XFileUtils.parseSize(tFileInfo.getLength()));
         long percent = tFileInfo.getPosition() * 100 / tFileInfo.getLength();
@@ -152,8 +163,9 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
             holder.status.setVisibility(View.GONE);
             holder.line1.setVisibility(View.GONE);
         } else {
-            holder.status.setText(convertState(tFileInfo.getFileEvent()));
+            holder.status.setText(getState(tFileInfo.getFileEvent()));
         }
+        // 接受者才显示箭头按钮
         if (!tFileInfo.isSend()) {
             setStepState(holder.btn_step, tFileInfo.getFileEvent());
             holder.btn_step.setTag(tFileInfo.getTaskId());
@@ -220,7 +232,11 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         initFileInfoView(holder, tFileInfo);
     }
 
-    String convertState(FileEvent fileEvent) {
+
+    /**
+     * 设置传输状态
+     */
+    String getState(FileEvent fileEvent) {
         String stateStr = "";
         switch (fileEvent) {
             case CREATE_FILE_SUCCESS:
@@ -253,6 +269,7 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         }
         return stateStr;
     }
+
 
     void setStepState(Button btnStep, FileEvent fileEvent) {
         switch (fileEvent) {

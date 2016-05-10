@@ -16,8 +16,10 @@ import com.huangjiang.adapter.TransmitAdapter;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.dao.DFile;
 import com.huangjiang.dao.DFileDao;
 import com.huangjiang.dao.DaoMaster;
+import com.huangjiang.view.DialogHelper;
 import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
@@ -38,12 +40,14 @@ import java.util.List;
  * 历史消息
  */
 public class HistoryFragment extends Fragment implements AdapterView.OnItemClickListener, PopupMenu.MenuCallback {
+
     private final String mPageName = "HistoryFragment";
     List<TFileInfo> list_message;
     TransmitAdapter adapter;
     ListView lv_message;
     HistoryLogic history_logic;
     DFileDao dFileDao;
+    public static boolean isInit = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -62,6 +66,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         history_logic = new HistoryLogic(getActivity());
         history_logic.getHistory();
         dFileDao = DaoMaster.getInstance().newSession().getDFileDao();
+        isInit = true;
     }
 
     @Override
@@ -106,6 +111,9 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
             case R.id.menu_stop:
                 IMFileManager.getInstance().stopReceive();
                 break;
+            case R.id.menu_property:
+                DialogHelper.showProperty(getActivity(), menu.getTFileInfo());
+                break;
         }
     }
 
@@ -142,16 +150,14 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         FileEvent fileEvent = tFileInfo.getFileEvent();
         switch (fileEvent) {
             case CREATE_FILE_SUCCESS: {
-                if (tFileInfo.isSend()) {
-                    tFileInfo.setFrom(getString(R.string.send_to, tFileInfo.getFrom()));
-                } else {
-                    tFileInfo.setFrom(getString(R.string.receive_from, tFileInfo.getFrom()));
-                }
                 adapter.addTFileInfo(tFileInfo);
                 adapter.notifyDataSetChanged();
             }
             break;
             case SET_FILE_SUCCESS: {
+                DFile dFileInfo = dFileDao.getDFileByTaskId(tFileInfo.getTaskId());
+                // 替换保存路径
+                tFileInfo.setPath(dFileInfo.getSavePath());
                 adapter.updateTFileInfo(tFileInfo);
                 updateTransmitState(tFileInfo);
             }

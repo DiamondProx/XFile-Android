@@ -54,6 +54,7 @@ public class ExampleDaoGenerator {
         customer.addStringProperty("from");
         customer.addLongProperty("percent");
         customer.addIntProperty("status").notNull();//0创建成功，1传送中（暂停）,2传送完成
+        customer.addStringProperty("savePath");// 保存路径
     }
 
     private static void addRecordConnect(Schema schema) {

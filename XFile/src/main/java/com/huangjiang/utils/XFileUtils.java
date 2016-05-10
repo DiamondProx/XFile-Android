@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
+import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
@@ -313,6 +314,7 @@ public class XFileUtils {
         sendFile.setFullName(fileInfo.getFullName());
         sendFile.setTaskId(fileInfo.getTaskId());
         sendFile.setIsSend(fileInfo.isSend());
+        sendFile.setFrom(fileInfo.getFrom());
         return sendFile.build();
     }
 
@@ -344,13 +346,22 @@ public class XFileUtils {
         dFile.setPercent(tFileInfo.getPercent());
         switch (tFileInfo.getFileEvent()) {
             case CREATE_FILE_SUCCESS:
+            case CHECK_TASK_SUCCESS:
             case SET_FILE:
+            case SET_FILE_STOP:
+            case WAITING:
                 // 正在传送
                 dFile.setStatus(0);
                 break;
             case SET_FILE_SUCCESS:
                 // 传输完成
                 dFile.setStatus(1);
+                break;
+            case CREATE_FILE_FAILED:
+            case CHECK_TASK_FAILED:
+            case SET_FILE_FAILED:
+                // 传输失败
+                dFile.setStatus(2);
                 break;
         }
         return dFile;
@@ -369,6 +380,40 @@ public class XFileUtils {
             e.printStackTrace();
         }
         return name;
+    }
+
+    /**
+     * SD卡的剩余空间
+     */
+    public long getSDFreeSize() {
+        //取得SD卡文件路径
+        File path = Environment.getExternalStorageDirectory();
+        StatFs sf = new StatFs(path.getPath());
+        //获取单个数据块的大小(Byte)
+        long blockSize = sf.getBlockSize();
+        //空闲的数据块的数量
+        long freeBlocks = sf.getAvailableBlocks();
+        //返回SD卡空闲大小
+        return freeBlocks * blockSize;  //单位Byte
+        //return (freeBlocks * blockSize)/1024;   //单位KB
+        //return (freeBlocks * blockSize)/1024 /1024; //单位MB
+    }
+
+    /**
+     * SD卡总容量
+     */
+    public long getSDAllSize() {
+        //取得SD卡文件路径
+        File path = Environment.getExternalStorageDirectory();
+        StatFs sf = new StatFs(path.getPath());
+        //获取单个数据块的大小(Byte)
+        long blockSize = sf.getBlockSize();
+        //获取所有数据块数
+        long allBlocks = sf.getBlockCount();
+        //返回SD卡大小
+        return allBlocks * blockSize; //单位Byte
+        //return (allBlocks * blockSize)/1024; //单位KB
+        //return (allBlocks * blockSize)/1024/1024; //单位MB
     }
 
 

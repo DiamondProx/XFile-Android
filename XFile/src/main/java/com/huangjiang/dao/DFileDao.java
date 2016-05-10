@@ -40,6 +40,7 @@ public class DFileDao extends BaseDao<DFile, Long> {
         public final static Property From = new Property(9, String.class, "from", false, "FROM");
         public final static Property Percent = new Property(10, Long.class, "percent", false, "PERCENT");
         public final static Property Status = new Property(11, Integer.class, "status", false, "STATUS");
+        public final static Property SavePath = new Property(12, String.class, "savePath", false, "SAVE_PATH");
     }
 
     ;
@@ -70,7 +71,8 @@ public class DFileDao extends BaseDao<DFile, Long> {
                 "\"FULL_NAME\" TEXT," + // 8: fullName
                 "\"FROM\" TEXT," + // 9: from
                 "\"PERCENT\" INTEGER," + // 10: percent
-                "\"STATUS\" INTEGER NOT NULL );"); // 11: status
+                "\"STATUS\" INTEGER NOT NULL,"+ // 11: status
+                "\"SAVE_PATH\" TEXT);"); // 12: savePath
     }
 
     /**
@@ -147,6 +149,11 @@ public class DFileDao extends BaseDao<DFile, Long> {
         if (status != null) {
             stmt.bindLong(12, status);
         }
+
+        String savePath = entity.getSavePath();
+        if (savePath != null) {
+            stmt.bindString(13, savePath);
+        }
     }
 
     /**
@@ -174,7 +181,8 @@ public class DFileDao extends BaseDao<DFile, Long> {
                 cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // fullName
                 cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // from
                 cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // percent
-                cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11) // status
+                cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // status
+                cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12)//savePath
         );
         return entity;
     }
@@ -196,6 +204,7 @@ public class DFileDao extends BaseDao<DFile, Long> {
         entity.setFrom(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setPercent(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
         entity.setStatus(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
+        entity.setSavePath(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
     }
 
     /**

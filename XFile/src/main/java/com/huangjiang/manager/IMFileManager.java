@@ -181,11 +181,14 @@ public class IMFileManager extends IMBaseManager {
                 saveFile.createNewFile();
             }
             TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
+            // 设置为接收文件
             reqTFile.setIsSend(false);
             // 创建成功
             reqTFile.setFileEvent(FileEvent.CREATE_FILE_SUCCESS);
             // 保存数据库
             DFile dbFile = XFileUtils.buildDFile(reqTFile);
+            // 本地保存文件路径
+            dbFile.setSavePath(fullPath);
             fileDao.insert(dbFile);
             // 答复-本机机型
             XFileProtocol.File.Builder rspFile = reqFile.toBuilder();

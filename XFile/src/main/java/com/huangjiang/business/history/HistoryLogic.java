@@ -59,22 +59,26 @@ public class HistoryLogic extends BaseLogic {
             tFileInfo.setName(dFile.getName());
             tFileInfo.setPosition(dFile.getPosition());
             tFileInfo.setLength(dFile.getLength());
-            tFileInfo.setPath(dFile.getPath());
             tFileInfo.setExtension(dFile.getExtension());
             tFileInfo.setFullName(dFile.getFullName());
             tFileInfo.setTaskId(dFile.getTaskId());
             tFileInfo.setIsSend(dFile.getIsSend());
             tFileInfo.setFrom(dFile.getFrom());
 //            tFileInfo.setPercent(dFile.getPercent());
+            if (dFile.getIsSend()) {
+                tFileInfo.setPath(dFile.getPath());
+            } else {
+                tFileInfo.setPath(dFile.getSavePath());
+            }
             switch (dFile.getStatus()) {
                 case 0:
-                    tFileInfo.setFileEvent(FileEvent.CREATE_FILE_SUCCESS);
-                    break;
-                case 1:
                     tFileInfo.setFileEvent(FileEvent.SET_FILE_STOP);
                     break;
-                case 2:
+                case 1:
                     tFileInfo.setFileEvent(FileEvent.SET_FILE_SUCCESS);
+                    break;
+                case 2:
+                    tFileInfo.setFileEvent(FileEvent.SET_FILE_FAILED);
                     break;
             }
             FileType fileType = XFileUtils.getFileType(context, dFile.getFullName());
