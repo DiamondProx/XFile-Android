@@ -1,6 +1,7 @@
 package com.huangjiang.business;
 
 import com.huangjiang.business.event.FindResEvent;
+import com.huangjiang.business.event.HistoryEvent;
 import com.huangjiang.business.event.InstallEvent;
 import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.event.RootEvent;
@@ -27,6 +28,10 @@ public class BaseLogic {
     }
 
     public void triggerEvent(InstallEvent event) {
+        EventBus.getDefault().post(event);
+    }
+
+    public void triggerEvent(HistoryEvent event){
         EventBus.getDefault().post(event);
     }
 

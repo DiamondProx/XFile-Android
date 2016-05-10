@@ -3,7 +3,7 @@ package com.huangjiang.business.history;
 import android.content.Context;
 
 import com.huangjiang.business.BaseLogic;
-import com.huangjiang.business.event.FindResEvent;
+import com.huangjiang.business.event.*;
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.core.ThreadPoolManager;
@@ -43,6 +43,22 @@ public class HistoryLogic extends BaseLogic {
                     List<TFileInfo> tFileInfoList = convertDFileToTFile(history);
                     triggerEvent(FindResEvent.MimeType.HISTORY, tFileInfoList);
                 }
+            }
+        });
+    }
+
+    public void delAllHistory() {
+        ThreadPoolManager.getInstance(HistoryLogic.class.getName()).startTaskThread(new Runnable() {
+            @Override
+            public void run() {
+                HistoryEvent historyEvent = new HistoryEvent();
+                try {
+                    fileDao.deleteAll();
+                    historyEvent.setSuccess(true);
+                } catch (Exception e) {
+                    historyEvent.setSuccess(false);
+                }
+                triggerEvent(historyEvent);
             }
         });
     }

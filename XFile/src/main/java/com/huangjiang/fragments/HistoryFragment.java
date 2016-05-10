@@ -187,4 +187,11 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         super.onPause();
         MobclickAgent.onPageEnd(mPageName);
     }
+
+    public int getHistoryCount() {
+        if (adapter != null) {
+            return adapter.getCount();
+        }
+        return 0;
+    }
 }

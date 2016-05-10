@@ -135,6 +135,9 @@
     <string name="upgrade_root_permission_failure">获取Root权限失败</string>
     <string name="feed_back_title">快传意见反馈</string>
     <string name="feed_back_hint">非常感谢您使用改产品,请输入您珍贵的意见,助于提升产品提升,非常感谢!</string>
+    <string name="clear_all_history_comfirm">是否清除所有历史消息</string>
+    <string name="confirm">确认</string>
+
 
 
 </resources>
