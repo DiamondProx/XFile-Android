@@ -27,8 +27,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huangjiang.XFileApplication;
+import com.huangjiang.business.event.RecordEvent;
+import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.config.Config;
-import com.huangjiang.xfile.R;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.manager.IMClientFileManager;
@@ -40,7 +41,9 @@ import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.service.IMService;
 import com.huangjiang.utils.SoundHelper;
 import com.huangjiang.utils.VibratorUtils;
+import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.AnimationHelper;
+import com.huangjiang.xfile.R;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.umeng.analytics.MobclickAgent;
 
@@ -52,7 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeActivity extends FragmentActivity implements OnClickListener, OnCheckedChangeListener {
+public class HomeActivity extends BaseActivity implements OnClickListener, OnCheckedChangeListener {
 
     private final String mPageName = "HomeActivity";
 
@@ -87,7 +90,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     RelativeLayout top_main_layout, top_connect_layout;
     FrameLayout head_layout;
     ImageView fileThumb;
-
+    HistoryLogic historyLogic;
 
 
     @Override
@@ -161,6 +164,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         btn_share.setOnClickListener(this);
 
         fileThumb = (ImageView) findViewById(R.id.fileThumb);
+        historyLogic = new HistoryLogic(HomeActivity.this);
 
     }
 
@@ -170,6 +174,7 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
         switch (v.getId()) {
             case R.id.btn_right:
                 slidingMenu.showSecondaryMenu();
+                historyLogic.getRecordInfo();
                 break;
             case R.id.help_layout:
                 startActivity(new Intent(HomeActivity.this, HelpActivity.class));
@@ -295,11 +300,9 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     }
 
     void initData() {
-        tvPersonNumber.setText(String.format(getString(R.string.person_number), "0"));
-        tvCountNumber.setText(String.format(getString(R.string.count_number), "0"));
-        tvFileNumber.setText(String.format(getString(R.string.file_total_b), "0.00"));
         device_name.setText(android.os.Build.MODEL);
         startService(new Intent(this, IMService.class));
+        historyLogic.getRecordInfo();
     }
 
     @Override
@@ -345,6 +348,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 if (Config.getVibration()) {
                     VibratorUtils.Vibrate();
                 }
+                // 统计连接次数
+                historyLogic.addOneConnect(event.getDevice_name());
                 break;
             case CONNECT_CLOSE:
                 XFileApplication.connect_type = 0;
@@ -377,6 +382,8 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
                 if (Config.getVibration()) {
                     VibratorUtils.Vibrate();
                 }
+                // 统计连接次数
+                historyLogic.addOneConnect(event.getDevice_name());
                 break;
             case CONNECT_CLOSE:
                 XFileApplication.connect_type = 0;
@@ -418,6 +425,13 @@ public class HomeActivity extends FragmentActivity implements OnClickListener, O
     public void onPause() {
         super.onPause();
         MobclickAgent.onPageEnd(mPageName);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(RecordEvent recordEvent) {
+        tvPersonNumber.setText(String.format(getString(R.string.person_number), recordEvent.getDeviceCount()));
+        tvCountNumber.setText(String.format(getString(R.string.count_number), recordEvent.getConnectCount()));
+        tvFileNumber.setText(XFileUtils.parseSize(recordEvent.getTotalSize()));
     }
 
 

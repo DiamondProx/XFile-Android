@@ -8,7 +8,7 @@ public class DLinkDetail {
 
     private Long id;
     private String deviceId;
-    private String createTime;
+    private Integer count;
 
     public DLinkDetail() {
     }
@@ -17,10 +17,10 @@ public class DLinkDetail {
         this.id = id;
     }
 
-    public DLinkDetail(Long id, String deviceId, String createTime) {
+    public DLinkDetail(Long id, String deviceId, int count) {
         this.id = id;
         this.deviceId = deviceId;
-        this.createTime = createTime;
+        this.count = count;
     }
 
     public Long getId() {
@@ -39,12 +39,12 @@ public class DLinkDetail {
         this.deviceId = deviceId;
     }
 
-    public String getCreateTime() {
-        return createTime;
+
+    public Integer getCount() {
+        return count;
     }
 
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
+    public void setCount(Integer count) {
+        this.count = count;
     }
-
 }

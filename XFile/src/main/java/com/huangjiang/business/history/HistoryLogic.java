@@ -3,14 +3,19 @@ package com.huangjiang.business.history;
 import android.content.Context;
 
 import com.huangjiang.business.BaseLogic;
-import com.huangjiang.business.event.*;
+import com.huangjiang.business.event.FindResEvent;
+import com.huangjiang.business.event.HistoryEvent;
+import com.huangjiang.business.event.RecordEvent;
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.core.ThreadPoolManager;
 import com.huangjiang.dao.DFile;
 import com.huangjiang.dao.DFileDao;
+import com.huangjiang.dao.DLinkDetailDao;
+import com.huangjiang.dao.DTransferDetailDao;
 import com.huangjiang.dao.DaoMaster;
 import com.huangjiang.manager.event.FileEvent;
+import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.XFileUtils;
 
 import java.util.ArrayList;
@@ -21,14 +26,19 @@ import java.util.List;
  */
 public class HistoryLogic extends BaseLogic {
 
+    private Logger logger = Logger.getLogger(HistoryLogic.class);
     private HistoryInterface historyInterface;
     private Context context;
     private DFileDao fileDao;
+    private DLinkDetailDao linkDetailDao;
+    private DTransferDetailDao transferDetailDao;
 
     public HistoryLogic(Context context) {
         historyInterface = new HistoryInterface(context);
         this.context = context;
         this.fileDao = DaoMaster.getInstance().newSession().getDFileDao();
+        this.linkDetailDao = DaoMaster.getInstance().newSession().getDLinkDetailDao();
+        this.transferDetailDao = DaoMaster.getInstance().newSession().getDTransferDetailDao();
     }
 
     /**
@@ -47,6 +57,9 @@ public class HistoryLogic extends BaseLogic {
         });
     }
 
+    /**
+     * 删除所有历史消息
+     */
     public void delAllHistory() {
         ThreadPoolManager.getInstance(HistoryLogic.class.getName()).startTaskThread(new Runnable() {
             @Override
@@ -62,6 +75,47 @@ public class HistoryLogic extends BaseLogic {
             }
         });
     }
+
+    /**
+     * 连接计数
+     */
+    public void addOneConnect(final String deviceId) {
+        ThreadPoolManager.getInstance(HistoryLogic.class.getName()).startTaskThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    linkDetailDao.addCount(deviceId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.e(e.getMessage());
+                }
+
+            }
+        });
+    }
+
+    public void getRecordInfo() {
+        ThreadPoolManager.getInstance(HistoryLogic.class.getName()).startTaskThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int deviceCount = linkDetailDao.getDeviceCount();
+                    int connectCount = linkDetailDao.getConnectCount();
+                    long totalSize = transferDetailDao.getTotalSize();
+                    RecordEvent recordEvent = new RecordEvent();
+                    recordEvent.setDeviceCount(deviceCount);
+                    recordEvent.setConnectCount(connectCount);
+                    recordEvent.setTotalSize(totalSize);
+                    triggerEvent(recordEvent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.e(e.getMessage());
+                }
+
+            }
+        });
+    }
+
 
     public void addTMessage(TFileInfo tFileInfo) {
         DFile dFile = XFileUtils.buildDFile(tFileInfo);

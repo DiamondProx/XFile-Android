@@ -160,6 +160,10 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                 tFileInfo.setPath(dFileInfo.getSavePath());
                 adapter.updateTFileInfo(tFileInfo);
                 updateTransmitState(tFileInfo);
+                Fragment fragment = getParentFragment();
+                if (fragment != null && fragment instanceof TabMessageFragment) {
+                    ((TabMessageFragment) fragment).setStoreSpace();
+                }
             }
             break;
             case SET_FILE_FAILED:

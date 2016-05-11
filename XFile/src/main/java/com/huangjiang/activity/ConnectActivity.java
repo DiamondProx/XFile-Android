@@ -1,6 +1,5 @@
 package com.huangjiang.activity;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,14 +25,14 @@ import android.widget.TextView;
 import com.huangjiang.XFileApplication;
 import com.huangjiang.config.Config;
 import com.huangjiang.config.SysConstant;
-import com.huangjiang.utils.MobileDataUtils;
-import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMDeviceServerManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.message.event.ScanDeviceInfo;
 import com.huangjiang.utils.Logger;
+import com.huangjiang.utils.MobileDataUtils;
+import com.huangjiang.xfile.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,7 +43,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConnectActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class ConnectActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private Logger logger = Logger.getLogger(ConnectActivity.class);
     private final String mPageName = "ConnectActivity";

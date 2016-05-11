@@ -25,6 +25,7 @@ import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.opfile.OpLogic;
 import com.huangjiang.business.search.SearchLogic;
+import com.huangjiang.utils.MediaStoreUtils;
 import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.view.CustomDialog;
@@ -184,6 +185,8 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
             case DELETE:
             case UNINSTALL:
                 searchAdapter.removeFile(opFileEvent.getTFileInfo());
+                String path = opFileEvent.getTFileInfo().getPath();
+                MediaStoreUtils.resetMediaStore(getActivity(), path);
                 break;
             case RENAME:
                 searchAdapter.updateFile(opFileEvent.getTFileInfo());

@@ -10,8 +10,6 @@ import android.widget.Toast;
 import com.huangjiang.business.app.AppLogic;
 import com.huangjiang.business.event.RootEvent;
 import com.huangjiang.config.Config;
-import com.huangjiang.manager.event.ServerFileSocketEvent;
-import com.huangjiang.utils.ApkInstall;
 import com.huangjiang.view.SwitchButton;
 import com.huangjiang.xfile.R;
 import com.umeng.analytics.MobclickAgent;

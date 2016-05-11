@@ -385,7 +385,7 @@ public class XFileUtils {
     /**
      * SD卡的剩余空间
      */
-    public long getSDFreeSize() {
+    public static long getSDFreeSize() {
         //取得SD卡文件路径
         File path = Environment.getExternalStorageDirectory();
         StatFs sf = new StatFs(path.getPath());
@@ -402,7 +402,7 @@ public class XFileUtils {
     /**
      * SD卡总容量
      */
-    public long getSDAllSize() {
+    public static long getSDAllSize() {
         //取得SD卡文件路径
         File path = Environment.getExternalStorageDirectory();
         StatFs sf = new StatFs(path.getPath());

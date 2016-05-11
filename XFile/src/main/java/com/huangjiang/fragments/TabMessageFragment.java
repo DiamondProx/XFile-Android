@@ -15,11 +15,12 @@ import com.huangjiang.adapter.MessagePagerAdapter;
 import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.utils.Logger;
+import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.TabBar;
 import com.huangjiang.xfile.R;
 import com.umeng.analytics.MobclickAgent;
 
-public class TabMessageFragment extends Fragment implements TabBar.OnTabListener, ViewPager.OnPageChangeListener, View.OnClickListener {
+public class TabMessageFragment extends BaseFragment implements TabBar.OnTabListener, ViewPager.OnPageChangeListener, View.OnClickListener {
 
     private Logger logger = Logger.getLogger(IMFileManager.class);
     private final String mPageName = "TabMessageFragment";
@@ -47,7 +48,6 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOnPageChangeListener(this);
         viewPager.setCurrentItem(1);
-        txt_disk_status.setText(String.format(getString(R.string.disk_status), "10.79GB", "12.34BG"));
         historyLogic = new HistoryLogic(getActivity());
         return view;
 
@@ -108,12 +108,43 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
     public void onResume() {
         super.onResume();
         MobclickAgent.onPageStart(mPageName);
+        setStoreSpace();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         MobclickAgent.onPageEnd(mPageName);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        System.out.println("****setUserVisibleHint");
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isAdded()) {
+            setStoreSpace();
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+//        System.out.println("****onHiddenChanged");
+        super.onHiddenChanged(hidden);
+    }
+
+    public void setStoreSpace() {
+        try {
+//            System.out.println("****currentTime1:" + System.currentTimeMillis());
+            long remainSpace = XFileUtils.getSDFreeSize();
+            long allSpace = XFileUtils.getSDAllSize();
+            String remainSpaceStr = XFileUtils.parseSize(remainSpace);
+            String allSpaceStr = XFileUtils.parseSize(allSpace);
+            txt_disk_status.setText(String.format(getString(R.string.disk_status), remainSpaceStr, allSpaceStr));
+//            System.out.println("****currentTime2:" + System.currentTimeMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.e(e.getMessage());
+        }
     }
 
 }

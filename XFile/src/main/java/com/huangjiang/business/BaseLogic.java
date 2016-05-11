@@ -4,6 +4,7 @@ import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.event.HistoryEvent;
 import com.huangjiang.business.event.InstallEvent;
 import com.huangjiang.business.event.OpFileEvent;
+import com.huangjiang.business.event.RecordEvent;
 import com.huangjiang.business.event.RootEvent;
 import com.huangjiang.business.model.TFileInfo;
 
@@ -32,6 +33,9 @@ public class BaseLogic {
     }
 
     public void triggerEvent(HistoryEvent event){
+        EventBus.getDefault().post(event);
+    }
+    public void triggerEvent(RecordEvent event){
         EventBus.getDefault().post(event);
     }
 

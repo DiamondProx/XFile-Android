@@ -8,6 +8,7 @@ import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.dao.DFile;
 import com.huangjiang.dao.DFileDao;
+import com.huangjiang.dao.DTransferDetailDao;
 import com.huangjiang.dao.DaoMaster;
 import com.huangjiang.manager.callback.Packetlistener;
 import com.huangjiang.manager.event.FileEvent;
@@ -48,6 +49,8 @@ public class IMFileManager extends IMBaseManager {
 
     private DFileDao fileDao;
 
+    private DTransferDetailDao transferDetailDao;
+
     private TFileInfo currentTask = null;
 
     private static IMFileManager inst = null;
@@ -61,6 +64,7 @@ public class IMFileManager extends IMBaseManager {
 
     IMFileManager() {
         fileDao = DaoMaster.getInstance().newSession().getDFileDao();
+        transferDetailDao = DaoMaster.getInstance().newSession().getDTransferDetailDao();
     }
 
 
@@ -345,6 +349,8 @@ public class IMFileManager extends IMBaseManager {
                 // 保存数据库,传送完成
                 DFile dFile = XFileUtils.buildDFile(reqTFile);
                 fileDao.updateTransferStatus(dFile);
+                // 保存累计传输大小
+                transferDetailDao.addTotalSize(reqTFile.getLength());
                 // 重置标记
                 readPercent = 0;
                 readIndex = 0;
@@ -523,6 +529,8 @@ public class IMFileManager extends IMBaseManager {
                     // 保存数据库，记录发送到哪了
                     DFile dbFile = XFileUtils.buildDFile(rspTFile);
                     fileDao.updateTransferStatus(dbFile);
+                    // 保存累计传输大小
+                    transferDetailDao.addTotalSize(rspTFile.getLength());
                     // 移除接收任务
                     removeTask(rspTFile);
                     triggerEvent(rspTFile);

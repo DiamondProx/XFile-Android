@@ -13,7 +13,7 @@ import com.huangjiang.xfile.R;
 import com.huangjiang.view.TabBar;
 import com.umeng.analytics.MobclickAgent;
 
-public class TabMobileFragment extends Fragment implements OnPageChangeListener, TabBar.OnTabListener, View.OnClickListener {
+public class TabMobileFragment extends BaseFragment implements OnPageChangeListener, TabBar.OnTabListener, View.OnClickListener {
     private final String mPageName = "TabMobileFragment";
     ViewPager viewPager;
     TabBar tabBar;

@@ -3,6 +3,7 @@ package com.huangjiang.activity;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,7 +20,7 @@ import com.huangjiang.xfile.R;
 /**
  * BaseActivity
  */
-public class BaseActivity extends Activity implements View.OnClickListener {
+public class BaseActivity extends FragmentActivity implements View.OnClickListener {
 
 
     protected FrameLayout frameLayout;
@@ -100,7 +101,7 @@ public class BaseActivity extends Activity implements View.OnClickListener {
 
     /**
      * @Title: resetTitleRightMenu
-     * @Description: TODO(重设标题栏右边的菜单, 包含影藏操作)
+     * @Description: 重设标题栏右边的菜单, 包含影藏操作
      * @param:
      */
     public void resetTitleRightMenu(int... resID) {

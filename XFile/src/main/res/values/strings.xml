@@ -97,7 +97,6 @@
     <string name="local_music">本地音乐(%1$s)</string>
     <string name="local_video">本地视频(%1$s)</string>
     <string name="local_app">本地程序(%1$s)</string>
-
     <string name="btn_start">开始</string>
     <string name="btn_stop">停止</string>
     <string name="msg_net_off">未连接上网络</string>
@@ -137,7 +136,7 @@
     <string name="feed_back_hint">非常感谢您使用改产品,请输入您珍贵的意见,助于提升产品提升,非常感谢!</string>
     <string name="clear_all_history_comfirm">是否清除所有历史消息</string>
     <string name="confirm">确认</string>
-
+    <string name="total_transfer_desc">目前为止传输文件大小</string>
 
 
 </resources>
