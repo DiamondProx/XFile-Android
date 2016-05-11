@@ -137,6 +137,7 @@
     <string name="clear_all_history_comfirm">是否清除所有历史消息</string>
     <string name="confirm">确认</string>
     <string name="total_transfer_desc">目前为止传输文件大小</string>
+    <string name="exit_confirm">再按一次退出程序</string>
 
 
 </resources>

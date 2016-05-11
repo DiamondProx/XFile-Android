@@ -46,23 +46,17 @@ import java.util.List;
 public class ConnectActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private Logger logger = Logger.getLogger(ConnectActivity.class);
-    private final String mPageName = "ConnectActivity";
 
+    private final String mPageName = "ConnectActivity";
     ImageView close1, refresh1, refresh2, iv_connecting;
     Button search_join, search_cancel, search_back, connect_back, connecting_cancel, create_ap;
     LinearLayout layout1, layout2, layout3, layout4, layout5;
     TextView connect_hint1, connect_hint2;
     String connecting, connect_success, create_connect, let_friend_join;
-
-    int progress_type;
-
-
-    int scan_time = 3000;//设备扫描时间
+    int scan_time = 3000;
     ListView lv_device;
     ScanDeviceAdapter deviceAdapter;
     private AnimationDrawable animationDrawable;
-
-
     private List<ScanResult> wifiList;
     private WifiManager wifiManager;
     private WifiReceiver wifiReceiver;
@@ -98,16 +92,9 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
         init();
-
-        MobclickAgent.setDebugMode(true);
-        MobclickAgent.openActivityDurationTrack(false);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
+
 
     void init() {
         EventBus.getDefault().register(this);
@@ -501,6 +488,12 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
     public void onPause() {
         super.onPause();
         MobclickAgent.onPageEnd(mPageName);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
 }

@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -64,33 +65,25 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
     private ImageView cursor;
     private Animation animation = null;
     private int originalIndex;
-
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
     private RadioGroup radioGroup;
-
     TabMobileFragment tabMobileFragment;
     TabMessageFragment tabMessageFragment;
-
     private SlidingMenu slidingMenu = null;
-
     private int mTabIndex;
     RadioButton rdb_home, rdb_message;
     CheckBox cb;
     TextView tvPersonNumber, tvCountNumber, tvFileNumber;
-
     public List<Fragment> fragments = new ArrayList<Fragment>();
-
     private TextView device_name, connect_device_name;
-
     ColorStateList gray_color, blue_color, green_color;
-
     Button btn_share, btn_close;
-
     RelativeLayout top_main_layout, top_connect_layout;
     FrameLayout head_layout;
     ImageView fileThumb;
     HistoryLogic historyLogic;
+    private long firstTime = 0;
 
 
     @Override
@@ -435,4 +428,19 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
     }
 
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            long secondTime = System.currentTimeMillis();
+            if (secondTime - firstTime > 800) {//如果两次按键时间间隔大于800毫秒，则不退出
+                Toast.makeText(HomeActivity.this, R.string.exit_confirm, Toast.LENGTH_SHORT).show();
+                firstTime = secondTime;//更新firstTime
+                return true;
+            } else {
+                XFileActivityManager.create().finishAllActivity();
+                System.exit(0);//否则退出程序
+            }
+        }
+        return super.onKeyUp(keyCode, event);
+    }
 }
