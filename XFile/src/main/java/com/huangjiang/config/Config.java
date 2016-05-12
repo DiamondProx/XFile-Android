@@ -1,6 +1,6 @@
 package com.huangjiang.config;
 
-import com.huangjiang.XFileApplication;
+import com.huangjiang.XFileApp;
 import com.huangjiang.utils.SharedPrefsUtil;
 
 /**
@@ -45,60 +45,60 @@ public class Config {
 
 
     public static boolean getSound() {
-        return SharedPrefsUtil.getValue(XFileApplication.context, SOUND, true);
+        return SharedPrefsUtil.getValue(XFileApp.context, SOUND, true);
     }
 
     public static void setSound(boolean soundSetting) {
-        SharedPrefsUtil.putValue(XFileApplication.context, SOUND, soundSetting);
+        SharedPrefsUtil.putValue(XFileApp.context, SOUND, soundSetting);
     }
 
 
     public static boolean getVibration() {
-        return SharedPrefsUtil.getValue(XFileApplication.context, VIBRATION, true);
+        return SharedPrefsUtil.getValue(XFileApp.context, VIBRATION, true);
     }
 
     public static void setVibration(boolean vibrationSetting) {
-        SharedPrefsUtil.putValue(XFileApplication.context, VIBRATION, vibrationSetting);
+        SharedPrefsUtil.putValue(XFileApp.context, VIBRATION, vibrationSetting);
     }
 
     public static boolean getUpdate() {
-        return SharedPrefsUtil.getValue(XFileApplication.context, UPDATE, true);
+        return SharedPrefsUtil.getValue(XFileApp.context, UPDATE, true);
     }
 
     public static void setUpdate(boolean updateSetting) {
-        SharedPrefsUtil.putValue(XFileApplication.context, UPDATE, updateSetting);
+        SharedPrefsUtil.putValue(XFileApp.context, UPDATE, updateSetting);
     }
 
     public static boolean getMobileData() {
-        return SharedPrefsUtil.getValue(XFileApplication.context, MOBILE_DATA, false);
+        return SharedPrefsUtil.getValue(XFileApp.context, MOBILE_DATA, false);
     }
 
     public static void setMobileData(boolean mobileDataSetting) {
-        SharedPrefsUtil.putValue(XFileApplication.context, MOBILE_DATA, mobileDataSetting);
+        SharedPrefsUtil.putValue(XFileApp.context, MOBILE_DATA, mobileDataSetting);
     }
 
     public static boolean getHidden() {
-        return SharedPrefsUtil.getValue(XFileApplication.context, HIDDEN, false);
+        return SharedPrefsUtil.getValue(XFileApp.context, HIDDEN, false);
     }
 
     public static void setHidden(boolean hiddenSetting) {
-        SharedPrefsUtil.putValue(XFileApplication.context, HIDDEN, hiddenSetting);
+        SharedPrefsUtil.putValue(XFileApp.context, HIDDEN, hiddenSetting);
     }
 
     public static boolean getNeedPWD() {
-        return SharedPrefsUtil.getValue(XFileApplication.context, NEED_PWD, false);
+        return SharedPrefsUtil.getValue(XFileApp.context, NEED_PWD, false);
     }
 
     public static void setNeedPWD(boolean needPWDSetting) {
-        SharedPrefsUtil.putValue(XFileApplication.context, NEED_PWD, needPWDSetting);
+        SharedPrefsUtil.putValue(XFileApp.context, NEED_PWD, needPWDSetting);
     }
 
     public static boolean getInstallSilent() {
-        return SharedPrefsUtil.getValue(XFileApplication.context, INSTALL_SILENT, false);
+        return SharedPrefsUtil.getValue(XFileApp.context, INSTALL_SILENT, false);
     }
 
     public static void setInstallSilent(boolean installSilentSetting) {
-        SharedPrefsUtil.putValue(XFileApplication.context, INSTALL_SILENT, installSilentSetting);
+        SharedPrefsUtil.putValue(XFileApp.context, INSTALL_SILENT, installSilentSetting);
     }
 
 }

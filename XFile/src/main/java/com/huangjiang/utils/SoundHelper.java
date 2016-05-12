@@ -3,7 +3,7 @@ package com.huangjiang.utils;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
-import com.huangjiang.XFileApplication;
+import com.huangjiang.XFileApp;
 import com.huangjiang.xfile.R;
 
 /**
@@ -18,9 +18,9 @@ public class SoundHelper {
 
     public static void init() {
         soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
-        onlineId = soundPool.load(XFileApplication.context, R.raw.online, 1);
-        receiveFileId = soundPool.load(XFileApplication.context, R.raw.receivefile, 1);
-        dragThrowId = soundPool.load(XFileApplication.context, R.raw.dragthrow, 1);
+        onlineId = soundPool.load(XFileApp.context, R.raw.online, 1);
+        receiveFileId = soundPool.load(XFileApp.context, R.raw.receivefile, 1);
+        dragThrowId = soundPool.load(XFileApp.context, R.raw.dragthrow, 1);
     }
 
     /**
@@ -47,7 +47,7 @@ public class SoundHelper {
 
     public static void playSound(int soundId) {
         if (soundPool == null) return;
-        AudioManager mgr = (AudioManager) XFileApplication.context.getSystemService(XFileApplication.context.AUDIO_SERVICE);
+        AudioManager mgr = (AudioManager) XFileApp.context.getSystemService(XFileApp.context.AUDIO_SERVICE);
         final float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
         final float streamVolumeMax = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         final float volume = streamVolumeCurrent / streamVolumeMax;

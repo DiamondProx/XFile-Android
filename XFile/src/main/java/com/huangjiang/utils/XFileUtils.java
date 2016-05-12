@@ -12,7 +12,7 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import com.huangjiang.XFileApplication;
+import com.huangjiang.XFileApp;
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.dao.DFile;
@@ -255,7 +255,7 @@ public class XFileUtils {
      * 读取设备号
      */
     public static String getDeviceId() {
-        TelephonyManager tm = (TelephonyManager) XFileApplication.context.getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager tm = (TelephonyManager) XFileApp.context.getSystemService(Context.TELEPHONY_SERVICE);
         return tm.getDeviceId();
     }
 

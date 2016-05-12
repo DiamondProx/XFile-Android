@@ -14,7 +14,7 @@ import android.provider.MediaStore;
 import android.support.v4.util.LruCache;
 import android.widget.ImageView;
 
-import com.huangjiang.XFileApplication;
+import com.huangjiang.XFileApp;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.xfile.R;
 
@@ -131,7 +131,7 @@ public class ImageLoader {
     }
 
     Bitmap loadApkThumb(String apkPath) {
-        PackageManager pm = XFileApplication.context.getPackageManager();
+        PackageManager pm = XFileApp.context.getPackageManager();
         PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
         if (info != null) {
             ApplicationInfo appInfo = info.applicationInfo;

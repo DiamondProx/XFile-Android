@@ -78,7 +78,7 @@
     <string name="open">打开</string>
     <string name="uninstall">卸载</string>
     <string name="rename">重命名</string>
-    <string name="back">备份</string>
+    <string name="backup">备份</string>
     <string name="btn_sure">确定</string>
     <string name="property_name">名称:%1$s</string>
     <string name="property_type">类型:%1$s</string>
@@ -107,7 +107,7 @@
     <string name="step2_hint">打开浏览器输入网址,或扫描二维码</string>
     <string name="default_wifi">DM-JoinMe</string>
     <string name="default_ap_ip">http://192.168.43.1:7766</string>
-    <string name="connecting">全速连接中,请稍后...</string>
+    <string name="connecting">全速连接中,请稍后…</string>
     <string name="connect_success">连接成功后,任意文件零流量传输~</string>
     <string name="create_connect">创建成功,等待朋友搜索加入</string>
     <string name="let_friend_join">让朋友搜索加入"%1$s"</string>
@@ -138,6 +138,20 @@
     <string name="confirm">确认</string>
     <string name="total_transfer_desc">目前为止传输文件大小</string>
     <string name="exit_confirm">再按一次退出程序</string>
+    <string name="join_friend">连朋友，传文件</string>
+    <string name="ours_join">“我们加入”</string>
+    <string name="create_my_connect">“我建连接”</string>
+    <string name="create_hotspot">创建连接</string>
+    <string name="search_join">搜索加入</string>
+    <string name="search_available_friend">正在搜索可链接的朋友</string>
+    <string name="cancel_search">取消搜索</string>
+    <string name="available_link_friend">可链接的朋友</string>
+    <string name="not_found_friend">没有找到可链接的人?</string>
+    <string name="please_again_search1">1.点击刷新按钮,重新搜索</string>
+    <string name="please_again_search2">2.或点击返回,建个链接让朋友来找你</string>
+    <string name="back">返回</string>
+    <string name="create_hotspot_failed">创建连接失败</string>
+    <string name="click_link">点击链接</string>
 
 
 </resources>

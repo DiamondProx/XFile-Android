@@ -1,13 +1,13 @@
 package com.huangjiang.manager;
 
 import com.google.protobuf.GeneratedMessage;
-import com.huangjiang.XFileApplication;
+import com.huangjiang.XFileApp;
 import com.huangjiang.config.Config;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.message.DeviceServerThread;
 import com.huangjiang.message.base.DataBuffer;
 import com.huangjiang.message.base.Header;
-import com.huangjiang.message.event.ScanDeviceInfo;
+import com.huangjiang.business.model.ScanInfo;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.NetStateUtils;
@@ -63,9 +63,9 @@ public class IMDeviceServerManager extends IMBaseManager {
 
     void startServer() {
         stopServer();
-        this.ip = Config.is_ap ? SysConstant.DEFAULT_AP_IP : NetStateUtils.getIPv4(XFileApplication.context);
+        this.ip = Config.is_ap ? SysConstant.DEFAULT_AP_IP : NetStateUtils.getIPv4(XFileApp.context);
         this.port = SysConstant.BROADCASE_PORT;
-        this.device_id = XFileApplication.device_id;
+        this.device_id = XFileApp.device_id;
         mDeviceServerThread = new DeviceServerThread();
         mDeviceServerThread.start();
     }
@@ -119,7 +119,7 @@ public class IMDeviceServerManager extends IMBaseManager {
                 response.setMessagePort(SysConstant.MESSAGE_PORT);
                 response.setFilePort(SysConstant.FILE_SERVER_PORT);
                 response.setName(android.os.Build.MODEL);
-                response.setDeviceId(XFileApplication.device_id);
+                response.setDeviceId(XFileApp.device_id);
                 short serviceId = SysConstant.SERVICE_DEFAULT;
                 short commandId = SysConstant.CMD_ECHO;
                 sendMessage(serviceId, commandId, response.build(), remoteIp, remotePort);
@@ -137,12 +137,12 @@ public class IMDeviceServerManager extends IMBaseManager {
     void dispatchEcho(byte[] bodyData) {
         try {
             XFileProtocol.Echo request = XFileProtocol.Echo.parseFrom(bodyData);
-            ScanDeviceInfo event = new ScanDeviceInfo();
+            ScanInfo event = new ScanInfo();
             event.setIp(request.getIp());
             event.setName(request.getName());
-            event.setMessage_port(request.getMessagePort());
-            event.setFile_port(request.getFilePort());
-            event.setDevice_id(request.getDeviceId());
+            event.setMsgPort(request.getMessagePort());
+            event.setFilePort(request.getFilePort());
+            event.setDeviceId(request.getDeviceId());
             EventBus.getDefault().postSticky(event);
         } catch (Exception e) {
             e.printStackTrace();

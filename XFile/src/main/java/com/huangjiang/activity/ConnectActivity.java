@@ -1,5 +1,6 @@
 package com.huangjiang.activity;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,27 +12,26 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.huangjiang.XFileApplication;
+import com.huangjiang.XFileApp;
+import com.huangjiang.adapter.ScanAdapter;
+import com.huangjiang.business.model.ScanInfo;
 import com.huangjiang.config.Config;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMDeviceServerManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
-import com.huangjiang.message.event.ScanDeviceInfo;
-import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.MobileDataUtils;
+import com.huangjiang.utils.StringUtils;
+import com.huangjiang.utils.WifiHelper;
 import com.huangjiang.xfile.R;
 import com.umeng.analytics.MobclickAgent;
 
@@ -39,53 +39,19 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private Logger logger = Logger.getLogger(ConnectActivity.class);
-
     private final String mPageName = "ConnectActivity";
-    ImageView close1, refresh1, refresh2, iv_connecting;
-    Button search_join, search_cancel, search_back, connect_back, connecting_cancel, create_ap;
-    LinearLayout layout1, layout2, layout3, layout4, layout5;
-    TextView connect_hint1, connect_hint2;
-    String connecting, connect_success, create_connect, let_friend_join;
-    int scan_time = 3000;
-    ListView lv_device;
-    ScanDeviceAdapter deviceAdapter;
+    private LinearLayout guide_layout, scan_layout, failed_layout, device_layout, link_layout;
+    private TextView link_hint1, link_hint2;
+    private String connecting, connect_success, create_connect, let_friend_join;
+    private ScanAdapter scanAdapter;
     private AnimationDrawable animationDrawable;
-    private List<ScanResult> wifiList;
     private WifiManager wifiManager;
     private WifiReceiver wifiReceiver;
-    private boolean isConnected = false;
 
-
-    Handler ScanDeviceHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            IMDeviceServerManager.getInstance().cancelBonjour();
-            /*销毁时注销广播*/
-            unregisterReceiver(wifiReceiver);
-            int scanCount = msg.what;
-            if (scanCount > 0) {
-                // 显示设备信息
-                layout1.setVisibility(View.INVISIBLE);
-                layout2.setVisibility(View.INVISIBLE);
-                layout3.setVisibility(View.INVISIBLE);
-                layout4.setVisibility(View.VISIBLE);
-                deviceAdapter.notifyDataSetChanged();
-            } else {
-                // 没找到设备
-                layout1.setVisibility(View.INVISIBLE);
-                layout2.setVisibility(View.INVISIBLE);
-                layout3.setVisibility(View.VISIBLE);
-                layout4.setVisibility(View.INVISIBLE);
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,302 +60,193 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
         init();
     }
 
-
-
     void init() {
-        EventBus.getDefault().register(this);
-        close1 = (ImageView) findViewById(R.id.close1);
-        close1.setOnClickListener(this);
-        search_join = (Button) findViewById(R.id.search_join);
-        search_join.setOnClickListener(this);
-        search_cancel = (Button) findViewById(R.id.search_cancel);
-        search_cancel.setOnClickListener(this);
-        search_back = (Button) findViewById(R.id.search_back);
-        search_back.setOnClickListener(this);
-        connect_back = (Button) findViewById(R.id.connect_back);
-        connect_back.setOnClickListener(this);
-        connecting_cancel = (Button) findViewById(R.id.connecting_cancel);
-        connecting_cancel.setOnClickListener(this);
-        create_ap = (Button) findViewById(R.id.create_ap);
-        create_ap.setOnClickListener(this);
 
-        refresh1 = (ImageView) findViewById(R.id.refresh);
-        refresh1.setOnClickListener(this);
-        refresh2 = (ImageView) findViewById(R.id.refresh2);
-        refresh2.setOnClickListener(this);
-        layout1 = (LinearLayout) findViewById(R.id.layout1);
-        layout2 = (LinearLayout) findViewById(R.id.layout2);
-        layout3 = (LinearLayout) findViewById(R.id.layout3);
-        layout4 = (LinearLayout) findViewById(R.id.layout4);
-        layout5 = (LinearLayout) findViewById(R.id.layout5);
-        lv_device = (ListView) findViewById(R.id.lv_device);
-        connect_hint1 = (TextView) findViewById(R.id.connect_hint1);
-        connect_hint2 = (TextView) findViewById(R.id.connect_hint2);
+        findViewById(R.id.guide_close).setOnClickListener(this);
+        findViewById(R.id.failed_refresh).setOnClickListener(this);
+        findViewById(R.id.device_refresh).setOnClickListener(this);
+        findViewById(R.id.search_join).setOnClickListener(this);
+        findViewById(R.id.scan_cancel).setOnClickListener(this);
+        findViewById(R.id.failed_back).setOnClickListener(this);
+        findViewById(R.id.device_back).setOnClickListener(this);
+        findViewById(R.id.link_cancel).setOnClickListener(this);
+        findViewById(R.id.create_ap).setOnClickListener(this);
+
+        guide_layout = (LinearLayout) findViewById(R.id.guide_layout);
+        scan_layout = (LinearLayout) findViewById(R.id.scan_layout);
+        failed_layout = (LinearLayout) findViewById(R.id.failed_layout);
+        device_layout = (LinearLayout) findViewById(R.id.device_layout);
+        link_layout = (LinearLayout) findViewById(R.id.link_layout);
+
+        link_hint1 = (TextView) findViewById(R.id.link_hint1);
+        link_hint2 = (TextView) findViewById(R.id.link_hint2);
 
         connecting = getString(R.string.connecting);
         connect_success = getString(R.string.connect_success);
         create_connect = getString(R.string.create_connect);
         let_friend_join = getString(R.string.let_friend_join);
 
-        deviceAdapter = new ScanDeviceAdapter(ConnectActivity.this);
-        lv_device.setAdapter(deviceAdapter);
+        ListView lv_device = (ListView) findViewById(R.id.lv_device);
+        scanAdapter = new ScanAdapter(ConnectActivity.this);
+        lv_device.setAdapter(scanAdapter);
         lv_device.setOnItemClickListener(this);
-        iv_connecting = (ImageView) findViewById(R.id.iv_connecting);
+        ImageView iv_connecting = (ImageView) findViewById(R.id.iv_linking);
         iv_connecting.setImageResource(R.drawable.progress_connect);
         animationDrawable = (AnimationDrawable) iv_connecting.getDrawable();
 
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        wifiReceiver = new WifiReceiver();
+
+        EventBus.getDefault().register(this);
 
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.close1:
-                finish();
-                break;
-            case R.id.search_join:
-                scanningDevice();
-                break;
-            case R.id.search_cancel:
-                scanCancel();
-                break;
-            case R.id.search_back:
-                backFirstView();
-                break;
-            case R.id.refresh:
-                scanningDevice();
-                break;
-            case R.id.refresh2:
-                scanningDevice();
-                break;
-            case R.id.connect_back:
-                backFirstView();
-                break;
-            case R.id.connecting_cancel:
-                cancelConnect();
-                closeAP();
+            case R.id.guide_close:
+                XFileActivityManager.create().finishActivity();
                 break;
             case R.id.create_ap:
-                createAP();
+                createHotspot();
+                break;
+            case R.id.search_join:
+            case R.id.failed_refresh:
+            case R.id.device_refresh:
+                scanDevice();
+                break;
+            case R.id.scan_cancel:
+                scanCancel();
+                break;
+            case R.id.failed_back:
+            case R.id.device_back:
+                backGuideView();
+                break;
+            case R.id.link_cancel:
+                linkCancel();
                 break;
         }
     }
 
-    void backFirstView() {
-        layout1.setVisibility(View.VISIBLE);
-        layout2.setVisibility(View.INVISIBLE);
-        layout3.setVisibility(View.INVISIBLE);
-        layout4.setVisibility(View.INVISIBLE);
-        layout5.setVisibility(View.INVISIBLE);
+
+    /**
+     * 创建热点
+     */
+    void createHotspot() {
+        if (WifiHelper.setWifiAp(true)) {
+            link_hint1.setText(create_connect);
+            link_hint2.setText(String.format(let_friend_join, android.os.Build.MODEL));
+            setLayoutVisibility(link_layout);
+            animationDrawable.start();
+            Config.is_ap = true;
+            if (!Config.getMobileData()) {
+                MobileDataUtils.setMobileData(this, false);
+            } else {
+                MobileDataUtils.setMobileData(this, true);
+            }
+        } else {
+            Toast.makeText(ConnectActivity.this, R.string.create_hotspot_failed, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    // 开始扫描设备
-    void scanningDevice() {
-        if (IMDeviceServerManager.getInstance() != null) {
-            IMDeviceServerManager.getInstance().startBonjour();
-            ScanDeviceHandler.postDelayed(scanRunnable, scan_time);
-            deviceAdapter.clearDevices();
-            layout1.setVisibility(View.INVISIBLE);
-            layout2.setVisibility(View.VISIBLE);
-            layout3.setVisibility(View.INVISIBLE);
-            layout4.setVisibility(View.INVISIBLE);
-            layout5.setVisibility(View.INVISIBLE);
-
-        }
-        registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+    /**
+     * 扫描设备
+     */
+    void scanDevice() {
+        IMDeviceServerManager.getInstance().startBonjour();
+        ScanHandler.postDelayed(scanRunnable, 3000);
+        scanAdapter.clear();
+        setLayoutVisibility(scan_layout);
+        registerWIFIReceiver();
         wifiManager.startScan();
     }
 
-
-    void connectDevice(ScanDeviceInfo deviceInfoEvent) {
-
-        connect_hint1.setText(connecting);
-        connect_hint2.setText(connect_success);
-        layout1.setVisibility(View.INVISIBLE);
-        layout2.setVisibility(View.INVISIBLE);
-        layout3.setVisibility(View.INVISIBLE);
-        layout4.setVisibility(View.INVISIBLE);
-        layout5.setVisibility(View.VISIBLE);
-        animationDrawable.start();
-        // 开始连接服务器
-        IMClientMessageManager messageClientManager = IMClientMessageManager.getInstance();
-        messageClientManager.setHost(deviceInfoEvent.getIp());
-        messageClientManager.setPort(deviceInfoEvent.getMessage_port());
-        messageClientManager.start();
-
+    void backGuideView() {
+        setLayoutVisibility(guide_layout);
+        scanAdapter.clear();
+        scanAdapter.notifyDataSetChanged();
     }
 
-    void createAP() {
-        connect_hint1.setText(create_connect);
-        connect_hint2.setText(String.format(let_friend_join, android.os.Build.MODEL));
-        layout1.setVisibility(View.INVISIBLE);
-        layout2.setVisibility(View.INVISIBLE);
-        layout3.setVisibility(View.INVISIBLE);
-        layout4.setVisibility(View.INVISIBLE);
-        layout5.setVisibility(View.VISIBLE);
+    /**
+     * 连接设备
+     */
+    void connectToDevice(ScanInfo scanInfo) {
+        link_hint1.setText(connecting);
+        link_hint2.setText(connect_success);
+        setLayoutVisibility(link_layout);
         animationDrawable.start();
-        // 打开wifi
-        if (setWifiAp(true)) {
-            if (!Config.getMobileData()) {
-                MobileDataUtils.setMobileData(this, false);
-            }
-            Config.is_ap = true;
+        IMClientMessageManager messageClientManager = IMClientMessageManager.getInstance();
+        messageClientManager.setHost(scanInfo.getIp());
+        messageClientManager.setPort(scanInfo.getMsgPort());
+        System.out.println("****Host:"+scanInfo.getIp());
+        System.out.println("****Port:"+scanInfo.getMsgPort());
+        messageClientManager.start();
+    }
+
+    /**
+     * 连接热点
+     */
+    public void connectToHotpot(final ScanInfo scanInfo) {
+        WifiConfiguration wifiConfig = new WifiConfiguration();
+        wifiConfig.SSID = "\"" + scanInfo.getName() + "\"";
+        wifiConfig.hiddenSSID = true;
+        wifiConfig.status = WifiConfiguration.Status.ENABLED;
+        wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        int wcgID = wifiManager.addNetwork(wifiConfig);
+        boolean flag = wifiManager.enableNetwork(wcgID, true);
+        System.out.println("****flag:" + flag);
+        if (flag) {
+            connectToDevice(scanInfo);
         }
     }
 
-    void closeAP() {
-        if (setWifiAp(false)) {
+
+    void linkCancel() {
+        setLayoutVisibility(guide_layout);
+        animationDrawable.stop();
+        if (WifiHelper.setWifiAp(false)) {
             Config.is_ap = false;
         }
     }
 
-    // wifi热点开关
-    public boolean setWifiAp(boolean state) {
-        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        wifiManager.setWifiEnabled(!state);
-        try {
-            //热点的配置类
-            WifiConfiguration apConfig = new WifiConfiguration();
-            //配置热点的名称(MD5加密名称XFILE-机子型号)
-            apConfig.SSID = "XFile-Test";
-            //通过反射调用设置热点
-            Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
-            //返回热点打开状态
-            return (Boolean) method.invoke(wifiManager, apConfig, state);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-
-    void cancelConnect() {
-        layout1.setVisibility(View.VISIBLE);
-        layout2.setVisibility(View.INVISIBLE);
-        layout3.setVisibility(View.INVISIBLE);
-        layout4.setVisibility(View.INVISIBLE);
-        layout5.setVisibility(View.INVISIBLE);
-        animationDrawable.stop();
-    }
-
-    Runnable scanRunnable = new Runnable() {
-        @Override
-        public void run() {
-            int scanCount = deviceAdapter.getCount();
-            ScanDeviceHandler.sendEmptyMessage(scanCount);
-        }
-    };
 
     void scanCancel() {
-        try {
-            layout1.setVisibility(View.VISIBLE);
-            layout2.setVisibility(View.INVISIBLE);
-            layout3.setVisibility(View.INVISIBLE);
-            layout4.setVisibility(View.INVISIBLE);
-            layout5.setVisibility(View.INVISIBLE);
-            ScanDeviceHandler.removeCallbacks(scanRunnable);
-        } catch (Exception e) {
-            Logger.getLogger(HomeActivity.class).d("scanCancel", e.getMessage());
+        setLayoutVisibility(guide_layout);
+        ScanHandler.removeCallbacks(scanRunnable);
+        IMDeviceServerManager.getInstance().cancelBonjour();
+        unregisterWIFIReceiver();
+    }
+
+    void registerWIFIReceiver() {
+        if (wifiReceiver == null) {
+            wifiReceiver = new WifiReceiver();
+            registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        }
+    }
+
+    void unregisterWIFIReceiver() {
+        if (wifiReceiver != null) {
+            unregisterReceiver(wifiReceiver);
+            wifiReceiver = null;
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(ScanDeviceInfo event) {
-        if (event != null && !event.getDevice_id().equals(XFileApplication.device_id)) {
-            if (!deviceAdapter.containDevice(event)) {
-                event.setType(0);
-                deviceAdapter.addDevice(event);
+    public void onEventMainThread(ScanInfo event) {
+        if (event != null && !event.getDeviceId().equals(XFileApp.device_id)) {
+            if (!scanAdapter.contains(event)) {
+                event.setLinkType(ScanInfo.LinkType.WIFI);
+                scanAdapter.add(event);
             }
         }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        ScanDeviceInfo deviceInfoEvent = (ScanDeviceInfo) deviceAdapter.getItem(position);
-        if (deviceInfoEvent.getType() == 0) {
-            connectDevice(deviceInfoEvent);
+        ScanInfo scanInfo = (ScanInfo) scanAdapter.getItem(position);
+        if (scanInfo.getLinkType() == ScanInfo.LinkType.WIFI) {
+            connectToDevice(scanInfo);
         } else {
-            connectToHotpot(deviceInfoEvent);
-        }
-    }
-
-    class ScanDeviceAdapter extends BaseAdapter {
-
-        private List<ScanDeviceInfo> mList = null;
-
-        private LayoutInflater inflater;
-
-        public ScanDeviceAdapter(Context context) {
-            inflater = LayoutInflater.from(context);
-            mList = new ArrayList<>();
-        }
-
-        @Override
-        public int getCount() {
-            return mList == null ? 0 : mList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder = null;
-            if (convertView == null) {
-                holder = new ViewHolder();
-                convertView = inflater.inflate(R.layout.listview_scan_device, null);
-                holder.name = (TextView) convertView.findViewById(R.id.device_name);
-                holder.connectType = (ImageView) convertView.findViewById(R.id.ivConnectType);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-            ScanDeviceInfo device = mList.get(position);
-            holder.name.setText(device.getName());
-            if (device.getType() == 0) {
-                holder.connectType.setBackgroundResource(R.mipmap.connect_wifi);
-            } else {
-                holder.connectType.setBackgroundResource(R.mipmap.connect_hotspot);
-            }
-            return convertView;
-        }
-
-        void clearDevices() {
-            if (mList != null) {
-                mList.clear();
-            }
-        }
-
-        void addDevice(ScanDeviceInfo device) {
-            if (mList != null) {
-                mList.add(device);
-            }
-        }
-
-        boolean containDevice(ScanDeviceInfo device) {
-            for (ScanDeviceInfo d : mList) {
-                if (d.getDevice_id().equals(device.getDevice_id())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        final class ViewHolder {
-            TextView name;
-            ImageView connectType;
-        }
-
-        public void setList(List<ScanDeviceInfo> mList) {
-            this.mList = mList;
+            connectToHotpot(scanInfo);
         }
     }
 
@@ -401,16 +258,11 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
                 IMClientMessageManager.getInstance().sendShakeHandStepT("123456");
                 break;
             case SHAKE_HAND_SUCCESS:
-                ConnectActivity.this.finish();
+                XFileActivityManager.create().finishActivity();
                 break;
             case CONNECT_CLOSE:
             case SHAKE_HAND_FAILE:
-                // 没找到设备/连接失败
-                layout1.setVisibility(View.INVISIBLE);
-                layout2.setVisibility(View.INVISIBLE);
-                layout3.setVisibility(View.VISIBLE);
-                layout4.setVisibility(View.INVISIBLE);
-                layout5.setVisibility(View.INVISIBLE);
+                setLayoutVisibility(failed_layout);
                 break;
         }
 
@@ -420,7 +272,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
     public void onEventMainThread(ServerFileSocketEvent event) {
         switch (event.getEvent()) {
             case SHAKE_HAND_SUCCESS:
-                finish();
+                XFileActivityManager.create().finishActivity();
                 break;
         }
     }
@@ -429,8 +281,8 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
     private final class WifiReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            wifiList = wifiManager.getScanResults();
-            if (wifiList == null || wifiList.size() == 0 || isConnected)
+            List<ScanResult> wifiList = wifiManager.getScanResults();
+            if (wifiList == null || wifiList.size() == 0)
                 return;
             onReceiveNewNetworks(wifiList);
         }
@@ -438,45 +290,63 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
 
     /*当搜索到新的wifi热点时判断该热点是否符合规格*/
     public void onReceiveNewNetworks(List<ScanResult> wifiList) {
+        String currentSsid = WifiHelper.getConnectWifiSsid();
+        currentSsid = currentSsid.replace("\"", "");
         for (ScanResult result : wifiList) {
-            System.out.println(result.SSID);
-            if ((result.SSID).startsWith("XFile")) {
-                ScanDeviceInfo d = new ScanDeviceInfo();
-                d.setIp("192.168.43.1");
-                d.setName(result.SSID);
-                d.setDevice_id(result.BSSID);
-                d.setType(1);
-                d.setFile_port(SysConstant.FILE_SERVER_PORT);
-                d.setMessage_port(SysConstant.MESSAGE_PORT);
-                if (!deviceAdapter.containDevice(d)) {
-                    deviceAdapter.addDevice(d);
+            if ((result.SSID).startsWith(SysConstant.SEARCH_KEY) && ((!StringUtils.isEmpty(currentSsid) && !currentSsid.contains(result.SSID)) || StringUtils.isEmpty(currentSsid))) {
+                ScanInfo scanInfo = new ScanInfo();
+                scanInfo.setIp(SysConstant.DEFAULT_AP_IP);
+                scanInfo.setName(result.SSID);
+                scanInfo.setDeviceId(result.BSSID);
+                scanInfo.setLinkType(ScanInfo.LinkType.HOTSPOT);
+                scanInfo.setFilePort(SysConstant.FILE_SERVER_PORT);
+                scanInfo.setMsgPort(SysConstant.MESSAGE_PORT);
+                if (!scanAdapter.contains(scanInfo)) {
+                    scanAdapter.add(scanInfo);
                 }
             }
 
         }
     }
 
-    /*连接到热点*/
-    public void connectToHotpot(ScanDeviceInfo deviceInfo) {
-        WifiConfiguration wifiConfig = this.setWifiParams(deviceInfo.getName());
-        int wcgID = wifiManager.addNetwork(wifiConfig);
-        boolean flag = wifiManager.enableNetwork(wcgID, true);
-        isConnected = flag;
-        System.out.println("connect success? " + flag);
-        if (flag) {
-            connectDevice(deviceInfo);
+
+    /**
+     * 显示布局
+     */
+    void setLayoutVisibility(View view) {
+        View[] viewArray = {guide_layout, scan_layout, failed_layout, device_layout, link_layout};
+        for (View v : viewArray) {
+            if (v.getId() == view.getId()) {
+                v.setVisibility(View.VISIBLE);
+            } else {
+                v.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
-    /*设置要连接的热点的参数*/
-    public WifiConfiguration setWifiParams(String ssid) {
-        WifiConfiguration apConfig = new WifiConfiguration();
-        apConfig.SSID = "\"" + ssid + "\"";
-        apConfig.hiddenSSID = true;
-        apConfig.status = WifiConfiguration.Status.ENABLED;
-        apConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-        return apConfig;
-    }
+    Runnable scanRunnable = new Runnable() {
+        @Override
+        public void run() {
+            int scanCount = scanAdapter.getCount();
+            ScanHandler.sendEmptyMessage(scanCount);
+        }
+    };
+
+    @SuppressLint("HandlerLeak")
+    Handler ScanHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            IMDeviceServerManager.getInstance().cancelBonjour();
+            unregisterWIFIReceiver();
+            int scanCount = msg.what;
+            if (scanCount > 0) {
+                setLayoutVisibility(device_layout);
+                scanAdapter.notifyDataSetChanged();
+            } else {
+                setLayoutVisibility(failed_layout);
+            }
+        }
+    };
 
     @Override
     public void onResume() {
@@ -494,6 +364,9 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        ScanHandler.removeCallbacks(scanRunnable);
+        IMDeviceServerManager.getInstance().cancelBonjour();
+        unregisterWIFIReceiver();
     }
 
 }

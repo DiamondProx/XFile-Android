@@ -49,7 +49,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="点击链接"
+                android:text="@string/click_link"
                 android:textColor="@color/gray_font"
                 android:textSize="@dimen/sp_14" />
 

@@ -7,7 +7,6 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
@@ -27,7 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.huangjiang.XFileApplication;
+import com.huangjiang.XFileApp;
 import com.huangjiang.business.event.RecordEvent;
 import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.config.Config;
@@ -330,7 +329,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
 
         switch (event.getEvent()) {
             case SHAKE_HAND_SUCCESS:
-                XFileApplication.connect_type = 1;
+                XFileApp.connect_type = 1;
                 // 客户端连接成功
                 top_main_layout.setVisibility(View.INVISIBLE);
                 top_connect_layout.setVisibility(View.VISIBLE);
@@ -345,7 +344,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
                 historyLogic.addOneConnect(event.getDevice_name());
                 break;
             case CONNECT_CLOSE:
-                XFileApplication.connect_type = 0;
+                XFileApp.connect_type = 0;
                 // 客户端关闭
                 top_main_layout.setVisibility(View.VISIBLE);
                 top_connect_layout.setVisibility(View.INVISIBLE);
@@ -364,7 +363,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
     public void onEventMainThread(ServerFileSocketEvent event) {
         switch (event.getEvent()) {
             case SHAKE_HAND_SUCCESS:
-                XFileApplication.connect_type = 2;
+                XFileApp.connect_type = 2;
                 // 被连接成功
                 top_main_layout.setVisibility(View.INVISIBLE);
                 top_connect_layout.setVisibility(View.VISIBLE);
@@ -379,7 +378,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
                 historyLogic.addOneConnect(event.getDevice_name());
                 break;
             case CONNECT_CLOSE:
-                XFileApplication.connect_type = 0;
+                XFileApp.connect_type = 0;
                 // 服务端关闭
                 top_main_layout.setVisibility(View.VISIBLE);
                 top_connect_layout.setVisibility(View.INVISIBLE);
@@ -389,7 +388,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
 
 
     void closeConnect() {
-        switch (XFileApplication.connect_type) {
+        switch (XFileApp.connect_type) {
             case 1://0 无连接,2 服务端,1 客户端:
                 IMClientMessageManager.getInstance().stop();
                 IMClientFileManager.getInstance().stop();
@@ -432,7 +431,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             long secondTime = System.currentTimeMillis();
-            if (secondTime - firstTime > 800) {//如果两次按键时间间隔大于800毫秒，则不退出
+            if (secondTime - firstTime > 1200) {//如果两次按键时间间隔大于800毫秒，则不退出
                 Toast.makeText(HomeActivity.this, R.string.exit_confirm, Toast.LENGTH_SHORT).show();
                 firstTime = secondTime;//更新firstTime
                 return true;

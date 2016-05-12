@@ -70,7 +70,7 @@
         android:layout_width="@dimen/dp_260"
         android:layout_height="@dimen/dp_50"
         android:background="@drawable/menu_selector"
-        android:text="@string/back"
+        android:text="@string/backup"
         android:textColor="@color/gray_font"
         android:textSize="@dimen/sp_17" />
 

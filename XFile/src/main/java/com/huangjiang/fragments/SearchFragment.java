@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.huangjiang.XFileApplication;
+import com.huangjiang.XFileApp;
 import com.huangjiang.activity.ConnectActivity;
 import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.adapter.SearchAdapter;
@@ -95,7 +95,7 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
     public void onMenuClick(PopupMenu menu, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_transfer:
-                if (XFileApplication.connect_type == 0) {
+                if (XFileApp.connect_type == 0) {
                     startActivity(new Intent(getActivity(), ConnectActivity.class));
                     return;
                 }

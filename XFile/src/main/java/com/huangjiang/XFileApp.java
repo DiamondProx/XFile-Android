@@ -10,7 +10,7 @@ import com.huangjiang.utils.XFileUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 
-public class XFileApplication extends Application {
+public class XFileApp extends Application {
 
     public static Context context;
 

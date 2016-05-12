@@ -69,9 +69,9 @@ public class SysConstant {
 
     public static final String TOKEN = "token";// 测试token
 
-    public static final String TEMP_TASK_ID = "task_id";// 测试taskId
-
     public static final String DEFAULT_AP_IP = "192.168.43.1";// 热点默认地址
+
+    public static final String SEARCH_KEY = "XFile";
 
 
 }

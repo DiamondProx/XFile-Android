@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.huangjiang.XFileApplication;
+import com.huangjiang.XFileApp;
 import com.huangjiang.activity.ConnectActivity;
 import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.adapter.InstallAdapter;
@@ -78,7 +78,7 @@ public class AppFragment extends Fragment  implements PopupMenu.MenuCallback, Cu
     public void onMenuClick(PopupMenu menu, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_transfer:
-                if (XFileApplication.connect_type == 0) {
+                if (XFileApp.connect_type == 0) {
                     startActivity(new Intent(getActivity(), ConnectActivity.class));
                     return;
                 }

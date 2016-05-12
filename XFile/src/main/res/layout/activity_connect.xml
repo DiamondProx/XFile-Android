@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 链接界面-->
+    <!-- 创建使用 -->
     <LinearLayout
-        android:id="@+id/layout1"
+        android:id="@+id/guide_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -23,18 +22,17 @@
             android:background="@mipmap/connect_sketch_group">
 
             <TextView
-                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="连朋友，传文件"
+                android:text="@string/join_friend"
                 android:textColor="@color/group_header_select_color"
                 android:textSize="@dimen/sp_18"
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/close1"
+                android:id="@+id/guide_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -47,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_55"
                 android:layout_marginTop="@dimen/dp_85"
-                android:text="“加入我们”"
+                android:text="@string/ours_join"
                 android:textColor="@color/orange"
                 android:textSize="@dimen/sp_16" />
 
@@ -57,7 +55,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/dp_65"
                 android:layout_marginTop="@dimen/dp_70"
-                android:text="“我建连接”"
+                android:text="@string/create_my_connect"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_16" />
 
@@ -79,7 +77,7 @@
                 android:layout_marginRight="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/blue_selector"
-                android:text="创建连接"
+                android:text="@string/create_hotspot"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_17" />
 
@@ -92,7 +90,7 @@
                 android:layout_marginRight="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/orange_selector"
-                android:text="搜索加入"
+                android:text="@string/search_join"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_17" />
 
@@ -101,9 +99,9 @@
 
     </LinearLayout>
 
-    <!-- 扫描界面-->
+    <!-- 正在扫描 -->
     <LinearLayout
-        android:id="@+id/layout2"
+        android:id="@+id/scan_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -120,12 +118,11 @@
             android:layout_height="320dp">
 
             <TextView
-                android:id="@+id/title2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="正在搜索可链接的朋友"
+                android:text="@string/search_available_friend"
                 android:textColor="@color/group_header_select_color"
                 android:textSize="@dimen/sp_16" />
 
@@ -138,7 +135,7 @@
                 android:background="@mipmap/connect_radar" />
 
             <ProgressBar
-                android:id="@+id/prg_scanning"
+                android:id="@+id/progress_scanning"
                 android:layout_width="@dimen/dp_260"
                 android:layout_height="@dimen/dp_260"
                 android:layout_centerHorizontal="true"
@@ -155,7 +152,7 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/search_cancel"
+                android:id="@+id/scan_cancel"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginBottom="@dimen/dp_5"
@@ -163,7 +160,7 @@
                 android:layout_marginRight="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/gray_selector"
-                android:text="取消搜索"
+                android:text="@string/cancel_search"
                 android:textColor="@color/gray_font"
                 android:textSize="@dimen/sp_17" />
 
@@ -173,9 +170,9 @@
 
     </LinearLayout>
 
-    <!-- 扫描失败-->
+    <!-- 扫描失败 -->
     <LinearLayout
-        android:id="@+id/layout3"
+        android:id="@+id/failed_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -192,17 +189,16 @@
             android:layout_height="@dimen/dp_260">
 
             <TextView
-                android:id="@+id/title3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="可链接的朋友"
+                android:text="@string/available_link_friend"
                 android:textColor="@color/group_header_select_color"
                 android:textSize="@dimen/sp_17" />
 
             <ImageView
-                android:id="@+id/refresh"
+                android:id="@+id/failed_refresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -230,26 +226,26 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="没有找到可链接的人?"
+                android:text="@string/not_found_friend"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_16" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.点击刷新按钮,重新搜索"
+                android:text="@string/please_again_search1"
                 android:textColor="@color/gray_font"
                 android:textSize="@dimen/sp_12" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2.或点击返回,建个链接让朋友来找你"
+                android:text="@string/please_again_search2"
                 android:textColor="@color/gray_font"
                 android:textSize="@dimen/sp_12" />
 
             <Button
-                android:id="@+id/search_back"
+                android:id="@+id/failed_back"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginBottom="@dimen/dp_5"
@@ -257,7 +253,7 @@
                 android:layout_marginRight="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/gray_selector"
-                android:text="返回"
+                android:text="@string/back"
                 android:textColor="@color/gray_font"
                 android:textSize="@dimen/sp_17" />
 
@@ -267,9 +263,9 @@
 
     </LinearLayout>
 
-    <!-- 设备列表-->
+    <!-- 设备列表 -->
     <LinearLayout
-        android:id="@+id/layout4"
+        android:id="@+id/device_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -286,17 +282,16 @@
             android:layout_height="320dp">
 
             <TextView
-                android:id="@+id/title4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="可链接的朋友"
+                android:text="@string/available_link_friend"
                 android:textColor="@color/group_header_select_color"
                 android:textSize="@dimen/sp_17" />
 
             <ImageView
-                android:id="@+id/refresh2"
+                android:id="@+id/device_refresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -311,7 +306,8 @@
                 android:layout_height="@dimen/dp_250"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_50"
-                android:divider="@null" />
+                android:divider="@null"
+                android:scrollbars="none" />
 
 
         </RelativeLayout>
@@ -324,7 +320,7 @@
 
 
             <Button
-                android:id="@+id/connect_back"
+                android:id="@+id/device_back"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginBottom="@dimen/dp_5"
@@ -332,7 +328,7 @@
                 android:layout_marginRight="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/gray_selector"
-                android:text="返回"
+                android:text="@string/back"
                 android:textColor="@color/gray_font"
                 android:textSize="@dimen/sp_17" />
 
@@ -342,9 +338,9 @@
 
     </LinearLayout>
 
-    <!-- 正在连接-->
+    <!-- 连接状态 -->
     <LinearLayout
-        android:id="@+id/layout5"
+        android:id="@+id/link_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -352,8 +348,8 @@
         android:layout_marginRight="@dimen/dp_25"
         android:layout_marginTop="@dimen/_dp_20"
         android:background="@drawable/white_round_shape"
-        android:visibility="invisible"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="invisible">
 
 
         <RelativeLayout
@@ -361,7 +357,7 @@
             android:layout_height="230dp">
 
             <ImageView
-                android:id="@+id/iv_connecting"
+                android:id="@+id/iv_linking"
                 android:layout_width="280dp"
                 android:layout_height="230dp"
                 android:layout_centerHorizontal="true"
@@ -375,7 +371,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/connect_hint1"
+                android:id="@+id/link_hint1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/connecting"
@@ -391,7 +387,7 @@
                 android:background="@color/division_line" />
 
             <TextView
-                android:id="@+id/connect_hint2"
+                android:id="@+id/link_hint2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10"
@@ -410,7 +406,7 @@
 
 
             <Button
-                android:id="@+id/connecting_cancel"
+                android:id="@+id/link_cancel"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginBottom="@dimen/dp_5"
