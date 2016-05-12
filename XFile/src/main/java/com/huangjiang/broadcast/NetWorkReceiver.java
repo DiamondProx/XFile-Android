@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.huangjiang.business.event.WIFIEvent;
 import com.huangjiang.config.Config;
 import com.huangjiang.service.IMService;
 import com.huangjiang.utils.Logger;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * 网络变化
@@ -26,6 +29,9 @@ public class NetWorkReceiver extends BroadcastReceiver {
             context.stopService(new Intent(context, IMService.class));
             context.startService(new Intent(context, IMService.class));
             logger.e("****ResetServer");
+            WIFIEvent wifiEvent = new WIFIEvent();
+            wifiEvent.setConnected(true);
+            EventBus.getDefault().post(wifiEvent);
         }
     }
 }

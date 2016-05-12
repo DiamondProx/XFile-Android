@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.huangjiang.XFileApp;
 import com.huangjiang.adapter.ScanAdapter;
+import com.huangjiang.business.event.WIFIEvent;
 import com.huangjiang.business.model.ScanInfo;
 import com.huangjiang.config.Config;
 import com.huangjiang.config.SysConstant;
@@ -51,6 +52,8 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
     private AnimationDrawable animationDrawable;
     private WifiManager wifiManager;
     private WifiReceiver wifiReceiver;
+    private boolean isLinkHotspot = false;
+    private ScanInfo linkInfo = null;
 
 
     @Override
@@ -177,8 +180,8 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
         IMClientMessageManager messageClientManager = IMClientMessageManager.getInstance();
         messageClientManager.setHost(scanInfo.getIp());
         messageClientManager.setPort(scanInfo.getMsgPort());
-        System.out.println("****Host:"+scanInfo.getIp());
-        System.out.println("****Port:"+scanInfo.getMsgPort());
+        System.out.println("****Host:" + scanInfo.getIp());
+        System.out.println("****Port:" + scanInfo.getMsgPort());
         messageClientManager.start();
     }
 
@@ -195,7 +198,8 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
         boolean flag = wifiManager.enableNetwork(wcgID, true);
         System.out.println("****flag:" + flag);
         if (flag) {
-            connectToDevice(scanInfo);
+            isLinkHotspot = true;
+            linkInfo = scanInfo;
         }
     }
 
@@ -276,6 +280,16 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
                 break;
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(WIFIEvent event) {
+        if (event.isConnected() && isLinkHotspot && linkInfo != null) {
+            connectToDevice(linkInfo);
+            linkInfo = null;
+            isLinkHotspot = false;
+        }
+    }
+
 
     /* 监听热点变化 */
     private final class WifiReceiver extends BroadcastReceiver {
