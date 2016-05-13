@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">XFile</string>
+    <string name="app_name">快传</string>
     <string name="root_memory_storage">手机存储</string>
     <string name="root_sdcard_storage">内部存储</string>
     <string name="root_sdcard_storage_exten">SD存储卡</string>
