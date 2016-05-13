@@ -26,6 +26,7 @@ import com.huangjiang.business.event.WIFIEvent;
 import com.huangjiang.business.model.ScanInfo;
 import com.huangjiang.config.Config;
 import com.huangjiang.config.SysConstant;
+import com.huangjiang.core.ThreadPoolManager;
 import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMDeviceServerManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
@@ -41,19 +42,24 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ConnectActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private final String mPageName = "ConnectActivity";
     private LinearLayout guide_layout, scan_layout, failed_layout, device_layout, link_layout;
     private TextView link_hint1, link_hint2;
-    private String connecting, connect_success, create_connect, let_friend_join;
+    private String connecting, connect_success, creating_connect, create_connect, let_friend_join;
     private ScanAdapter scanAdapter;
     private AnimationDrawable animationDrawable;
     private WifiManager wifiManager;
     private WifiReceiver wifiReceiver;
     private boolean isLinkHotspot = false;
     private ScanInfo linkInfo = null;
+    private Timer timer = null;
+    private TimerTask timerTask = null;
+    private int ScanWhat = 1, HotspotWhat = 2;
 
 
     @Override
@@ -88,6 +94,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
         connect_success = getString(R.string.connect_success);
         create_connect = getString(R.string.create_connect);
         let_friend_join = getString(R.string.let_friend_join);
+        creating_connect = getString(R.string.creating_connect);
 
         ListView lv_device = (ListView) findViewById(R.id.lv_device);
         scanAdapter = new ScanAdapter(ConnectActivity.this);
@@ -122,7 +129,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.failed_back:
             case R.id.device_back:
-                backGuideView();
+                showGuideView();
                 break;
             case R.id.link_cancel:
                 linkCancel();
@@ -136,7 +143,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
      */
     void createHotspot() {
         if (WifiHelper.setWifiAp(true)) {
-            link_hint1.setText(create_connect);
+            link_hint1.setText(creating_connect);
             link_hint2.setText(String.format(let_friend_join, android.os.Build.MODEL));
             setLayoutVisibility(link_layout);
             animationDrawable.start();
@@ -146,6 +153,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
             } else {
                 MobileDataUtils.setMobileData(this, true);
             }
+            startHotspotTimer();
         } else {
             Toast.makeText(ConnectActivity.this, R.string.create_hotspot_failed, Toast.LENGTH_SHORT).show();
         }
@@ -156,14 +164,17 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
      */
     void scanDevice() {
         IMDeviceServerManager.getInstance().startBonjour();
-        ScanHandler.postDelayed(scanRunnable, 3000);
+        ScanHandler.postDelayed(scanRunnable, 3200);
         scanAdapter.clear();
         setLayoutVisibility(scan_layout);
         registerWIFIReceiver();
         wifiManager.startScan();
     }
 
-    void backGuideView() {
+    /**
+     * 显示引导界面
+     */
+    void showGuideView() {
         setLayoutVisibility(guide_layout);
         scanAdapter.clear();
         scanAdapter.notifyDataSetChanged();
@@ -173,10 +184,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
      * 连接设备
      */
     void connectToDevice(ScanInfo scanInfo) {
-        link_hint1.setText(connecting);
-        link_hint2.setText(connect_success);
-        setLayoutVisibility(link_layout);
-        animationDrawable.start();
+        showLinking();
         IMClientMessageManager messageClientManager = IMClientMessageManager.getInstance();
         messageClientManager.setHost(scanInfo.getIp());
         messageClientManager.setPort(scanInfo.getMsgPort());
@@ -189,6 +197,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
      * 连接热点
      */
     public void connectToHotpot(final ScanInfo scanInfo) {
+        showLinking();
         WifiConfiguration wifiConfig = new WifiConfiguration();
         wifiConfig.SSID = "\"" + scanInfo.getName() + "\"";
         wifiConfig.hiddenSSID = true;
@@ -200,6 +209,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
         if (flag) {
             isLinkHotspot = true;
             linkInfo = scanInfo;
+            Config.is_ap = true;
         }
     }
 
@@ -210,6 +220,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
         if (WifiHelper.setWifiAp(false)) {
             Config.is_ap = false;
         }
+        cancelHotspotTimer();
     }
 
 
@@ -220,6 +231,16 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
         unregisterWIFIReceiver();
     }
 
+    void showLinking() {
+        link_hint1.setText(connecting);
+        link_hint2.setText(connect_success);
+        setLayoutVisibility(link_layout);
+        animationDrawable.start();
+    }
+
+    /**
+     * 注册热点扫描广播
+     */
     void registerWIFIReceiver() {
         if (wifiReceiver == null) {
             wifiReceiver = new WifiReceiver();
@@ -227,6 +248,9 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
+    /**
+     * 取消热点扫描广播
+     */
     void unregisterWIFIReceiver() {
         if (wifiReceiver != null) {
             unregisterReceiver(wifiReceiver);
@@ -267,6 +291,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
             case CONNECT_CLOSE:
             case SHAKE_HAND_FAILE:
                 setLayoutVisibility(failed_layout);
+                Config.is_ap = false;
                 break;
         }
 
@@ -338,11 +363,60 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
+    /**
+     * 轮训热点是否创建成功
+     */
+    public void startHotspotTimer() {
+        cancelHotspotTimer();
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                ThreadPoolManager.getInstance(ConnectActivity.class.getName()).startTaskThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(250);
+                            boolean b = WifiHelper.isWifiApEnabled();
+//                            System.out.println("****isWifiApEnabled:" + b);
+                            if (b) {
+                                cancelHotspotTimer();
+                                Message msg = Message.obtain();
+                                msg.what = HotspotWhat;
+                                ScanHandler.sendMessage(msg);
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        };
+        timer.schedule(timerTask, 200, 200);
+    }
+
+    /**
+     * 取消轮训
+     */
+    public void cancelHotspotTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
+    }
+
     Runnable scanRunnable = new Runnable() {
         @Override
         public void run() {
             int scanCount = scanAdapter.getCount();
-            ScanHandler.sendEmptyMessage(scanCount);
+            Message msg = Message.obtain();
+            msg.what = ScanWhat;
+            msg.arg1 = scanCount;
+            ScanHandler.sendMessage(msg);
         }
     };
 
@@ -350,17 +424,22 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
     Handler ScanHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            IMDeviceServerManager.getInstance().cancelBonjour();
-            unregisterWIFIReceiver();
-            int scanCount = msg.what;
-            if (scanCount > 0) {
-                setLayoutVisibility(device_layout);
-                scanAdapter.notifyDataSetChanged();
-            } else {
-                setLayoutVisibility(failed_layout);
+            if (msg.what == ScanWhat) {
+                IMDeviceServerManager.getInstance().cancelBonjour();
+                unregisterWIFIReceiver();
+                int scanCount = msg.arg1;
+                if (scanCount > 0) {
+                    setLayoutVisibility(device_layout);
+                    scanAdapter.notifyDataSetChanged();
+                } else {
+                    setLayoutVisibility(failed_layout);
+                }
+            } else if (msg.what == HotspotWhat) {
+                link_hint1.setText(create_connect);
             }
         }
     };
+
 
     @Override
     public void onResume() {
@@ -381,6 +460,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
         ScanHandler.removeCallbacks(scanRunnable);
         IMDeviceServerManager.getInstance().cancelBonjour();
         unregisterWIFIReceiver();
+        cancelHotspotTimer();
     }
 
 }

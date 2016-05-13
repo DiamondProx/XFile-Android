@@ -36,12 +36,42 @@ public class WifiHelper {
     }
 
     /**
-     * 读取当前连接w
+     * 读取当前连接名称
      */
     public static String getConnectWifiSsid() {
         WifiManager wifiManager = (WifiManager) XFileApp.context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         return wifiInfo != null ? wifiInfo.getSSID() : "";
 
+    }
+
+    /**
+     * 移除连接清除配置信息
+     */
+    public static void removeWifi() {
+        WifiManager wifiManager = (WifiManager) XFileApp.context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        if (wifiInfo != null) {
+            wifiManager.disableNetwork(wifiInfo.getNetworkId());
+            wifiManager.disconnect();
+            wifiManager.removeNetwork(wifiInfo.getNetworkId());
+            wifiManager.saveConfiguration();
+        }
+
+    }
+
+    /**
+     * 热点是否打开
+     */
+    public static boolean isWifiApEnabled() {
+        try {
+            WifiManager wifiManager = (WifiManager) XFileApp.context.getSystemService(Context.WIFI_SERVICE);
+            Method method = wifiManager.getClass().getMethod("isWifiApEnabled");
+            method.setAccessible(true);
+            return (Boolean) method.invoke(wifiManager);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

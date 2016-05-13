@@ -41,6 +41,7 @@ import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.service.IMService;
 import com.huangjiang.utils.SoundHelper;
 import com.huangjiang.utils.VibratorUtils;
+import com.huangjiang.utils.WifiHelper;
 import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.AnimationHelper;
 import com.huangjiang.xfile.R;
@@ -348,6 +349,10 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
                 // 客户端关闭
                 top_main_layout.setVisibility(View.VISIBLE);
                 top_connect_layout.setVisibility(View.INVISIBLE);
+                if (Config.is_ap) {
+                    WifiHelper.removeWifi();
+                    Config.is_ap = false;
+                }
                 break;
             case SHAKE_INPUT_PASSWORD:
                 // 要求输入密码
@@ -382,6 +387,10 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
                 // 服务端关闭
                 top_main_layout.setVisibility(View.VISIBLE);
                 top_connect_layout.setVisibility(View.INVISIBLE);
+                if (Config.is_ap) {
+                    WifiHelper.setWifiAp(false);
+                    Config.is_ap = false;
+                }
                 break;
         }
     }
@@ -395,8 +404,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
                 break;
             case 2:
                 // TODO 服务器关闭连接
-                IMServerMessageManager.getInstance().stop();
-                IMServerFileManager.getInstance().stop();
+                IMServerMessageManager.getInstance().start();
+                IMServerFileManager.getInstance().start();
                 break;
         }
     }
@@ -433,11 +442,11 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
             long secondTime = System.currentTimeMillis();
             if (secondTime - firstTime > 1200) {//如果两次按键时间间隔大于800毫秒，则不退出
                 Toast.makeText(HomeActivity.this, R.string.exit_confirm, Toast.LENGTH_SHORT).show();
-                firstTime = secondTime;//更新firstTime
+                firstTime = secondTime;
                 return true;
             } else {
                 XFileActivityManager.create().finishAllActivity();
-                System.exit(0);//否则退出程序
+                System.exit(0);
             }
         }
         return super.onKeyUp(keyCode, event);

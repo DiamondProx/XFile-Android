@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 
 import com.huangjiang.business.event.WIFIEvent;
 import com.huangjiang.config.Config;
@@ -19,19 +20,32 @@ import org.greenrobot.eventbus.EventBus;
 public class NetWorkReceiver extends BroadcastReceiver {
 
     Logger logger = Logger.getLogger(NetWorkReceiver.class);
+    private static boolean isWifiAvailable = false;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         logger.e("****NetworkChange");
         ConnectivityManager connectMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (Config.is_ap || (wifiNetInfo != null && wifiNetInfo.isConnected())) {
+        if (!isWifiAvailable && wifiNetInfo != null && wifiNetInfo.isConnected()) {
+            isWifiAvailable = true;
+            logger.e("****isWifiAvailable11:" + isWifiAvailable);
             context.stopService(new Intent(context, IMService.class));
             context.startService(new Intent(context, IMService.class));
-            logger.e("****ResetServer");
-            WIFIEvent wifiEvent = new WIFIEvent();
-            wifiEvent.setConnected(true);
-            EventBus.getDefault().post(wifiEvent);
+            logger.e("****RestartServer");
+            if (Config.is_ap) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        WIFIEvent wifiEvent = new WIFIEvent();
+                        wifiEvent.setConnected(true);
+                        EventBus.getDefault().post(wifiEvent);
+                    }
+                }, 500);
+            }
+        } else {
+            isWifiAvailable = false;
+            logger.e("****isWifiAvailable22:" + isWifiAvailable);
         }
     }
 }

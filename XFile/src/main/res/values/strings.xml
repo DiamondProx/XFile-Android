@@ -109,6 +109,7 @@
     <string name="default_ap_ip">http://192.168.43.1:7766</string>
     <string name="connecting">全速连接中,请稍后…</string>
     <string name="connect_success">连接成功后,任意文件零流量传输~</string>
+    <string name="creating_connect">正在创建连接,请稍后…</string>
     <string name="create_connect">创建成功,等待朋友搜索加入</string>
     <string name="let_friend_join">让朋友搜索加入"%1$s"</string>
     <string name="email_feed_back">邮件反馈</string>
