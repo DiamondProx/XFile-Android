@@ -77,7 +77,7 @@ public class HistoryLogic extends BaseLogic {
     }
 
     /**
-     * 连接计数
+     * 连接计数+1
      */
     public void addOneConnect(final String deviceId) {
         ThreadPoolManager.getInstance(HistoryLogic.class.getName()).startTaskThread(new Runnable() {

@@ -66,8 +66,8 @@ public class TabBar extends HorizontalScrollView implements View.OnClickListener
                 (int) resources.getDimension(R.dimen.dp_40)
         );
         mContainer.setLayoutParams(p);
-        mContainer.setBackgroundResource(R.color.group_header_select_color);
-        tab_select_color = R.color.tab_select;
+        mContainer.setBackgroundResource(R.color.tab_blue);
+        tab_select_color = R.color.tab_blue_select;
         this.addView(mContainer);
         mChildViews = new ArrayList<>();
         dp_20 = (int) this.resources.getDimension(R.dimen.dp_25);

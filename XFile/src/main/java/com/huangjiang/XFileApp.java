@@ -3,6 +3,7 @@ package com.huangjiang;
 import android.app.Application;
 import android.content.Context;
 
+import com.huangjiang.business.model.LinkType;
 import com.huangjiang.config.Config;
 import com.huangjiang.utils.CrashHandler;
 import com.huangjiang.utils.SoundHelper;
@@ -16,7 +17,7 @@ public class XFileApp extends Application {
 
     public static String device_id;
 
-    public static int connect_type = 0;// 0 未连接,1 客户端连接,2 服务端连接
+    public static LinkType mLinkType = LinkType.NONE;// 0 未连接,1 客户端连接,2 服务端连接
 
 
     @Override
@@ -40,7 +41,7 @@ public class XFileApp extends Application {
     /**
      * 友盟
      */
-    void initUMeg(){
+    void initUMeg() {
         // Push
         PushAgent mPushAgent = PushAgent.getInstance(context);
         mPushAgent.setDebugMode(true);
@@ -54,10 +55,6 @@ public class XFileApp extends Application {
 //        MobclickAgent.setDebugMode(true);
         MobclickAgent.openActivityDurationTrack(false);
     }
-
-
-
-
 
 
 }

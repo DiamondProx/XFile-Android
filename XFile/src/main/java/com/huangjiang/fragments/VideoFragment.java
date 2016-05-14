@@ -20,6 +20,7 @@ import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.adapter.SearchAdapter;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.event.OpFileEvent;
+import com.huangjiang.business.model.LinkType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.opfile.OpLogic;
 import com.huangjiang.business.video.VideoLogic;
@@ -77,7 +78,7 @@ public class VideoFragment extends Fragment implements PopupMenu.MenuCallback, C
     public void onMenuClick(PopupMenu menu, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_transfer:
-                if (XFileApp.connect_type == 0) {
+                if (XFileApp.mLinkType == LinkType.NONE) {
                     startActivity(new Intent(getActivity(), ConnectActivity.class));
                     return;
                 }
@@ -87,7 +88,7 @@ public class VideoFragment extends Fragment implements PopupMenu.MenuCallback, C
                     HomeActivity homeActivity = (HomeActivity) getActivity();
                     int[] location = new int[2];
                     image.getLocationOnScreen(location);
-                    homeActivity.initFileThumbView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+                    homeActivity.setThrowView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
                     TFileInfo tFileInfo = menu.getTFileInfo();
                     IMFileManager.getInstance().createTask(tFileInfo);
                 }

@@ -27,7 +27,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/join_friend"
-                android:textColor="@color/group_header_select_color"
+                android:textColor="@color/blue"
                 android:textSize="@dimen/sp_18"
                 android:textStyle="bold" />
 
@@ -123,7 +123,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/search_available_friend"
-                android:textColor="@color/group_header_select_color"
+                android:textColor="@color/blue"
                 android:textSize="@dimen/sp_16" />
 
 
@@ -194,7 +194,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/available_link_friend"
-                android:textColor="@color/group_header_select_color"
+                android:textColor="@color/blue"
                 android:textSize="@dimen/sp_17" />
 
             <ImageView
@@ -287,7 +287,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/available_link_friend"
-                android:textColor="@color/group_header_select_color"
+                android:textColor="@color/blue"
                 android:textSize="@dimen/sp_17" />
 
             <ImageView

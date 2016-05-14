@@ -91,7 +91,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                     HomeActivity homeActivity = (HomeActivity) getActivity();
                     int[] location = new int[2];
                     image.getLocationOnScreen(location);
-                    homeActivity.initFileThumbView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+                    homeActivity.setThrowView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
                 }
                 break;
             case R.id.menu_open:

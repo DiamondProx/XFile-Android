@@ -18,26 +18,26 @@
     <color name="updir_background_pressed">#EEEEEE</color>
 
     <color name="group_header_name_color">#AAC1CD</color>
-    <color name="group_header_select_color">#16C9E9</color>
 
-
-    <color name="gray">#BFCBD1</color>
     <color name="slider_menu_group_bg">#F1F7FA</color>
     <color name="slider_menu_group_font">#AAC1CD</color>
     <color name="division_line">#ECECEC</color>
+    <color name="translucent_background">#80000000</color>
+    <color name="green_pressed">#54C9A7</color>
+    <color name="gray_pressed">#F3F3F3</color>
+
+    <color name="tab_blue">#16C9E9</color>
+    <color name="tab_blue_select">#3DD5F5</color>
+    <color name="tab_green">#60D4B2</color>
+    <color name="tab_green_select">#68E2BE</color>
+
+    <color name="orange">#FFBD5F</color>
+    <color name="red">#ffff4444</color>
     <color name="blue">#1AC9E9</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="green">#5EE0BA</color>
-    <color name="green_pressed">#54C9A7</color>
-    <color name="gray_pressed">#F3F3F3</color>
-    <color name="tab_select">#3DD5F5</color>
-    <color name="tab_green">#60D4B2</color>
-    <color name="tab_green_select">#68E2BE</color>
-
-    <color name="translucent_background">#80000000</color>
-    <color name="orange">#FFBD5F</color>
-    <color name="red">#ffff4444</color>
+    <color name="gray">#BFCBD1</color>
 
 
 </resources>

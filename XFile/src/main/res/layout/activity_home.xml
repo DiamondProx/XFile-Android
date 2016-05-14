@@ -79,7 +79,7 @@
                     android:textSize="18sp" />
 
                 <Button
-                    android:id="@+id/btn_right"
+                    android:id="@+id/btn_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -103,14 +103,15 @@
 
         <!-- cursor -->
         <ImageView
-            android:id="@+id/ivCursor"
+            android:id="@+id/iv_cursor"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:background="@color/app_background"
             android:contentDescription="@null"
             android:scaleType="matrix"
             android:src="@mipmap/tab_mobile_arrow_down_blue" />
 
-        <!-- tab-->
+        <!-- tab_menu-->
         <RadioGroup
             android:id="@+id/rg_tab"
             android:layout_width="match_parent"
@@ -131,8 +132,9 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/fileThumb"
+        android:id="@+id/iv_throw"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
         android:contentDescription="@null" />
+
 </RelativeLayout>

@@ -4,6 +4,7 @@ import android.os.Build;
 
 import com.google.protobuf.ByteString;
 import com.huangjiang.XFileApp;
+import com.huangjiang.business.model.LinkType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.dao.DFile;
@@ -160,9 +161,9 @@ public class IMFileManager extends IMBaseManager {
                 triggerEvent(createNewFile);
             }
         };
-        if (XFileApp.connect_type == 1) {
+        if (XFileApp.mLinkType == LinkType.CLIENT) {
             IMClientMessageManager.getInstance().sendMessage(sid, cid, reqFile, packetlistener, (short) 0);
-        } else if (XFileApp.connect_type == 2) {
+        } else if (XFileApp.mLinkType == LinkType.SERVER) {
             IMServerMessageManager.getInstance().sendMessage(sid, cid, reqFile, packetlistener, (short) 0);
         }
         logger.e("****createTaskSend");
@@ -202,7 +203,7 @@ public class IMFileManager extends IMBaseManager {
             short sid = SysConstant.SERVICE_FILE_NEW_SUCCESS;
             short cid = SysConstant.CMD_FILE_NEW_RSP;
 
-            if (XFileApp.connect_type == 1) {
+            if (XFileApp.mLinkType == LinkType.CLIENT) {
                 IMClientMessageManager.getInstance().sendMessage(sid, cid, rspFile.build(), header.getSeqnum());
             } else {
                 IMServerMessageManager.getInstance().sendMessage(sid, cid, rspFile.build(), null, header.getSeqnum());
@@ -278,9 +279,9 @@ public class IMFileManager extends IMBaseManager {
                 triggerEvent(checkFile);
             }
         };
-        if (XFileApp.connect_type == 1) {
+        if (XFileApp.mLinkType == LinkType.CLIENT) {
             IMClientMessageManager.getInstance().sendMessage(sid, cid, reqFile, packetlistener, (short) 0);
-        } else if (XFileApp.connect_type == 2) {
+        } else if (XFileApp.mLinkType == LinkType.SERVER) {
             IMServerMessageManager.getInstance().sendMessage(sid, cid, reqFile, packetlistener, (short) 0);
         }
         logger.e("****checkTaskSend");
@@ -314,7 +315,7 @@ public class IMFileManager extends IMBaseManager {
             }
 
             // 答复发送端创建成功
-            if (XFileApp.connect_type == 1) {
+            if (XFileApp.mLinkType == LinkType.CLIENT) {
                 IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, header.getSeqnum());
             } else {
                 IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, header.getSeqnum());
@@ -442,9 +443,9 @@ public class IMFileManager extends IMBaseManager {
                     triggerEvent(reqTFile);
                 }
             };
-            if (XFileApp.connect_type == 1) {
+            if (XFileApp.mLinkType == LinkType.CLIENT) {
                 IMClientFileManager.getInstance().sendMessage(sid, cid, responseFile.build(), packetlistener, (short) 0);
-            } else if (XFileApp.connect_type == 2) {
+            } else if (XFileApp.mLinkType == LinkType.SERVER) {
                 IMServerFileManager.getInstance().sendMessage(sid, cid, responseFile.build(), packetlistener, (short) 0);
             }
 
@@ -554,9 +555,9 @@ public class IMFileManager extends IMBaseManager {
                 }
 
                 short cid = SysConstant.CMD_FILE_SET_RSP;
-                if (XFileApp.connect_type == 1) {
+                if (XFileApp.mLinkType == LinkType.CLIENT) {
                     IMClientFileManager.getInstance().sendMessage(sid, cid, responseFile.build(), packetlistener, header.getSeqnum());
-                } else if (XFileApp.connect_type == 2) {
+                } else if (XFileApp.mLinkType == LinkType.SERVER) {
                     IMServerFileManager.getInstance().sendMessage(sid, cid, responseFile.build(), packetlistener, header.getSeqnum());
                 }
             }
@@ -577,9 +578,9 @@ public class IMFileManager extends IMBaseManager {
         writePercent = writeIndex * 100 / requestFile.getLength();
         short sid = SysConstant.SERVICE_DEFAULT;
         short cid = SysConstant.CMD_FILE_RESUME;
-        if (XFileApp.connect_type == 1) {
+        if (XFileApp.mLinkType == LinkType.CLIENT) {
             IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, (short) 0);
-        } else if (XFileApp.connect_type == 2) {
+        } else if (XFileApp.mLinkType == LinkType.SERVER) {
             IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, (short) 0);
         }
 
@@ -626,9 +627,9 @@ public class IMFileManager extends IMBaseManager {
         // 删除的是当前正在传送的任务
         short sid = SysConstant.SERVICE_DEFAULT;
         short cid = SysConstant.CMD_FILE_CANCEL;
-        if (XFileApp.connect_type == 1) {
+        if (XFileApp.mLinkType == LinkType.CLIENT) {
             IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, (short) 0);
-        } else if (XFileApp.connect_type == 2) {
+        } else if (XFileApp.mLinkType == LinkType.SERVER) {
             IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, (short) 0);
         }
 
