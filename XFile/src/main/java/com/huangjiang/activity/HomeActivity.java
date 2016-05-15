@@ -268,18 +268,26 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
     /**
      * 设置甩图标
      */
-    public void setThrowView(Drawable drawable, int width, int height, int locationX, int locationY) {
+    public void setThrowView(ImageView originImage) {
+
+        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+
+        // 原始图标信息
+        int[] startLocation = new int[2];
+        originImage.getLocationOnScreen(startLocation);
+        originImage.measure(w, h);
+        Drawable drawable = originImage.getDrawable();
+
         // 修改坐标位置,图标大小
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) iv_throw.getLayoutParams();
-        layoutParams.width = width;
-        layoutParams.height = height;
-        layoutParams.setMargins(locationX, locationY - height / 2, 0, 0);
+        layoutParams.width = originImage.getWidth();
+        layoutParams.height = originImage.getHeight();
+        layoutParams.setMargins(startLocation[0], startLocation[1] - originImage.getHeight() / 2, 0, 0);
         iv_throw.setLayoutParams(layoutParams);
         iv_throw.setImageDrawable(drawable);
         iv_throw.setVisibility(View.VISIBLE);
-        // 更新图标大小
-        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+
         iv_throw.measure(w, h);
         // 读取头像坐标
         int[] endLocation = new int[2];
@@ -288,7 +296,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
             SoundHelper.playDragThrow();
         }
         // 执行动画
-        AnimationHelper.startSendFileAnimation(iv_throw, head_layout, locationX, locationY, endLocation[0], endLocation[1]);
+        AnimationHelper.startSendFileAnimation(iv_throw, head_layout, startLocation[0], startLocation[1], endLocation[0], endLocation[1]);
     }
 
     /**

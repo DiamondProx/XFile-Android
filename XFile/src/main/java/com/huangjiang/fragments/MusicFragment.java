@@ -1,7 +1,6 @@
 package com.huangjiang.fragments;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,7 +23,6 @@ import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.model.LinkType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.opfile.OpLogic;
-import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.view.CustomDialog;
 import com.huangjiang.view.DialogHelper;
@@ -32,6 +30,7 @@ import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
 import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.view.PopupMenu;
+import com.huangjiang.xfile.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -82,13 +81,10 @@ public class MusicFragment extends Fragment implements PopupMenu.MenuCallback, C
                     startActivity(new Intent(getActivity(), ConnectActivity.class));
                     return;
                 }
-                ImageView image = (ImageView) listView.getChildAt(menu.getItemPosition()).findViewById(R.id.img);
+                ImageView image = (ImageView) listView.getChildAt(menu.getItemPosition() - listView.getFirstVisiblePosition()).findViewById(R.id.img);
                 if (image != null) {
-                    Drawable drawable = image.getDrawable();
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    int[] location = new int[2];
-                    image.getLocationOnScreen(location);
-                    homeActivity.setThrowView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+                    homeActivity.setThrowView(image);
                     TFileInfo tFileInfo = menu.getTFileInfo();
                     IMFileManager.getInstance().createTask(tFileInfo);
                 }

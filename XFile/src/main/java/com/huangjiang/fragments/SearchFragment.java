@@ -100,13 +100,10 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
                     startActivity(new Intent(getActivity(), ConnectActivity.class));
                     return;
                 }
-                ImageView image = (ImageView) listView.getChildAt(menu.getItemPosition()).findViewById(R.id.img);
+                ImageView image = (ImageView) listView.getChildAt(menu.getItemPosition() - listView.getFirstVisiblePosition()).findViewById(R.id.img);
                 if (image != null) {
-                    Drawable drawable = image.getDrawable();
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    int[] location = new int[2];
-                    image.getLocationOnScreen(location);
-                    homeActivity.setThrowView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+                    homeActivity.setThrowView(image);
                     TFileInfo tFileInfo = menu.getTFileInfo();
                     IMFileManager.getInstance().createTask(tFileInfo);
                 }

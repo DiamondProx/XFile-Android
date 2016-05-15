@@ -43,7 +43,7 @@ import java.util.List;
 /**
  * 安装程序
  */
-public class AppFragment extends Fragment  implements PopupMenu.MenuCallback, CustomDialog.DialogCallback, AdapterView.OnItemClickListener {
+public class AppFragment extends Fragment implements PopupMenu.MenuCallback, CustomDialog.DialogCallback, AdapterView.OnItemClickListener {
 
     private final String mPageName = "AppFragment";
 
@@ -72,6 +72,7 @@ public class AppFragment extends Fragment  implements PopupMenu.MenuCallback, Cu
         opLogic = new OpLogic(getActivity());
         appLogic.searchApp();
     }
+
     /**
      * 弹出菜单选择
      */
@@ -83,13 +84,10 @@ public class AppFragment extends Fragment  implements PopupMenu.MenuCallback, Cu
                     startActivity(new Intent(getActivity(), ConnectActivity.class));
                     return;
                 }
-                ImageView image = (ImageView) gridView.getChildAt(menu.getItemPosition()).findViewById(R.id.img);
+                ImageView image = (ImageView) gridView.getChildAt(menu.getItemPosition() - gridView.getFirstVisiblePosition()).findViewById(R.id.img);
                 if (image != null) {
-                    Drawable drawable = image.getDrawable();
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    int[] location = new int[2];
-                    image.getLocationOnScreen(location);
-                    homeActivity.setThrowView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+                    homeActivity.setThrowView(image);
                     TFileInfo tFileInfo = menu.getTFileInfo();
                     IMFileManager.getInstance().createTask(tFileInfo);
                 }

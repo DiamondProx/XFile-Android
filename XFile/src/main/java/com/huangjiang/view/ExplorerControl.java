@@ -242,15 +242,12 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
                     mContext.startActivity(new Intent(activity, ConnectActivity.class));
                     return;
                 }
-                View view = explorerAdapter.getView(menu.getItemPosition(), null, null);
+                View view = explorerListView.getChildAt(menu.getItemPosition() - explorerListView.getFirstVisiblePosition());
                 if (view != null) {
                     ImageView image = (ImageView) view.findViewById(R.id.image);
                     if (image != null) {
-                        Drawable drawable = image.getDrawable();
                         HomeActivity homeActivity = (HomeActivity) activity;
-                        int[] location = new int[2];
-                        image.getLocationOnScreen(location);
-                        homeActivity.setThrowView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+                        homeActivity.setThrowView(image);
                         TFileInfo tFileInfo = menu.getTFileInfo();
                         IMFileManager.getInstance().createTask(tFileInfo);
                     }

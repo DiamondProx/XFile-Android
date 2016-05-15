@@ -142,11 +142,8 @@ public class PictureFragment extends Fragment implements PictureAdapter.CallBack
                 }
                 ImageView image = (ImageView) recycler_view.getChildAt(menu.getItemPosition()).findViewById(R.id.item_image);
                 if (image != null) {
-                    Drawable drawable = image.getDrawable();
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    int[] location = new int[2];
-                    image.getLocationOnScreen(location);
-                    homeActivity.setThrowView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+                    homeActivity.setThrowView(image);
                     TFileInfo tFileInfo = menu.getTFileInfo();
                     IMFileManager.getInstance().createTask(tFileInfo);
                 }

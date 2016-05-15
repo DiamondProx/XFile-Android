@@ -157,8 +157,12 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         }
         holder.name.setText(tFileInfo.getFullName());
         holder.size.setText(XFileUtils.parseSize(tFileInfo.getLength()));
-        long percent = tFileInfo.getPosition() * 100 / tFileInfo.getLength();
-        holder.remainPercent.setText(String.format(mContext.getString(R.string.percent), percent));
+        if (tFileInfo.getLength() != 0) {
+            long percent = tFileInfo.getPosition() * 100 / tFileInfo.getLength();
+            holder.remainPercent.setText(String.format(mContext.getString(R.string.percent), percent));
+        } else {
+            holder.remainPercent.setText(String.format(mContext.getString(R.string.percent), 100));
+        }
         if (tFileInfo.getFileEvent() == FileEvent.NONE) {
             holder.status.setVisibility(View.GONE);
             holder.line1.setVisibility(View.GONE);

@@ -85,13 +85,10 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
     public void onMenuClick(PopupMenu menu, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_transfer:
-                ImageView image = (ImageView) lv_message.getChildAt(menu.getItemPosition()).findViewById(R.id.img);
+                ImageView image = (ImageView) lv_message.getChildAt(menu.getItemPosition() - lv_message.getFirstVisiblePosition()).findViewById(R.id.img);
                 if (image != null) {
-                    Drawable drawable = image.getDrawable();
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    int[] location = new int[2];
-                    image.getLocationOnScreen(location);
-                    homeActivity.setThrowView(drawable, image.getWidth(), image.getHeight(), location[0], location[1]);
+                    homeActivity.setThrowView(image);
                 }
                 break;
             case R.id.menu_open:

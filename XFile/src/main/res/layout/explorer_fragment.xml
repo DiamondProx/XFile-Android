@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.huangjiang.view.ExplorerControl
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/explorer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_background"
-    android:orientation="vertical">
-
-    <com.huangjiang.view.ExplorerControl
-        android:id="@+id/explorer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true" />
-
-</FrameLayout>
+    android:background="@color/app_background" />
