@@ -435,7 +435,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
                 return true;
             } else {
                 XFileActivityManager.create().finishAllActivity();
-                System.exit(0);
             }
         }
         return super.onKeyUp(keyCode, event);
