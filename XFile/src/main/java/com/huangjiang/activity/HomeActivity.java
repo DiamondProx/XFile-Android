@@ -29,7 +29,9 @@ import com.huangjiang.XFileApp;
 import com.huangjiang.business.event.RecordEvent;
 import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.business.model.LinkType;
+import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.config.Config;
+import com.huangjiang.fragments.HistoryFragment;
 import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.manager.IMClientFileManager;
@@ -37,6 +39,7 @@ import com.huangjiang.manager.IMClientMessageManager;
 import com.huangjiang.manager.IMServerFileManager;
 import com.huangjiang.manager.IMServerMessageManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
+import com.huangjiang.manager.event.FileEvent;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.service.IMService;
 import com.huangjiang.utils.SoundHelper;
@@ -392,6 +395,21 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
         tv_person_count.setText(String.format(getString(R.string.person_number), recordEvent.getDeviceCount()));
         tv_link_count.setText(String.format(getString(R.string.count_number), recordEvent.getConnectCount()));
         tv_total_size.setText(XFileUtils.parseSize(recordEvent.getTotalSize()));
+    }
+
+    /*
+     * 切换到历史消息页面
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(TFileInfo tFileInfo) {
+        FileEvent fileEvent = tFileInfo.getFileEvent();
+        switch (fileEvent) {
+            case CREATE_FILE_SUCCESS:
+                if (!HistoryFragment.isInit && !tFileInfo.isSend()) {
+                    rdb_message.setChecked(true);
+                }
+                break;
+        }
     }
 
 

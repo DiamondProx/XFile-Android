@@ -47,7 +47,7 @@ public class TabMessageFragment extends BaseFragment implements TabBar.OnTabList
         pagerAdapter = new MessagePagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOnPageChangeListener(this);
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(0);
         historyLogic = new HistoryLogic(getActivity());
         return view;
 
