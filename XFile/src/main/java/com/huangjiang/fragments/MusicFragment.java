@@ -86,7 +86,7 @@ public class MusicFragment extends Fragment implements PopupMenu.MenuCallback, C
                     HomeActivity homeActivity = (HomeActivity) getActivity();
                     homeActivity.setThrowView(image);
                     TFileInfo tFileInfo = menu.getTFileInfo();
-                    IMFileManager.getInstance().createTask(tFileInfo);
+                    IMFileManager.getInstance().createTask(tFileInfo.newInstance());
                 }
                 break;
             case R.id.menu_open:

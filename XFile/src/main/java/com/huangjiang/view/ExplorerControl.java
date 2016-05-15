@@ -249,7 +249,7 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
                         HomeActivity homeActivity = (HomeActivity) activity;
                         homeActivity.setThrowView(image);
                         TFileInfo tFileInfo = menu.getTFileInfo();
-                        IMFileManager.getInstance().createTask(tFileInfo);
+                        IMFileManager.getInstance().createTask(tFileInfo.newInstance());
                     }
                 }
                 break;

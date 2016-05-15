@@ -17,7 +17,9 @@ public class XFileApp extends Application {
 
     public static String device_id;
 
-    public static LinkType mLinkType = LinkType.NONE;// 0 未连接,1 客户端连接,2 服务端连接
+    public static LinkType mLinkType = LinkType.NONE;
+
+    public static int mAndroidTitleBar = 0;
 
 
     @Override

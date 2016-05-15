@@ -42,6 +42,7 @@ import com.huangjiang.manager.event.ClientFileSocketEvent;
 import com.huangjiang.manager.event.FileEvent;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.service.IMService;
+import com.huangjiang.utils.DisplayUtils;
 import com.huangjiang.utils.SoundHelper;
 import com.huangjiang.utils.VibratorUtils;
 import com.huangjiang.utils.WifiHelper;
@@ -283,7 +284,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) iv_throw.getLayoutParams();
         layoutParams.width = originImage.getWidth();
         layoutParams.height = originImage.getHeight();
-        layoutParams.setMargins(startLocation[0], startLocation[1] - originImage.getHeight() / 2, 0, 0);
+        layoutParams.setMargins(startLocation[0], startLocation[1] - XFileApp.mAndroidTitleBar, 0, 0);
         iv_throw.setLayoutParams(layoutParams);
         iv_throw.setImageDrawable(drawable);
         iv_throw.setVisibility(View.VISIBLE);
@@ -438,6 +439,17 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
             }
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    /**
+     * 获取屏幕状态栏高度
+     */
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            XFileApp.mAndroidTitleBar = DisplayUtils.getAndroidTitleBar(HomeActivity.this);
+        }
     }
 
     @Override

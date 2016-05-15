@@ -88,6 +88,28 @@ public class TFileInfo implements Comparable<TFileInfo> {
      */
     private boolean directory = false;
 
+    public TFileInfo() {
+    }
+
+    public TFileInfo(String name, long position, long length, String path, String extension, String fullName, String taskId, boolean isSend, String from, long percent, String createTime, int playTime, String packageName, boolean directory, FileEvent fileEvent, FileType fileType) {
+        this.name = name;
+        this.position = position;
+        this.length = length;
+        this.path = path;
+        this.extension = extension;
+        this.fullName = fullName;
+        this.taskId = taskId;
+        this.isSend = isSend;
+        this.from = from;
+        this.percent = percent;
+        this.createTime = createTime;
+        this.playTime = playTime;
+        this.packageName = packageName;
+        this.directory = directory;
+        this.fileEvent = fileEvent;
+        this.fileType = fileType;
+    }
+
     public String getName() {
         return name;
     }
@@ -215,6 +237,10 @@ public class TFileInfo implements Comparable<TFileInfo> {
             return this.name.compareTo(fileInfo.getName());
         else
             throw new IllegalArgumentException();
+    }
+
+    public TFileInfo newInstance() {
+        return new TFileInfo(this.name, this.position, this.length, this.path, this.extension, this.fullName, this.taskId, this.isSend, this.from, this.percent, this.createTime, this.playTime, this.packageName, this.directory, this.fileEvent, this.fileType);
     }
 
     public boolean isDirectory() {
