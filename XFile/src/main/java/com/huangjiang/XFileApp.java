@@ -26,7 +26,7 @@ public class XFileApp extends Application {
         context = this;
         device_id = XFileUtils.getDeviceId();
         initUMeg();
-        initErrorHandler();
+//        initErrorHandler();
         SoundHelper.init();
     }
 

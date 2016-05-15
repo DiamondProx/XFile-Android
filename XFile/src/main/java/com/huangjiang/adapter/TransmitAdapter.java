@@ -166,7 +166,7 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
             holder.status.setText(getState(tFileInfo.getFileEvent()));
         }
         // 接受者才显示箭头按钮
-        if (!tFileInfo.isSend()) {
+        if (!tFileInfo.isSend() && holder.btn_step != null) {
             setStepState(holder.btn_step, tFileInfo.getFileEvent());
             holder.btn_step.setTag(tFileInfo.getTaskId());
             holder.btn_step.setOnClickListener(this);

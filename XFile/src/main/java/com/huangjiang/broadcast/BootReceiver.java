@@ -3,8 +3,6 @@ package com.huangjiang.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.widget.Toast;
 
 import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.model.FileType;
@@ -13,7 +11,7 @@ import com.huangjiang.business.model.TFileInfo;
 import org.greenrobot.eventbus.EventBus;
 
 /**
- * 应用卸载广播
+ * 应用卸载
  */
 public class BootReceiver extends BroadcastReceiver {
 
