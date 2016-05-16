@@ -153,6 +153,11 @@
     <string name="back">返回</string>
     <string name="create_hotspot_failed">创建连接失败</string>
     <string name="click_link">点击链接</string>
+    <string name="bit">bit</string>
+    <string name="kb">KB</string>
+    <string name="mb">MB</string>
+    <string name="gb">GB</string>
+    <string name="zero">00</string>
 
 
 </resources>

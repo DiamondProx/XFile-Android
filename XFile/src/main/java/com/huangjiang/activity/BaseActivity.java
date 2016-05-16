@@ -68,7 +68,7 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
     }
 
     protected void initView(int titleResId, int bodyViewId, int... rightResId) {
-        initView(getString(titleResId), inflater.inflate(bodyViewId, null),rightResId);
+        initView(getString(titleResId), inflater.inflate(bodyViewId, null), rightResId);
     }
 
     protected void initView(String title, View bodyView, int... rightResId) {
@@ -100,9 +100,7 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
     }
 
     /**
-     * @Title: resetTitleRightMenu
-     * @Description: 重设标题栏右边的菜单, 包含影藏操作
-     * @param:
+     * 设置右上角按钮
      */
     public void resetTitleRightMenu(int... resID) {
         int size = resID == null ? 0 : resID.length;
@@ -110,7 +108,7 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
         boolean isAllDra = true;
         for (int i = 0; i < size; i++) {
             //判断它是不是图片资源
-            if ((resID[i] >= 0x7f020000 && resID[i] <= 0x7f02ffff)||(resID[i] >= 0x7f030000 && resID[i] <= 0x7f03ffff)) {
+            if ((resID[i] >= 0x7f020000 && resID[i] <= 0x7f02ffff) || (resID[i] >= 0x7f030000 && resID[i] <= 0x7f03ffff)) {
                 isAllStr = false;
             } else {
                 isAllDra = false;
@@ -127,39 +125,15 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
             //全是图片
             if (title_right_layout != null) {
                 title_right_layout.removeAllViews();
-            }
-            title_right_layout.setVisibility(View.VISIBLE);
-            int dp_10 = (int) resources.getDimension(R.dimen.dp_10);
-            for (int i = 0; i < size; i++) {
-                ImageView imageView = new ImageView(this);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                imageView.setPadding(dp_10, 0, dp_10, 0);
-                imageView.setImageResource(resID[i]);
-                title_right_layout.addView(imageView, layoutParams);
-                imageView.setTag(i);
-                imageView.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        rightClick((Integer) v.getTag());
-                    }
-                });
-            }
-        } else {
-            //又有文字又有图片
-            if (title_right_layout != null) {
-                title_right_layout.removeAllViews();
-            }
-            title_right_layout.setVisibility(View.VISIBLE);
-            int dp_10 = (int) resources.getDimension(R.dimen.dp_10);
-            for (int i = 0; i < size; i++) {
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                if (resID[i] >= 0x7f020000 && resID[i] <= 0x7f02ffff) {
+                title_right_layout.setVisibility(View.VISIBLE);
+                int dp_10 = (int) resources.getDimension(R.dimen.dp_10);
+                for (int i = 0; i < size; i++) {
                     ImageView imageView = new ImageView(this);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT);
                     imageView.setPadding(dp_10, 0, dp_10, 0);
                     imageView.setImageResource(resID[i]);
+                    title_right_layout.addView(imageView, layoutParams);
                     imageView.setTag(i);
                     imageView.setOnClickListener(new View.OnClickListener() {
 
@@ -168,25 +142,51 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
                             rightClick((Integer) v.getTag());
                         }
                     });
-                    title_right_layout.addView(imageView, layoutParams);
-                } else {
-                    TextView textView = new TextView(this);
-                    textView.setGravity(Gravity.CENTER);
-                    textView.setPadding(dp_10, 0, dp_10, 0);
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.sp_14));
-                    textView.setText(resID[i]);
-                    textView.setTextColor(resources.getColor(R.color.blue));
-                    textView.setTag(i);
-                    textView.setOnClickListener(new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View v) {
-                            rightClick((Integer) v.getTag());
-                        }
-                    });
-                    title_right_layout.addView(textView, layoutParams);
                 }
             }
+
+        } else {
+            //又有文字又有图片
+            if (title_right_layout != null) {
+                title_right_layout.removeAllViews();
+                title_right_layout.setVisibility(View.VISIBLE);
+                int dp_10 = (int) resources.getDimension(R.dimen.dp_10);
+                for (int i = 0; i < size; i++) {
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT);
+                    if (resID[i] >= 0x7f020000 && resID[i] <= 0x7f02ffff) {
+                        ImageView imageView = new ImageView(this);
+                        imageView.setPadding(dp_10, 0, dp_10, 0);
+                        imageView.setImageResource(resID[i]);
+                        imageView.setTag(i);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                rightClick((Integer) v.getTag());
+                            }
+                        });
+                        title_right_layout.addView(imageView, layoutParams);
+                    } else {
+                        TextView textView = new TextView(this);
+                        textView.setGravity(Gravity.CENTER);
+                        textView.setPadding(dp_10, 0, dp_10, 0);
+                        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.sp_14));
+                        textView.setText(resID[i]);
+                        textView.setTextColor(resources.getColor(R.color.blue));
+                        textView.setTag(i);
+                        textView.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                rightClick((Integer) v.getTag());
+                            }
+                        });
+                        title_right_layout.addView(textView, layoutParams);
+                    }
+                }
+            }
+
         }
     }
 
@@ -196,7 +196,7 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
         if (title_right_layout != null) {
             title_right_layout.removeAllViews();
         }
-        if (size > 0) {
+        if (size > 0 && title_right_layout != null) {
             title_right_layout.setVisibility(View.VISIBLE);
             int dp_10 = (int) resources.getDimension(R.dimen.dp_10);
             for (int i = 0; i < size; i++) {
@@ -222,11 +222,10 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
     }
 
     /**
-     *
-     * @Title: rightClick
-     * @param: index(索引,因为右边的菜单可能是一个或则多个所以传一个索引过来)
+     * 右上角按钮单击事件
      */
-    protected void rightClick(int index) {}
+    protected void rightClick(int index) {
+    }
 
 
 }

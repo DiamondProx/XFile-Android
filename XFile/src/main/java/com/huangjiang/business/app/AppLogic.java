@@ -1,7 +1,6 @@
 package com.huangjiang.business.app;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 
 import com.huangjiang.business.BaseLogic;
 import com.huangjiang.business.event.FindResEvent;

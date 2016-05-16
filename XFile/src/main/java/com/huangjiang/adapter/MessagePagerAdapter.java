@@ -4,14 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.huangjiang.fragments.AppFragment;
-import com.huangjiang.fragments.ExplorerFragment;
 import com.huangjiang.fragments.HistoryFragment;
 import com.huangjiang.fragments.InboxFragment;
-import com.huangjiang.fragments.MusicFragment;
-import com.huangjiang.fragments.PictureFragment;
-import com.huangjiang.fragments.SearchFragment;
-import com.huangjiang.fragments.VideoFragment;
 
 import java.util.ArrayList;
 import java.util.List;

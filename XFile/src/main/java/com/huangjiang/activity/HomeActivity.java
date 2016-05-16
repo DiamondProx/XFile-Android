@@ -36,6 +36,7 @@ import com.huangjiang.fragments.TabMessageFragment;
 import com.huangjiang.fragments.TabMobileFragment;
 import com.huangjiang.manager.IMClientFileManager;
 import com.huangjiang.manager.IMClientMessageManager;
+import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.IMServerFileManager;
 import com.huangjiang.manager.IMServerMessageManager;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
@@ -265,11 +266,23 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
         mTabIndex = idx;
     }
 
+    /**
+     * 发送文件
+     */
+    public void sendTFile(TFileInfo tFileInfo, ImageView originImage) {
+        if (XFileApp.mLinkType == LinkType.NONE) {
+            startActivity(new Intent(HomeActivity.this, ConnectActivity.class));
+            return;
+        }
+        setThrowView(originImage);
+        IMFileManager.getInstance().createTask(tFileInfo.newInstance());
+    }
+
 
     /**
      * 设置甩图标
      */
-    public void setThrowView(ImageView originImage) {
+    private void setThrowView(ImageView originImage) {
 
         int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);

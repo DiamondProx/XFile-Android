@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.core.ImageLoader;
-import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.xfile.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,15 +49,6 @@ public class InstallAdapter extends BaseAdapter {
         return position;
     }
 
-
-    public List<TFileInfo> getTFiles() {
-        return list;
-    }
-
-    public void addTFiles(List<TFileInfo> tFileInfos) {
-        this.list.clear();
-        this.list.addAll(tFileInfos);
-    }
 
     public void removeFile(TFileInfo tFileInfo) {
         for (TFileInfo file : list) {

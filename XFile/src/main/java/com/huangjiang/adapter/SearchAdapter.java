@@ -49,7 +49,7 @@ public class SearchAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder videoHolder = null;
+        ViewHolder videoHolder;
         if (convertView == null) {
             videoHolder = new ViewHolder();
             convertView = mInflater.inflate(R.layout.listview_search_item, null);

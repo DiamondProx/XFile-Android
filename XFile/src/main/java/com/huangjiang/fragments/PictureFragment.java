@@ -1,7 +1,5 @@
 package com.huangjiang.fragments;
 
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,24 +12,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.huangjiang.XFileApp;
-import com.huangjiang.activity.ConnectActivity;
 import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.adapter.PictureAdapter;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.image.ImageLogic;
-import com.huangjiang.business.model.LinkType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.opfile.OpLogic;
-import com.huangjiang.xfile.R;
-import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.view.CustomDialog;
 import com.huangjiang.view.DialogHelper;
 import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
 import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.view.PopupMenu;
+import com.huangjiang.xfile.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -101,7 +95,7 @@ public class PictureFragment extends Fragment implements PictureAdapter.CallBack
     }
 
     @Override
-    public void onGridItemClick(View view,int position ,TFileInfo tFileInfo) {
+    public void onGridItemClick(View view, int position, TFileInfo tFileInfo) {
         MenuHelper.showMenu(getActivity(), view, position, tFileInfo, PictureFragment.this);
     }
 
@@ -136,16 +130,10 @@ public class PictureFragment extends Fragment implements PictureAdapter.CallBack
     public void onMenuClick(PopupMenu menu, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_transfer:
-                if (XFileApp.mLinkType == LinkType.NONE) {
-                    startActivity(new Intent(getActivity(), ConnectActivity.class));
-                    return;
-                }
                 ImageView image = (ImageView) recycler_view.getChildAt(menu.getItemPosition()).findViewById(R.id.item_image);
-                if (image != null) {
+                if (image != null && getActivity() instanceof HomeActivity) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.setThrowView(image);
-                    TFileInfo tFileInfo = menu.getTFileInfo();
-                    IMFileManager.getInstance().createTask(tFileInfo.newInstance());
+                    homeActivity.sendTFile(menu.getTFileInfo(), image);
                 }
                 break;
             case R.id.menu_open:

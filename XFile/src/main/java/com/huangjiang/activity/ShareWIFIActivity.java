@@ -1,19 +1,15 @@
 package com.huangjiang.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 import com.huangjiang.config.Config;
 import com.huangjiang.utils.MobileDataUtils;
-import com.huangjiang.xfile.R;
+import com.huangjiang.utils.WifiHelper;
 import com.huangjiang.wfs.CopyUtil;
 import com.huangjiang.wfs.WebService;
+import com.huangjiang.xfile.R;
 import com.umeng.analytics.MobclickAgent;
-
-import java.lang.reflect.Method;
 
 /**
  * 分享当前程序
@@ -38,12 +34,10 @@ public class ShareWIFIActivity extends BaseActivity {
 
     void startService() {
         //如果是打开状态就关闭，如果是关闭就打开
-        if (setWifiAp(true)) {
+        if (WifiHelper.setWifiAp(true, "DM-JoinMe")) {
             if (!Config.getMobileData()) {
-                System.out.println("****setMobileData:false");
                 MobileDataUtils.setMobileData(this, false);
             } else {
-                System.out.println("****setMobileData:true");
                 MobileDataUtils.setMobileData(this, true);
             }
             intent = new Intent(this, WebService.class);
@@ -54,7 +48,7 @@ public class ShareWIFIActivity extends BaseActivity {
 
     void stopService() {
         if (intent != null) {
-            setWifiAp(false);
+            WifiHelper.setWifiAp(false);
             stopService(intent);
             intent = null;
         }
@@ -66,28 +60,6 @@ public class ShareWIFIActivity extends BaseActivity {
         super.onDestroy();
     }
 
-
-    // wifi热点开关
-    public boolean setWifiAp(boolean state) {
-        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        wifiManager.setWifiEnabled(!state);
-        try {
-            //热点的配置类
-            WifiConfiguration apConfig = new WifiConfiguration();
-            //配置热点的名称
-            apConfig.SSID = "DM-JoinMe";
-            //配置热点的密码
-            //apConfig.preSharedKey = "12122112";
-            //设置加密方式
-            //apConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-            //通过反射调用设置热点
-            Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
-            //返回热点打开状态
-            return (Boolean) method.invoke(wifiManager, apConfig, state);
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
     @Override
     public void onResume() {

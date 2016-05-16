@@ -1,6 +1,5 @@
 package com.huangjiang.fragments;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,10 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.adapter.TransmitAdapter;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.history.HistoryLogic;
@@ -19,14 +16,14 @@ import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.dao.DFile;
 import com.huangjiang.dao.DFileDao;
 import com.huangjiang.dao.DaoMaster;
-import com.huangjiang.view.DialogHelper;
-import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
+import com.huangjiang.view.DialogHelper;
 import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
 import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.view.PopupMenu;
+import com.huangjiang.xfile.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -84,13 +81,6 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onMenuClick(PopupMenu menu, MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_transfer:
-                ImageView image = (ImageView) lv_message.getChildAt(menu.getItemPosition() - lv_message.getFirstVisiblePosition()).findViewById(R.id.img);
-                if (image != null) {
-                    HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.setThrowView(image);
-                }
-                break;
             case R.id.menu_open:
                 OpenFileHelper.openFile(getActivity(), menu.getTFileInfo());
                 break;

@@ -40,7 +40,7 @@
             android:textColor="@color/gray_font"
             android:textSize="@dimen/sp_16" />
 
-        <TextView
+        <com.huangjiang.view.AutoSplitTextView
             android:id="@+id/txt_property_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

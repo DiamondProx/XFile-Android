@@ -48,9 +48,9 @@ public class ExplorerAdapter extends BaseAdapter {
         return list;
     }
 
-    public void addTFiles(List<TFileInfo> tFileInfos) {
+    public void addTFiles(List<TFileInfo> fileList) {
         this.list.clear();
-        this.list.addAll(tFileInfos);
+        this.list.addAll(fileList);
     }
 
     public void removeFile(TFileInfo tFileInfo) {

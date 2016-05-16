@@ -12,6 +12,7 @@ import com.huangjiang.business.event.RootEvent;
 import com.huangjiang.config.Config;
 import com.huangjiang.view.SwitchButton;
 import com.huangjiang.xfile.R;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 
@@ -72,6 +73,7 @@ public class SettingActivity extends BaseActivity implements CompoundButton.OnCh
         super.onClick(v);
         switch (v.getId()) {
             case R.id.rtl_clear:
+                ImageLoader.getInstance().clearDiskCache();
                 Toast.makeText(SettingActivity.this, R.string.clear_success, Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -117,6 +119,9 @@ public class SettingActivity extends BaseActivity implements CompoundButton.OnCh
         }
     }
 
+    /**
+     * 设置安装模式(root权限)
+     */
     void setInstallSilent(boolean isChecked) {
         if (isChecked) {
             progressDialog = ProgressDialog.show(SettingActivity.this, getString(R.string.progress_title), getString(R.string.upgrade_root_permission));

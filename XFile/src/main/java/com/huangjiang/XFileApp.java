@@ -8,6 +8,8 @@ import com.huangjiang.config.Config;
 import com.huangjiang.utils.CrashHandler;
 import com.huangjiang.utils.SoundHelper;
 import com.huangjiang.utils.XFileUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 
@@ -30,6 +32,7 @@ public class XFileApp extends Application {
         initUMeg();
 //        initErrorHandler();
         SoundHelper.init();
+        initImageLoader();
     }
 
     /**
@@ -38,6 +41,11 @@ public class XFileApp extends Application {
     private void initErrorHandler() {
         CrashHandler handler = CrashHandler.getInstance();
         handler.init(this);
+    }
+
+    private void initImageLoader() {
+        ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(this);
+        ImageLoader.getInstance().init(configuration);
     }
 
     /**

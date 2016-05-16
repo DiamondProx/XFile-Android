@@ -11,8 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.xfile.R;
 
 
 /**
@@ -144,7 +144,8 @@ public class CustomDialog extends Dialog {
 
         private Context context;
         private TFileInfo tFileInfo;
-        private TextView txt_name, txt_type, txt_path, txt_size, txt_edit_time;
+        private TextView txt_name, txt_type, txt_size, txt_edit_time;
+        private AutoSplitTextView txt_path;
         private String mime_audio, mime_video, mime_app, mime_normal, mime_image;
 
         public PropertyBuilder(Context context) {
@@ -172,7 +173,7 @@ public class CustomDialog extends Dialog {
             });
             txt_name = (TextView) layout.findViewById(R.id.txt_property_name);
             txt_type = (TextView) layout.findViewById(R.id.txt_property_type);
-            txt_path = (TextView) layout.findViewById(R.id.txt_property_path);
+            txt_path = (AutoSplitTextView) layout.findViewById(R.id.txt_property_path);
             txt_size = (TextView) layout.findViewById(R.id.txt_property_size);
             txt_edit_time = (TextView) layout.findViewById(R.id.txt_property_edit_time);
             if (tFileInfo != null) {

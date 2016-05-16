@@ -1,8 +1,5 @@
 package com.huangjiang.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huangjiang.business.model.Catalog;
-
 import com.huangjiang.xfile.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CatalogAdapter extends BaseAdapter {
 
@@ -40,10 +39,6 @@ public class CatalogAdapter extends BaseAdapter {
         return i;
     }
 
-    public List<Catalog> getCatalogs() {
-        return list;
-    }
-
     public void addCatalogs(List<Catalog> catalogs) {
         this.list.addAll(catalogs);
     }
@@ -60,9 +55,9 @@ public class CatalogAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        Catalog vo = list.get(position);
-        holder.image.setImageResource(vo.getImage());
-        holder.name.setText(vo.getName());
+        Catalog catalog = list.get(position);
+        holder.image.setImageResource(catalog.getImage());
+        holder.name.setText(catalog.getName());
         return convertView;
     }
 

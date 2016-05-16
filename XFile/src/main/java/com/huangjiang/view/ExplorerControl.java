@@ -2,10 +2,8 @@ package com.huangjiang.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -18,19 +16,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.huangjiang.XFileApp;
-import com.huangjiang.activity.ConnectActivity;
 import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.adapter.CatalogAdapter;
 import com.huangjiang.adapter.ExplorerAdapter;
 import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.explorer.ExplorerLogic;
 import com.huangjiang.business.model.Catalog;
-import com.huangjiang.business.model.LinkType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.opfile.OpLogic;
 import com.huangjiang.xfile.R;
-import com.huangjiang.manager.IMFileManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -238,18 +232,12 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
     public void onMenuClick(PopupMenu menu, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_transfer:
-                if (XFileApp.mLinkType == LinkType.NONE) {
-                    mContext.startActivity(new Intent(activity, ConnectActivity.class));
-                    return;
-                }
                 View view = explorerListView.getChildAt(menu.getItemPosition() - explorerListView.getFirstVisiblePosition());
                 if (view != null) {
                     ImageView image = (ImageView) view.findViewById(R.id.image);
-                    if (image != null) {
+                    if (image != null && activity instanceof HomeActivity) {
                         HomeActivity homeActivity = (HomeActivity) activity;
-                        homeActivity.setThrowView(image);
-                        TFileInfo tFileInfo = menu.getTFileInfo();
-                        IMFileManager.getInstance().createTask(tFileInfo.newInstance());
+                        homeActivity.sendTFile(menu.getTFileInfo(), image);
                     }
                 }
                 break;
