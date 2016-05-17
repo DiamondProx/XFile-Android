@@ -48,13 +48,14 @@ public class AppInterface {
                     appFile.setName(display_name);//程序名称
                     appFile.setPackageName(pi.applicationInfo.packageName);//包名
                     appFile.setLength(new File(pi.applicationInfo.publicSourceDir).length());//大小
+                    appFile.setCreateTime(XFileUtils.parseTimeToYMD(pi.firstInstallTime));//安装时间
                     appFile.setFullName(display_name + ".apk");
                     if (!StringUtils.isEmpty(display_name)) {
                         appFile.setExtension(".apk");
                     } else {
                         appFile.setExtension("");
                     }
-                    appFile.setFileType(FileType.Apk);
+                    appFile.setFileType(FileType.Install);
                     if (searchKey != null && searchKey.length > 0) {
                         if (display_name.startsWith(searchKey[0])) {
                             list.add(appFile);
@@ -63,6 +64,7 @@ public class AppInterface {
                         list.add(appFile);
                     }
                 }
+
             }
         } catch (Exception e) {
             e.printStackTrace();

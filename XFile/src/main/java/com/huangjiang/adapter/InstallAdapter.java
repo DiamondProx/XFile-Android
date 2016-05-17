@@ -111,6 +111,7 @@ public class InstallAdapter extends BaseAdapter {
                 case Video:
                 case Image:
                 case Apk:
+                case Install:
                     ImageLoader.getInstance().displayThumb(holder.image, tFileInfo);
                     break;
                 default:

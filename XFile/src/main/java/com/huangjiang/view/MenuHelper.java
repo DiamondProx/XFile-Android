@@ -3,6 +3,7 @@ package com.huangjiang.view;
 import android.content.Context;
 import android.view.View;
 
+import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.xfile.R;
 import com.huangjiang.manager.event.FileEvent;
@@ -25,10 +26,18 @@ public class MenuHelper {
         menu.setTFileInfo(tFileInfo);
         menu.setOnItemSelectedListener(callback);
         if (tFileInfo.getFileEvent() == FileEvent.NONE) {
-            // 本地普通文件
-            menu.add(R.id.menu_transfer, R.string.transfer).setIcon(context.getResources().getDrawable(R.mipmap.data_downmenu_send));
-            menu.add(R.id.menu_open, R.string.open).setIcon(context.getResources().getDrawable(R.mipmap.data_downmenu_open));
-            menu.add(R.id.menu_more, R.string.more).setIcon(context.getResources().getDrawable(R.mipmap.data_downmenu_more));
+            if (tFileInfo.getFileType() == FileType.Install && context.getPackageName().equals(tFileInfo.getPackageName())) {
+                // 自身安装包
+                menu.add(R.id.menu_transfer, R.string.transfer).setIcon(context.getResources().getDrawable(R.mipmap.data_downmenu_send));
+                menu.add(R.id.menu_backup, R.string.backup).setIcon(context.getResources().getDrawable(R.mipmap.data_downmenu_copy));
+                menu.add(R.id.menu_property, R.string.property).setIcon(context.getResources().getDrawable(R.mipmap.data_downmenu_detail));
+            } else {
+                // 本地普通文件
+                menu.add(R.id.menu_transfer, R.string.transfer).setIcon(context.getResources().getDrawable(R.mipmap.data_downmenu_send));
+                menu.add(R.id.menu_open, R.string.open).setIcon(context.getResources().getDrawable(R.mipmap.data_downmenu_open));
+                menu.add(R.id.menu_more, R.string.more).setIcon(context.getResources().getDrawable(R.mipmap.data_downmenu_more));
+            }
+
         } else {
             // 传输文件
             switch (tFileInfo.getFileEvent()) {

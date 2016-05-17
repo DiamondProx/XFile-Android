@@ -84,6 +84,9 @@ public class OpLogic extends BaseLogic {
         }
     }
 
+    /**
+     * 备份安装包
+     */
     public void backUpApk(final TFileInfo tFileInfo) {
         ThreadPoolManager.getInstance(OpLogic.class.getName()).startTaskThread(new Runnable() {
             @Override
@@ -97,7 +100,7 @@ public class OpLogic extends BaseLogic {
                     String prePath = "";
                     prePath += Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
                     prePath += "XFile" + File.separator;
-                    prePath += "backup" + File.separator;
+                    prePath += "apk" + File.separator;
                     String tempSavePath = prePath + tFileInfo.getFullName();
                     File toFile = new File(tempSavePath);
                     if (!toFile.getParentFile().exists()) {
@@ -106,7 +109,7 @@ public class OpLogic extends BaseLogic {
                     int i = 0;
                     while (toFile.exists()) {
                         i++;
-                        toFile = new File(tempSavePath + "-" + i);
+                        toFile = new File(prePath + tFileInfo.getName() + "-" + i + tFileInfo.getExtension());
                     }
 
                     java.io.FileInputStream fosfrom = new java.io.FileInputStream(fromFile);

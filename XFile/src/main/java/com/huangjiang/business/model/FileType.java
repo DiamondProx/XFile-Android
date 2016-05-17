@@ -9,5 +9,6 @@ public enum FileType {
     Audio,//视频
     Video,//音频
     Image,//图片
-    Apk//安装包
+    Apk,//安装包-未安装
+    Install//安装包-已安装
 }

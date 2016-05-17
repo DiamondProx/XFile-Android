@@ -74,7 +74,11 @@ public class XFileUtils {
         TimeZone tz = TimeZone.getTimeZone("Asia/Shanghai");
         TimeZone.setDefault(tz);
         SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日");
-        return format.format(new Date(time * 1000L));
+        if (Long.toString(time).length() == 10) {
+            return format.format(new Date(time * 1000L));
+        } else {
+            return format.format(new Date(time));
+        }
     }
 
     /**

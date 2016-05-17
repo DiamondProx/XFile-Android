@@ -102,6 +102,7 @@ public class ImageLoader {
                         bitmap = loadVideoThumb(file_path, 90, 90);
                         break;
                     case Apk:
+                    case Install:
                         bitmap = loadApkThumb(file_path);
                         break;
                 }

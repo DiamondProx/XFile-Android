@@ -20,7 +20,7 @@ import com.huangjiang.view.TabBar;
 import com.huangjiang.xfile.R;
 import com.umeng.analytics.MobclickAgent;
 
-public class TabMessageFragment extends BaseFragment implements TabBar.OnTabListener, ViewPager.OnPageChangeListener, View.OnClickListener {
+public class TabMessageFragment extends Fragment implements TabBar.OnTabListener, ViewPager.OnPageChangeListener, View.OnClickListener {
 
     private Logger logger = Logger.getLogger(IMFileManager.class);
     private final String mPageName = "TabMessageFragment";

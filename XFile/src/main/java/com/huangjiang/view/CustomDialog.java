@@ -190,6 +190,7 @@ public class CustomDialog extends Dialog {
                         mime_type = mime_image;
                         break;
                     case Apk:
+                    case Install:
                         mime_type = mime_app;
                         break;
                     case Normal:
@@ -265,6 +266,7 @@ public class CustomDialog extends Dialog {
                     case Audio:
                     case Video:
                     case Image:
+                    case Apk:
                         btnDelete.setVisibility(View.VISIBLE);
                         lineDelete.setVisibility(View.VISIBLE);
                         btnRename.setVisibility(View.VISIBLE);
@@ -274,7 +276,7 @@ public class CustomDialog extends Dialog {
                         btnBackup.setVisibility(View.GONE);
                         lineBackup.setVisibility(View.GONE);
                         break;
-                    case Apk:
+                    case Install:
                         btnDelete.setVisibility(View.GONE);
                         lineDelete.setVisibility(View.GONE);
                         btnRename.setVisibility(View.GONE);

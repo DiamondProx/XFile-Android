@@ -158,6 +158,8 @@
     <string name="mb">MB</string>
     <string name="gb">GB</string>
     <string name="zero">00</string>
+    <string name="backup_apk">正在备份程序</string>
+    <string name="open_install_failed">启动程序失败</string>
 
 
 </resources>

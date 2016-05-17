@@ -33,6 +33,7 @@
             android:name="com.huangjiang.activity.HomeActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:label="@string/app_name"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustNothing">
             <intent-filter>
@@ -76,6 +77,7 @@
 
         <service android:name="com.huangjiang.service.IMService" />
         <service android:name="com.huangjiang.wfs.WebService" />
+
         <receiver android:name="com.huangjiang.broadcast.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
@@ -93,16 +95,13 @@
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="572d43a6e0f55aa86a00053c" >
-        </meta-data>
+            android:value="572d43a6e0f55aa86a00053c"></meta-data>
         <meta-data
             android:name="UMENG_MESSAGE_SECRET"
-            android:value="ec3efe82e5fd58cf5191b3f5692e20d1" >
-        </meta-data>
+            android:value="ec3efe82e5fd58cf5191b3f5692e20d1"></meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="Umeng" >
-        </meta-data>
+            android:value="Umeng"></meta-data>
 
     </application>
 

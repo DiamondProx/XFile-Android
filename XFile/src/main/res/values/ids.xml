@@ -12,6 +12,7 @@
     <item name="menu_stop" type="id" />
     <item name="menu_cancel" type="id" />
     <item name="menu_resume" type="id" />
+    <item name="menu_backup" type="id" />
     <item name="listview_catalog_id" type="id" />
     <item name="listview_explorer_id" type="id" />
 

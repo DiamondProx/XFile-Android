@@ -1,5 +1,6 @@
 package com.huangjiang.fragments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -46,6 +47,7 @@ public class AppFragment extends Fragment implements PopupMenu.MenuCallback, Cus
     GridView gridView;
     AppLogic appLogic;
     OpLogic opLogic;
+    ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,11 +82,14 @@ public class AppFragment extends Fragment implements PopupMenu.MenuCallback, Cus
                     homeActivity.sendTFile(menu.getTFileInfo(), image);
                 }
                 break;
-            case R.id.menu_open:
-                OpenFileHelper.openFile(getActivity(), menu.getTFileInfo());
-                break;
             case R.id.menu_property:
                 DialogHelper.showProperty(getActivity(), menu.getTFileInfo());
+                break;
+            case R.id.menu_backup:
+                backUpApk(menu.getTFileInfo());
+                break;
+            case R.id.menu_open:
+                OpenFileHelper.openFile(getActivity(), menu.getTFileInfo());
                 break;
             case R.id.menu_more:
                 DialogHelper.showMore(getActivity(), menu.getTFileInfo(), AppFragment.this);
@@ -98,28 +103,22 @@ public class AppFragment extends Fragment implements PopupMenu.MenuCallback, Cus
     @Override
     public void onDialogClick(int id, TFileInfo tFileInfo, Object... param) {
         switch (id) {
-            case R.id.more_del:
-                DialogHelper.showDel(getActivity(), tFileInfo, AppFragment.this);
-                break;
-            case R.id.more_rename:
-                DialogHelper.showRename(getActivity(), tFileInfo, AppFragment.this);
-                break;
             case R.id.more_uninstall:
                 opLogic.unInstall(tFileInfo);
                 break;
             case R.id.more_back:
-                opLogic.backUpApk(tFileInfo);
+                backUpApk(tFileInfo);
                 break;
             case R.id.more_property:
                 DialogHelper.showProperty(getActivity(), tFileInfo);
                 break;
-            case R.id.dialog_del_ok:
-                opLogic.deleteFile(tFileInfo);
-                break;
-            case R.id.dialog_rename_ok:
-                opLogic.renameFile(tFileInfo, (String) param[0]);
-                break;
         }
+    }
+
+    void backUpApk(TFileInfo tFileInfo) {
+        progressDialog = ProgressDialog.show(getActivity(), getString(R.string.progress_title), getString(R.string.backup_apk));
+        progressDialog.show();
+        opLogic.backUpApk(tFileInfo);
     }
 
     /**
@@ -131,7 +130,6 @@ public class AppFragment extends Fragment implements PopupMenu.MenuCallback, Cus
             case APK:
                 List<TFileInfo> list = searchEvent.getFileInfoList();
                 if (list != null) {
-                    adapter.setList(null);
                     adapter.setList(list);
                     adapter.notifyDataSetChanged();
                     titleName.setText(String.format(getString(R.string.local_app), String.valueOf(list.size())));
@@ -149,6 +147,9 @@ public class AppFragment extends Fragment implements PopupMenu.MenuCallback, Cus
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(OpFileEvent opFileEvent) {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
         if (!opFileEvent.isSuccess()) {
             return;
         }
@@ -156,9 +157,7 @@ public class AppFragment extends Fragment implements PopupMenu.MenuCallback, Cus
             case DELETE:
             case UNINSTALL:
                 adapter.removeFile(opFileEvent.getTFileInfo());
-                break;
-            case RENAME:
-                adapter.updateFile(opFileEvent.getTFileInfo());
+                titleName.setText(String.format(getString(R.string.local_app), String.valueOf(adapter.getCount())));
                 break;
             case BACKUP:
                 Toast.makeText(getActivity(), R.string.backup_success, Toast.LENGTH_SHORT).show();
@@ -176,8 +175,8 @@ public class AppFragment extends Fragment implements PopupMenu.MenuCallback, Cus
 
     @Override
     public void onDestroy() {
-        EventBus.getDefault().unregister(this);
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

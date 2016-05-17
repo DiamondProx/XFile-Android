@@ -3,9 +3,11 @@ package com.huangjiang.view;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.Toast;
 
 import com.huangjiang.activity.ShowImageActivity;
 import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.xfile.R;
 
 import java.io.File;
 
@@ -111,8 +113,19 @@ public class OpenFileHelper {
     }
 
     static void openApk(Context context, TFileInfo tFileInfo) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(new File(tFileInfo.getPath())), "application/vnd.android.package-archive");
+        context.startActivity(intent);
+    }
+
+    static void openInstall(Context context, TFileInfo tFileInfo) {
         Intent LaunchIntent = context.getPackageManager().getLaunchIntentForPackage(tFileInfo.getPackageName());
-        context.startActivity(LaunchIntent);
+        if (LaunchIntent != null) {
+            context.startActivity(LaunchIntent);
+        } else {
+            Toast.makeText(context, R.string.open_install_failed, Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     static void openImage(Context context, TFileInfo tFileInfo) {
@@ -131,6 +144,9 @@ public class OpenFileHelper {
                 break;
             case Apk:
                 openApk(context, tFileInfo);
+                break;
+            case Install:
+                openInstall(context, tFileInfo);
                 break;
             case Image:
                 openImage(context, tFileInfo);

@@ -25,6 +25,7 @@
     <color name="translucent_background">#80000000</color>
     <color name="green_pressed">#54C9A7</color>
     <color name="gray_pressed">#F3F3F3</color>
+    <color name="deep_gray">#626466</color>
 
     <color name="tab_blue">#16C9E9</color>
     <color name="tab_blue_select">#3DD5F5</color>
