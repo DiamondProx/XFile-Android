@@ -105,15 +105,24 @@ public class ExplorerAdapter extends BaseAdapter {
         } else {
             holder.size.setVisibility(View.VISIBLE);
             holder.size.setText(XFileUtils.parseSize(tFileInfo.getLength()));
-            holder.name.setText(tFileInfo.getName());
+            holder.name.setText(tFileInfo.getFullName());
             switch (tFileInfo.getFileType()) {
                 case Normal:
-                case Audio:
                     holder.image.setImageResource(R.mipmap.data_folder_documents_placeholder);
                     break;
+                case Audio:
+                    holder.image.setImageResource(R.mipmap.data_music_play_cover_placeholder);
+                    break;
                 case Video:
+                    holder.image.setImageResource(R.mipmap.data_movie_default);
+                    ImageLoader.getInstance().displayThumb(holder.image, tFileInfo);
+                    break;
                 case Image:
+                    holder.image.setImageResource(R.mipmap.data_photo_l);
+                    ImageLoader.getInstance().displayThumb(holder.image, tFileInfo);
+                    break;
                 case Apk:
+                    holder.image.setImageResource(R.mipmap.ic_launcher);
                     ImageLoader.getInstance().displayThumb(holder.image, tFileInfo);
                     break;
                 default:

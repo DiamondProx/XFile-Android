@@ -168,6 +168,7 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.TextView
                         }
                     }
                 });
+                itemImage.setImageResource(R.mipmap.data_photo_l);
                 ImageLoader.getInstance().displayThumb(itemImage, tFileInfo);
             }
         }

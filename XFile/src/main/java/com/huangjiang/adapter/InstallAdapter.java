@@ -103,21 +103,8 @@ public class InstallAdapter extends BaseAdapter {
             holder.size.setVisibility(View.VISIBLE);
             holder.size.setText(XFileUtils.parseSize(tFileInfo.getLength()));
             holder.name.setText(tFileInfo.getName());
-            switch (tFileInfo.getFileType()) {
-                case Normal:
-                case Audio:
-                    holder.image.setImageResource(R.mipmap.data_folder_documents_placeholder);
-                    break;
-                case Video:
-                case Image:
-                case Apk:
-                case Install:
-                    ImageLoader.getInstance().displayThumb(holder.image, tFileInfo);
-                    break;
-                default:
-                    holder.image.setImageResource(R.mipmap.data_folder_documents_placeholder);
-                    break;
-            }
+            holder.image.setImageResource(R.mipmap.ic_launcher);
+            ImageLoader.getInstance().displayThumb(holder.image, tFileInfo);
         }
 
         return convertView;

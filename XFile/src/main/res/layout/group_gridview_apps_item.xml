@@ -21,6 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
+        android:lines="1"
+        android:ellipsize="end"
         android:text="百度输入法"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_11" />
@@ -32,6 +34,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:text="8.12MB"
+        android:lines="1"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_11" />
 

@@ -16,7 +16,6 @@ import android.widget.ImageView;
 
 import com.huangjiang.XFileApp;
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.xfile.R;
 
 /**
  * 图片加载
@@ -36,12 +35,13 @@ public class ImageLoader {
     }
 
     public ImageLoader() {
-        int maxMemory = (int) Runtime.getRuntime().maxMemory();//获取最大的运行内存
-        int maxSize = maxMemory / 4;//拿到缓存的内存大小 35
+        // 获取最大的运行内存
+        int maxMemory = (int) Runtime.getRuntime().maxMemory();
+        // 拿到缓存的内存大小
+        int maxSize = maxMemory / 4;
         lruCache = new LruCache<String, Bitmap>(maxSize) {
             @Override
             protected int sizeOf(String key, Bitmap value) {
-                //这个方法会在每次存入缓存的时候调用
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
                     return value.getByteCount();
                 } else {
@@ -52,9 +52,9 @@ public class ImageLoader {
     }
 
     public void displayThumb(ImageView imageView, TFileInfo tFileInfo) {
+        imageView.setTag(tFileInfo.getPath());
         Bitmap bitmap = getCache(tFileInfo.getPath());
         if (bitmap == null) {
-            imageView.setTag(tFileInfo.getPath());
             new LoadImageAsync(imageView, tFileInfo).execute();
         } else {
             imageView.setImageBitmap(bitmap);
@@ -63,7 +63,6 @@ public class ImageLoader {
 
     private void addCache(String path, Bitmap bitmap) {
         if (getCache(path) == null) {
-            //当前地址没有缓存时，就添加
             lruCache.put(path, bitmap);
         }
     }
@@ -91,19 +90,19 @@ public class ImageLoader {
         @Override
         protected Bitmap doInBackground(Void... params) {
             TFileInfo file = tFileInfo;
-            Bitmap bitmap = null;
             String file_path = file.getPath();
-            if (getCache(file_path) == null) {
+            Bitmap bitmap = getCache(file_path);
+            if (bitmap == null) {
                 switch (file.getFileType()) {
                     case Image:
-                        bitmap = loadImageThumb(file_path, 90, 90);
+                        bitmap = getImageThumbnail(file_path, 100, 100);
                         break;
                     case Video:
-                        bitmap = loadVideoThumb(file_path, 90, 90);
+                        bitmap = getVideoThumbnail(file_path, 100, 100, MediaStore.Images.Thumbnails.MICRO_KIND);
                         break;
                     case Apk:
                     case Install:
-                        bitmap = loadApkThumb(file_path);
+                        bitmap = getApkThumbnail(file_path);
                         break;
                 }
                 if (bitmap != null) {
@@ -115,23 +114,20 @@ public class ImageLoader {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            if (bitmap != null && tFileInfo.getPath().equals(imageView.getTag().toString())) {
+            if (imageView.getTag() != null && tFileInfo.getPath().equals(imageView.getTag().toString())) {
                 imageView.setImageBitmap(bitmap);
-            } else {
-                imageView.setImageResource(R.mipmap.data_folder_documents_placeholder);
             }
         }
     }
 
-    Bitmap loadVideoThumb(final String path, int width, int height) {
-        return getVideoThumbnail(path, width, height, MediaStore.Images.Thumbnails.MICRO_KIND);
-    }
 
-    Bitmap loadImageThumb(final String path, int width, int height) {
-        return getImageThumbnail(path, width, height);
-    }
-
-    Bitmap loadApkThumb(String apkPath) {
+    /**
+     * 获取apk文件图片
+     *
+     * @param apkPath 安装包路径
+     * @return 指定大小的视频缩略图
+     */
+    Bitmap getApkThumbnail(String apkPath) {
         PackageManager pm = XFileApp.context.getPackageManager();
         PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
         if (info != null) {
@@ -141,8 +137,7 @@ public class ImageLoader {
             try {
                 Drawable drawable = appInfo.loadIcon(pm);
                 BitmapDrawable bd = (BitmapDrawable) drawable;
-                Bitmap bitmap = bd.getBitmap();
-                return bitmap;
+                return bd.getBitmap();
             } catch (OutOfMemoryError e) {
                 return null;
             }
@@ -162,7 +157,7 @@ public class ImageLoader {
      * @return 指定大小的视频缩略图
      */
     public Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         // 获取视频的缩略图
         bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
         bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
@@ -184,18 +179,18 @@ public class ImageLoader {
      * @return 生成的缩略图
      */
     private Bitmap getImageThumbnail(String imagePath, int width, int height) {
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         // 获取这个图片的宽和高，注意此处的bitmap为null
-        bitmap = BitmapFactory.decodeFile(imagePath, options);
+        BitmapFactory.decodeFile(imagePath, options);
         options.inJustDecodeBounds = false; // 设为 false
         // 计算缩放比
         int h = options.outHeight;
         int w = options.outWidth;
         int beWidth = w / width;
         int beHeight = h / height;
-        int be = 1;
+        int be;
         if (beWidth < beHeight) {
             be = beWidth;
         } else {
@@ -208,8 +203,7 @@ public class ImageLoader {
         // 重新读入图片，读取缩放后的bitmap，注意这次要把options.inJustDecodeBounds 设为 false
         bitmap = BitmapFactory.decodeFile(imagePath, options);
         // 利用ThumbnailUtils来创建缩略图，这里要指定要缩放哪个Bitmap对象
-        bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
-                ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
         return bitmap;
     }
 
