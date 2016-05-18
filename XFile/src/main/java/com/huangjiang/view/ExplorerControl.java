@@ -64,11 +64,8 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
     void init(Context context) {
 
         mContext = context;
-        explorerLogic = new ExplorerLogic(mContext);
-        opLogic = new OpLogic(mContext);
-        EventBus.getDefault().register(this);
         setBackgroundResource(R.color.white);
-        // Catalog
+        // 目录布局
         catalogListView = new ListView(context);
         catalogListView.setId(R.id.listview_catalog_id);
         LayoutParams catalogParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -80,7 +77,7 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
         catalogListView.setOnItemClickListener(this);
         addView(catalogListView, catalogParams);
 
-        // explorer_layout
+        // 文件布局
         explorerLayout = new LinearLayout(context);
         LayoutParams explorerLayoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         explorerLayout.setOrientation(LinearLayout.VERTICAL);
@@ -99,8 +96,8 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
 
         // 上一级箭头
         ImageView headerUpDirIcon = new ImageView(context);
-        LayoutParams headerIconParams = new LayoutParams(60, 60);
-        headerIconParams.setMargins(10, 0, 0, 0);
+        LayoutParams headerIconParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        headerIconParams.setMargins(0, 0, 0, 0);
         headerUpDirIcon.setLayoutParams(headerIconParams);
         headerUpDirIcon.setBackgroundResource(R.mipmap.data_folder_dir);
         headerLayout.addView(headerUpDirIcon);
@@ -125,6 +122,10 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
         explorerAdapter = new ExplorerAdapter(context);
         explorerListView.setAdapter(explorerAdapter);
         explorerListView.setOnItemClickListener(this);
+
+        explorerLogic = new ExplorerLogic(mContext);
+        opLogic = new OpLogic(mContext);
+        EventBus.getDefault().register(this);
 
     }
 
@@ -160,7 +161,7 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
         } else if (R.id.listview_explorer_id == adapterView.getId()) {
             TFileInfo tFileInfo = (TFileInfo) explorerAdapter.getItem(position);
             if (tFileInfo.isDirectory()) {
-                // 如果点的是目录，加载下级目录
+                // 点击目录
                 currentFilePath = tFileInfo.getPath();
                 getFiles(tFileInfo.getPath());
             } else {

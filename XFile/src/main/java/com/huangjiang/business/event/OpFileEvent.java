@@ -44,6 +44,7 @@ public class OpFileEvent {
         DELETE,
         RENAME,
         BACKUP,
-        UNINSTALL
+        UNINSTALL,
+        CHANGE
     }
 }

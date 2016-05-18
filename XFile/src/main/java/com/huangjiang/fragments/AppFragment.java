@@ -158,12 +158,16 @@ public class AppFragment extends Fragment implements PopupMenu.MenuCallback, Cus
             case UNINSTALL:
                 adapter.removeFile(opFileEvent.getTFileInfo());
                 titleName.setText(String.format(getString(R.string.local_app), String.valueOf(adapter.getCount())));
+                adapter.notifyDataSetChanged();
                 break;
             case BACKUP:
                 Toast.makeText(getActivity(), R.string.backup_success, Toast.LENGTH_SHORT).show();
                 break;
+            case CHANGE:
+                appLogic.searchApp();
+                break;
         }
-        adapter.notifyDataSetChanged();
+
     }
 
 
