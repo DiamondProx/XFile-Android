@@ -71,7 +71,7 @@ public class ExplorerAdapter extends BaseAdapter {
 
     public void updateFile(TFileInfo tFileInfo) {
         for (TFileInfo file : list) {
-            if (file.getTaskId().equals(tFileInfo.getTaskId())) {
+            if (!file.isDirectory() && file.getTaskId() != null && file.getTaskId().equals(tFileInfo.getTaskId())) {
                 file.setName(tFileInfo.getName());
                 file.setPosition(tFileInfo.getPosition());
                 file.setLength(tFileInfo.getLength());

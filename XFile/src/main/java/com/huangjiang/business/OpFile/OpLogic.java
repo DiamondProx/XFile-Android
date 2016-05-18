@@ -14,6 +14,8 @@ import com.huangjiang.core.ThreadPoolManager;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.MediaStoreUtils;
 import com.huangjiang.utils.StringUtils;
+import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.xfile.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,21 +33,58 @@ public class OpLogic extends BaseLogic {
         this.context = context;
     }
 
+    /**
+     * 重命名
+     */
     public void renameFile(final TFileInfo tFileInfo, final String newName) {
         ThreadPoolManager.getInstance(OpLogic.class.getName()).startTaskThread(new Runnable() {
             @Override
             public void run() {
                 OpFileEvent event = new OpFileEvent(OpFileEvent.OpType.RENAME, tFileInfo);
                 File file = new File(tFileInfo.getPath());
-                String prePath = file.getParent();
-                File saveFile = new File(prePath + File.separator + newName);
+                String savePath = file.getParent();
+                savePath += File.separator;
+                savePath += newName;
+                if (!StringUtils.isEmpty(tFileInfo.getExtension())) {
+                    savePath += "." + tFileInfo.getExtension();
+                }
+                File saveFile = new File(savePath);
                 if (!saveFile.exists()) {
-                    file.renameTo(saveFile);
-                    tFileInfo.setName(saveFile.getName());
-                    tFileInfo.setFullName(saveFile.getName());
-                    tFileInfo.setPath(saveFile.getAbsolutePath());
-                    event.setSuccess(true);
+                    if (file.renameTo(saveFile)) {
+                        String originalPath = tFileInfo.getPath();
+                        String fileName = saveFile.getName();
+                        if (!StringUtils.isEmpty(fileName) && fileName.lastIndexOf(".") > 0) {
+                            int extensionIndex = fileName.lastIndexOf(".");
+                            tFileInfo.setExtension(fileName.substring(extensionIndex + 1));
+                            tFileInfo.setName(fileName.substring(0, extensionIndex));
+                        } else {
+                            tFileInfo.setExtension("");
+                            tFileInfo.setName(file.getName());
+                        }
+                        tFileInfo.setFullName(file.getName());
+                        tFileInfo.setPath(saveFile.getAbsolutePath());
+                        if (XFileUtils.checkEndsWithInStringArray(fileName, context.getResources().getStringArray(R.array.fileEndingImage))) {
+                            tFileInfo.setFileType(FileType.Image);
+                        } else if (XFileUtils.checkEndsWithInStringArray(fileName, context.getResources().getStringArray(R.array.fileEndingAudio))) {
+                            tFileInfo.setFileType(FileType.Audio);
+                        } else if (XFileUtils.checkEndsWithInStringArray(fileName, context.getResources().getStringArray(R.array.fileEndingVideo))) {
+                            tFileInfo.setFileType(FileType.Video);
+                        } else if (XFileUtils.checkEndsWithInStringArray(fileName, context.getResources().getStringArray(R.array.fileEndingApk))) {
+                            tFileInfo.setFileType(FileType.Apk);
+                        } else {
+                            tFileInfo.setFileType(FileType.Normal);
+                        }
+                        if (tFileInfo.getFileType() == FileType.Image || tFileInfo.getFileType() == FileType.Audio || tFileInfo.getFileType() == FileType.Video) {
+                            MediaStoreUtils.resetMediaStore(XFileApp.context, originalPath);
+                            MediaStoreUtils.resetMediaStore(XFileApp.context, saveFile.getAbsolutePath());
+                        }
+                        event.setSuccess(true);
+                    } else {
+                        event.setMessage(context.getString(R.string.rename_failed));
+                        event.setSuccess(false);
+                    }
                 } else {
+                    event.setMessage(context.getString(R.string.repeat_name));
                     event.setSuccess(false);
                 }
                 triggerEvent(event);
@@ -55,6 +94,9 @@ public class OpLogic extends BaseLogic {
 
     }
 
+    /**
+     * 删除文件
+     */
     public void deleteFile(final TFileInfo tFileInfo) {
         ThreadPoolManager.getInstance(OpLogic.class.getName()).startTaskThread(new Runnable() {
             @Override
@@ -86,6 +128,9 @@ public class OpLogic extends BaseLogic {
         });
     }
 
+    /**
+     * 程序卸载
+     */
     public void unInstall(TFileInfo tFileInfo) {
         if (tFileInfo != null && !StringUtils.isEmpty(tFileInfo.getPackageName())) {
             Intent intent = new Intent();
@@ -115,7 +160,11 @@ public class OpLogic extends BaseLogic {
                     String tempSavePath = prePath + tFileInfo.getFullName();
                     File toFile = new File(tempSavePath);
                     if (!toFile.getParentFile().exists()) {
-                        toFile.getParentFile().mkdirs();
+                        if (!toFile.getParentFile().mkdirs()) {
+                            event.setSuccess(false);
+                            triggerEvent(event);
+                            return;
+                        }
                     }
                     int i = 0;
                     while (toFile.exists()) {

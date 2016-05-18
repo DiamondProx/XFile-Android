@@ -10,6 +10,7 @@ public class OpFileEvent {
     private TFileInfo tFileInfo;
     private OpType opType;
     private boolean isSuccess;
+    private String message;
 
     public OpFileEvent(OpType opType, TFileInfo tFileInfo) {
         this.opType = opType;
@@ -38,6 +39,14 @@ public class OpFileEvent {
 
     public void setSuccess(boolean success) {
         isSuccess = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public enum OpType {

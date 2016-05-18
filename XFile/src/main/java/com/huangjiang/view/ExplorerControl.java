@@ -251,6 +251,11 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(OpFileEvent opFileEvent) {
         if (!opFileEvent.isSuccess()) {
+            switch (opFileEvent.getOpType()) {
+                case RENAME:
+                    Toast.makeText(mContext, opFileEvent.getMessage(), Toast.LENGTH_SHORT).show();
+                    break;
+            }
             return;
         }
         switch (opFileEvent.getOpType()) {

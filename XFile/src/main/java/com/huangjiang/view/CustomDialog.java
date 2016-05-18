@@ -123,7 +123,7 @@ public class CustomDialog extends Dialog {
                 public void onClick(View v) {
                     dialog.dismiss();
                     String newName = edt_file_name.getText().toString();
-                    if (onListener != null && !newName.equals(tFileInfo.getFullName())) {
+                    if (onListener != null && !newName.equals(tFileInfo.getName())) {
                         onListener.onDialogClick(v.getId(), tFileInfo, newName);
                     }
                 }
@@ -146,7 +146,7 @@ public class CustomDialog extends Dialog {
         private TFileInfo tFileInfo;
         private TextView txt_name, txt_type, txt_size, txt_edit_time;
         private AutoSplitTextView txt_path;
-        private String mime_audio, mime_video, mime_app, mime_normal, mime_image;
+        private String mime_audio, mime_video, mime_app, mime_apk, mime_normal, mime_image;
 
         public PropertyBuilder(Context context) {
             this.context = context;
@@ -155,6 +155,7 @@ public class CustomDialog extends Dialog {
             mime_image = context.getString(R.string.mime_image);
             mime_app = context.getString(R.string.mime_app);
             mime_normal = context.getString(R.string.mime_normal);
+            mime_apk = context.getString(R.string.mime_apk);
         }
 
         public void setTFileInfo(TFileInfo tFileInfo) {
@@ -190,6 +191,8 @@ public class CustomDialog extends Dialog {
                         mime_type = mime_image;
                         break;
                     case Apk:
+                        mime_type = mime_apk;
+                        break;
                     case Install:
                         mime_type = mime_app;
                         break;

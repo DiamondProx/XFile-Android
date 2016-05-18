@@ -90,6 +90,7 @@
     <string name="mime_image">图片</string>
     <string name="mime_app">应用</string>
     <string name="mime_normal">文件</string>
+    <string name="mime_apk">安装包</string>
     <string name="please_input_new_name">请输入新文件名</string>
     <string name="sure_delete_file">你确定要删除吗?</string>
     <string name="backup_success">备份成功</string>
@@ -160,6 +161,8 @@
     <string name="zero">00</string>
     <string name="backup_apk">正在备份程序</string>
     <string name="open_install_failed">启动程序失败</string>
+    <string name="repeat_name">存在同名文件</string>
+    <string name="rename_failed">文件重命名失败</string>
 
 
 </resources>
