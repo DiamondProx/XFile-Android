@@ -62,7 +62,14 @@ public class SearchAdapter extends BaseAdapter {
         }
         TFileInfo file = mList.get(position);
         if (file != null) {
-            if (file.getFileType() == FileType.Apk || file.getFileType() == FileType.Video || file.getFileType() == FileType.Image) {
+            if (file.getFileType() == FileType.Apk || file.getFileType() == FileType.Install) {
+                videoHolder.Img.setImageResource(R.mipmap.ic_launcher);
+                ImageLoader.getInstance().displayThumb(videoHolder.Img, file);
+            } else if (file.getFileType() == FileType.Video) {
+                videoHolder.Img.setImageResource(R.mipmap.data_movie_default);
+                ImageLoader.getInstance().displayThumb(videoHolder.Img, file);
+            } else if (file.getFileType() == FileType.Image) {
+                videoHolder.Img.setImageResource(R.mipmap.data_photo_l);
                 ImageLoader.getInstance().displayThumb(videoHolder.Img, file);
             } else if (file.getFileType() == FileType.Audio) {
                 videoHolder.Img.setImageResource(R.mipmap.data_music_play_cover_placeholder);
@@ -84,7 +91,7 @@ public class SearchAdapter extends BaseAdapter {
                     break;
                 }
             } else {
-                if (tFileInfo.getTaskId().equals(file.getTaskId())) {
+                if (tFileInfo.getTaskId().equals(file.getTaskId()) || tFileInfo.getPath().equals(file.getPath())) {
                     mList.remove(file);
                     break;
                 }

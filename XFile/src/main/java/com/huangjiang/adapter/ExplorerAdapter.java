@@ -1,8 +1,5 @@
 package com.huangjiang.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +8,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.core.ImageLoader;
-import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.xfile.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExplorerAdapter extends BaseAdapter {
 
@@ -61,7 +60,7 @@ public class ExplorerAdapter extends BaseAdapter {
                     break;
                 }
             } else {
-                if (tFileInfo.getTaskId().equals(file.getTaskId())) {
+                if (tFileInfo.getTaskId().equals(file.getTaskId()) || tFileInfo.getPath().equals(file.getPath())) {
                     list.remove(file);
                     break;
                 }

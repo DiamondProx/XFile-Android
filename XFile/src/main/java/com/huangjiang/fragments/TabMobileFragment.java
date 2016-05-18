@@ -26,6 +26,7 @@ public class TabMobileFragment extends Fragment implements OnPageChangeListener,
         tabBar.setMenu(R.mipmap.common_tab_refresh_white, R.string.mobile_all, R.string.picture, R.string.music, R.string.video, R.string.application);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(new MobilePagerAdapter(getChildFragmentManager()));
+        viewPager.setOffscreenPageLimit(5);
         viewPager.setOnPageChangeListener(this);
         viewPager.setCurrentItem(1);
         return view;

@@ -211,12 +211,6 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
             case R.id.more_rename:
                 DialogHelper.showRename(activity, tFileInfo, ExplorerControl.this);
                 break;
-            case R.id.more_uninstall:
-                opLogic.unInstall(tFileInfo);
-                break;
-            case R.id.more_back:
-                opLogic.backUpApk(tFileInfo);
-                break;
             case R.id.more_property:
                 DialogHelper.showProperty(activity, tFileInfo);
                 break;
@@ -244,9 +238,6 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
                 break;
             case R.id.menu_open:
                 OpenFileHelper.openFile(activity, menu.getTFileInfo());
-                break;
-            case R.id.menu_property:
-                DialogHelper.showProperty(activity, menu.getTFileInfo());
                 break;
             case R.id.menu_more:
                 DialogHelper.showMore(activity, menu.getTFileInfo(), ExplorerControl.this);

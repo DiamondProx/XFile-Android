@@ -74,7 +74,7 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.TextView
                     break;
                 }
             } else {
-                if (tFileInfo.getTaskId().equals(file.getTaskId())) {
+                if (tFileInfo.getTaskId().equals(file.getTaskId()) || tFileInfo.getPath().equals(file.getPath())) {
                     pictures.remove(file);
                     break;
                 }

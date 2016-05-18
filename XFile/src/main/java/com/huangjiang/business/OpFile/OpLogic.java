@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 
+import com.huangjiang.XFileApp;
 import com.huangjiang.business.BaseLogic;
 import com.huangjiang.business.event.OpFileEvent;
+import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.core.ThreadPoolManager;
 import com.huangjiang.utils.Logger;
+import com.huangjiang.utils.MediaStoreUtils;
 import com.huangjiang.utils.StringUtils;
 
 import java.io.File;
@@ -60,8 +63,16 @@ public class OpLogic extends BaseLogic {
                 try {
                     File file = new File(tFileInfo.getPath());
                     if (file.exists()) {
-                        file.delete();
-                        event.setSuccess(true);
+                        boolean b = file.delete();
+                        if (b) {
+                            event.setSuccess(true);
+                            if (tFileInfo.getFileType() == FileType.Image || tFileInfo.getFileType() == FileType.Audio || tFileInfo.getFileType() == FileType.Video) {
+                                MediaStoreUtils.resetMediaStore(XFileApp.context, file.getAbsolutePath());
+                            }
+                        } else {
+                            event.setSuccess(false);
+                        }
+
                     } else {
                         event.setSuccess(false);
                     }

@@ -46,6 +46,7 @@ public class TabMessageFragment extends Fragment implements TabBar.OnTabListener
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         pagerAdapter = new MessagePagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setOnPageChangeListener(this);
         viewPager.setCurrentItem(0);
         historyLogic = new HistoryLogic(getActivity());
