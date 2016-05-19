@@ -12,8 +12,8 @@ import com.huangjiang.business.comparable.CreateDateComparable;
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.core.ImageLoader;
-import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.xfile.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,7 +68,7 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.TextView
 
     public void removeFile(TFileInfo tFileInfo) {
         for (TFileInfo file : pictures) {
-            if (tFileInfo.getFileType() == FileType.Apk) {
+            if (tFileInfo.getFileType() == FileType.Install) {
                 if (tFileInfo.getPackageName().equals(file.getPackageName())) {
                     pictures.remove(file);
                     break;
@@ -86,7 +86,7 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.TextView
 
     public void updateFile(TFileInfo tFileInfo) {
         for (TFileInfo file : pictures) {
-            if (file.getTaskId().equals(tFileInfo.getTaskId())) {
+            if (!file.isDirectory() && file.getTaskId() != null && file.getTaskId().equals(tFileInfo.getTaskId())) {
                 file.setName(tFileInfo.getName());
                 file.setPosition(tFileInfo.getPosition());
                 file.setLength(tFileInfo.getLength());

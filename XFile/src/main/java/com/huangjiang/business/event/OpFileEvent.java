@@ -1,5 +1,6 @@
 package com.huangjiang.business.event;
 
+import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 
 /**
@@ -11,6 +12,8 @@ public class OpFileEvent {
     private OpType opType;
     private boolean isSuccess;
     private String message;
+    private FileType fileType;
+    private Target target = Target.NONE;
 
     public OpFileEvent(OpType opType, TFileInfo tFileInfo) {
         this.opType = opType;
@@ -49,11 +52,37 @@ public class OpFileEvent {
         this.message = message;
     }
 
+    public FileType getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(FileType fileType) {
+        this.fileType = fileType;
+    }
+
+    public Target getTarget() {
+        return target;
+    }
+
+    public void setTarget(Target target) {
+        this.target = target;
+    }
+
+
     public enum OpType {
         DELETE,
         RENAME,
         BACKUP,
         UNINSTALL,
         CHANGE
+    }
+
+    public enum Target {
+        SEARCH_FRAGMENT,
+        EXPLORER_CONTROL,
+        VIDEO_FRAGMENT,
+        MUSIC_FRAGMENT,
+        PICTURE_FRAGMENT,
+        NONE
     }
 }

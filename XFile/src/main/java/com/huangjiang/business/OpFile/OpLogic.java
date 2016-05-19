@@ -36,7 +36,7 @@ public class OpLogic extends BaseLogic {
     /**
      * 重命名
      */
-    public void renameFile(final TFileInfo tFileInfo, final String newName) {
+    public void renameFile(final TFileInfo tFileInfo, final String newName, final OpFileEvent.Target target) {
         ThreadPoolManager.getInstance(OpLogic.class.getName()).startTaskThread(new Runnable() {
             @Override
             public void run() {
@@ -52,6 +52,7 @@ public class OpLogic extends BaseLogic {
                 if (!saveFile.exists()) {
                     if (file.renameTo(saveFile)) {
                         String originalPath = tFileInfo.getPath();
+                        FileType originalType = tFileInfo.getFileType();
                         String fileName = saveFile.getName();
                         if (!StringUtils.isEmpty(fileName) && fileName.lastIndexOf(".") > 0) {
                             int extensionIndex = fileName.lastIndexOf(".");
@@ -59,9 +60,9 @@ public class OpLogic extends BaseLogic {
                             tFileInfo.setName(fileName.substring(0, extensionIndex));
                         } else {
                             tFileInfo.setExtension("");
-                            tFileInfo.setName(file.getName());
+                            tFileInfo.setName(fileName);
                         }
-                        tFileInfo.setFullName(file.getName());
+                        tFileInfo.setFullName(saveFile.getName());
                         tFileInfo.setPath(saveFile.getAbsolutePath());
                         if (XFileUtils.checkEndsWithInStringArray(fileName, context.getResources().getStringArray(R.array.fileEndingImage))) {
                             tFileInfo.setFileType(FileType.Image);
@@ -74,9 +75,23 @@ public class OpLogic extends BaseLogic {
                         } else {
                             tFileInfo.setFileType(FileType.Normal);
                         }
+                        // 刷新媒体库
                         if (tFileInfo.getFileType() == FileType.Image || tFileInfo.getFileType() == FileType.Audio || tFileInfo.getFileType() == FileType.Video) {
                             MediaStoreUtils.resetMediaStore(XFileApp.context, originalPath);
                             MediaStoreUtils.resetMediaStore(XFileApp.context, saveFile.getAbsolutePath());
+                        }
+                        if (tFileInfo.getFileType() == originalType) {
+                            OpFileEvent changeEvent = new OpFileEvent(OpFileEvent.OpType.CHANGE, null);
+                            changeEvent.setFileType(tFileInfo.getFileType());
+                            changeEvent.setSuccess(true);
+                            triggerEvent(changeEvent);
+                        } else {
+                            OpFileEvent changeEvent = new OpFileEvent(OpFileEvent.OpType.CHANGE, null);
+                            changeEvent.setFileType(originalType);
+                            changeEvent.setSuccess(true);
+                            triggerEvent(changeEvent);
+                            changeEvent.setFileType(tFileInfo.getFileType());
+                            triggerEvent(changeEvent);
                         }
                         event.setSuccess(true);
                     } else {
@@ -87,6 +102,7 @@ public class OpLogic extends BaseLogic {
                     event.setMessage(context.getString(R.string.repeat_name));
                     event.setSuccess(false);
                 }
+                event.setTarget(target);
                 triggerEvent(event);
             }
         });

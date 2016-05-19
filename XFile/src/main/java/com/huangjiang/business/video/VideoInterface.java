@@ -86,11 +86,16 @@ public class VideoInterface {
                 video_file.setLength(size);
                 video_file.setPlayTime(play_time);
                 video_file.setFullName(display_name);
-                if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") != -1) {
-                    video_file.setExtension(display_name.substring(display_name.lastIndexOf(".")));
+
+                if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") > 0) {
+                    int extensionIndex = display_name.lastIndexOf(".");
+                    video_file.setExtension(display_name.substring(extensionIndex + 1));
+                    video_file.setName(display_name.substring(0, extensionIndex));
                 } else {
                     video_file.setExtension("");
+                    video_file.setName(display_name);
                 }
+
                 video_file.setFileType(FileType.Video);
                 list.add(video_file);
             }

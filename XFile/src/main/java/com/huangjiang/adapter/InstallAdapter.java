@@ -52,7 +52,7 @@ public class InstallAdapter extends BaseAdapter {
 
     public void removeFile(TFileInfo tFileInfo) {
         for (TFileInfo file : list) {
-            if (tFileInfo.getFileType() == FileType.Apk) {
+            if (tFileInfo.getFileType() == FileType.Install) {
                 if (tFileInfo.getPackageName().equals(file.getPackageName())) {
                     list.remove(file);
                     break;
@@ -64,20 +64,6 @@ public class InstallAdapter extends BaseAdapter {
                 }
             }
 
-        }
-    }
-
-    public void updateFile(TFileInfo tFileInfo) {
-        for (TFileInfo file : list) {
-            if (file.getTaskId().equals(tFileInfo.getTaskId())) {
-                file.setName(tFileInfo.getName());
-                file.setPosition(tFileInfo.getPosition());
-                file.setLength(tFileInfo.getLength());
-                file.setPath(tFileInfo.getPath());
-                file.setExtension(tFileInfo.getExtension());
-                file.setFullName(tFileInfo.getFullName());
-                break;
-            }
         }
     }
 

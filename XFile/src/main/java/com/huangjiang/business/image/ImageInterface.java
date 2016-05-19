@@ -84,11 +84,16 @@ public class ImageInterface {
                 image_file.setCreateTime(XFileUtils.parseTimeToYMD(create_time));
                 image_file.setLength(size);
                 image_file.setFullName(display_name);
-                if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") != -1) {
-                    image_file.setExtension(display_name.substring(display_name.lastIndexOf(".")));
+
+                if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") > 0) {
+                    int extensionIndex = display_name.lastIndexOf(".");
+                    image_file.setExtension(display_name.substring(extensionIndex + 1));
+                    image_file.setName(display_name.substring(0, extensionIndex));
                 } else {
                     image_file.setExtension("");
+                    image_file.setName(display_name);
                 }
+
                 image_file.setFileType(FileType.Image);
                 list.add(image_file);
             }

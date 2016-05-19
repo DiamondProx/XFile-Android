@@ -21,6 +21,7 @@ import java.util.List;
  * 收件箱
  */
 public class InboxFragment extends Fragment {
+
     private final String mPageName = "InboxFragment";
     ExplorerControl explorerControl;
 
@@ -33,7 +34,7 @@ public class InboxFragment extends Fragment {
 
     void init(View view) {
         List<Catalog> list = new ArrayList<>();
-        String prePath = XFileUtils.getStorageCardPath()+ File.separator;
+        String prePath = XFileUtils.getStorageCardPath() + File.separator;
         prePath += "XFile" + File.separator;
         // 视频目录
         Catalog videoCatalog = new Catalog();
@@ -83,5 +84,9 @@ public class InboxFragment extends Fragment {
         MobclickAgent.onPageEnd(mPageName);
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        explorerControl.onDestroy();
+    }
 }

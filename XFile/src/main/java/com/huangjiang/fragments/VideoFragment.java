@@ -2,6 +2,7 @@ package com.huangjiang.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.huangjiang.activity.HomeActivity;
 import com.huangjiang.adapter.SearchAdapter;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.event.OpFileEvent;
+import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.LinkType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.opfile.OpLogic;
@@ -123,7 +125,7 @@ public class VideoFragment extends Fragment implements PopupMenu.MenuCallback, C
                 opLogic.deleteFile(tFileInfo);
                 break;
             case R.id.dialog_rename_ok:
-                opLogic.renameFile(tFileInfo, (String) param[0]);
+                opLogic.renameFile(tFileInfo, (String) param[0], OpFileEvent.Target.VIDEO_FRAGMENT);
                 break;
         }
     }
@@ -137,7 +139,6 @@ public class VideoFragment extends Fragment implements PopupMenu.MenuCallback, C
             case VIDEO:
                 List<TFileInfo> list = searchEvent.getFileInfoList();
                 if (list != null) {
-                    adapter.setList(null);
                     adapter.setList(list);
                     adapter.notifyDataSetChanged();
                     titleName.setText(String.format(getString(R.string.local_video), String.valueOf(list.size())));
@@ -155,22 +156,35 @@ public class VideoFragment extends Fragment implements PopupMenu.MenuCallback, C
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(OpFileEvent opFileEvent) {
-        if (!opFileEvent.isSuccess()) {
-            return;
-        }
         switch (opFileEvent.getOpType()) {
             case DELETE:
-            case UNINSTALL:
-                adapter.removeFile(opFileEvent.getTFileInfo());
+                if (opFileEvent.isSuccess()) {
+                    adapter.removeFile(opFileEvent.getTFileInfo());
+                    adapter.notifyDataSetChanged();
+                }
                 break;
             case RENAME:
-                adapter.updateFile(opFileEvent.getTFileInfo());
+                if (opFileEvent.getTarget() == OpFileEvent.Target.VIDEO_FRAGMENT) {
+                    if (!opFileEvent.isSuccess()) {
+                        Toast.makeText(getActivity(), opFileEvent.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    adapter.updateFile(opFileEvent.getTFileInfo());
+                    adapter.notifyDataSetChanged();
+                }
                 break;
-            case BACKUP:
-                Toast.makeText(getActivity(), R.string.backup_success, Toast.LENGTH_SHORT).show();
+            case CHANGE:
+                if (opFileEvent.getFileType() == FileType.Video && opFileEvent.getTarget() != OpFileEvent.Target.VIDEO_FRAGMENT) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            videoLogic.searchVideo();
+                        }
+                    }, 500);
+                }
                 break;
         }
-        adapter.notifyDataSetChanged();
+
     }
 
 

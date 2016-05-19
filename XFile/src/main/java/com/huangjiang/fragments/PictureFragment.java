@@ -1,6 +1,7 @@
 package com.huangjiang.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,6 +18,7 @@ import com.huangjiang.adapter.PictureAdapter;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.image.ImageLogic;
+import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.opfile.OpLogic;
 import com.huangjiang.view.CustomDialog;
@@ -63,8 +65,8 @@ public class PictureFragment extends Fragment implements PictureAdapter.CallBack
             }
         });
         imageLogic = new ImageLogic(getActivity());
-        imageLogic.searchImage();
         opLogic = new OpLogic(getActivity());
+        imageLogic.searchImage();
         return view;
     }
 
@@ -121,7 +123,7 @@ public class PictureFragment extends Fragment implements PictureAdapter.CallBack
                 opLogic.deleteFile(tFileInfo);
                 break;
             case R.id.dialog_rename_ok:
-                opLogic.renameFile(tFileInfo, (String) params[0]);
+                opLogic.renameFile(tFileInfo, (String) params[0], OpFileEvent.Target.PICTURE_FRAGMENT);
                 break;
         }
     }
@@ -153,22 +155,35 @@ public class PictureFragment extends Fragment implements PictureAdapter.CallBack
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(OpFileEvent opFileEvent) {
-        if (!opFileEvent.isSuccess()) {
-            return;
-        }
         switch (opFileEvent.getOpType()) {
             case DELETE:
-            case UNINSTALL:
-                adapter.removeFile(opFileEvent.getTFileInfo());
+                if (opFileEvent.isSuccess()) {
+                    adapter.removeFile(opFileEvent.getTFileInfo());
+                    adapter.notifyDataSetChanged();
+                }
                 break;
             case RENAME:
-                adapter.updateFile(opFileEvent.getTFileInfo());
+                if (opFileEvent.getTarget() == OpFileEvent.Target.PICTURE_FRAGMENT) {
+                    if (!opFileEvent.isSuccess()) {
+                        Toast.makeText(getActivity(), opFileEvent.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    adapter.updateFile(opFileEvent.getTFileInfo());
+                    adapter.notifyDataSetChanged();
+                }
                 break;
-            case BACKUP:
-                Toast.makeText(getActivity(), R.string.backup_success, Toast.LENGTH_SHORT).show();
+            case CHANGE:
+                if (opFileEvent.getFileType() == FileType.Image && opFileEvent.getTarget() != OpFileEvent.Target.PICTURE_FRAGMENT) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            imageLogic.searchImage();
+                        }
+                    }, 500);
+                }
                 break;
         }
-        adapter.notifyDataSetChanged();
+
     }
 
     @Override

@@ -132,7 +132,7 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
                 opLogic.deleteFile(tFileInfo);
                 break;
             case R.id.dialog_rename_ok:
-                opLogic.renameFile(tFileInfo, (String) param[0]);
+                opLogic.renameFile(tFileInfo, (String) param[0], OpFileEvent.Target.SEARCH_FRAGMENT);
                 break;
         }
     }
@@ -163,22 +163,29 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(OpFileEvent opFileEvent) {
-        if (!opFileEvent.isSuccess()) {
-            return;
-        }
         switch (opFileEvent.getOpType()) {
             case DELETE:
             case UNINSTALL:
-                searchAdapter.removeFile(opFileEvent.getTFileInfo());
+                if (opFileEvent.isSuccess()) {
+                    searchAdapter.removeFile(opFileEvent.getTFileInfo());
+                    searchAdapter.notifyDataSetChanged();
+                }
                 break;
             case RENAME:
-                searchAdapter.updateFile(opFileEvent.getTFileInfo());
+                if (opFileEvent.getTarget() == OpFileEvent.Target.SEARCH_FRAGMENT) {
+                    if (!opFileEvent.isSuccess()) {
+                        Toast.makeText(getActivity(), opFileEvent.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    searchAdapter.updateFile(opFileEvent.getTFileInfo());
+                    searchAdapter.notifyDataSetChanged();
+                }
                 break;
             case BACKUP:
                 Toast.makeText(getActivity(), R.string.backup_success, Toast.LENGTH_SHORT).show();
                 break;
         }
-        searchAdapter.notifyDataSetChanged();
+
     }
 
 

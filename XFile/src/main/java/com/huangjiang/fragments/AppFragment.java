@@ -18,6 +18,7 @@ import com.huangjiang.adapter.InstallAdapter;
 import com.huangjiang.business.app.AppLogic;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.event.OpFileEvent;
+import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.opfile.OpLogic;
 import com.huangjiang.view.CustomDialog;
@@ -154,7 +155,6 @@ public class AppFragment extends Fragment implements PopupMenu.MenuCallback, Cus
             return;
         }
         switch (opFileEvent.getOpType()) {
-            case DELETE:
             case UNINSTALL:
                 adapter.removeFile(opFileEvent.getTFileInfo());
                 titleName.setText(String.format(getString(R.string.local_app), String.valueOf(adapter.getCount())));
@@ -164,7 +164,8 @@ public class AppFragment extends Fragment implements PopupMenu.MenuCallback, Cus
                 Toast.makeText(getActivity(), R.string.backup_success, Toast.LENGTH_SHORT).show();
                 break;
             case CHANGE:
-                appLogic.searchApp();
+                if (opFileEvent.getFileType() == FileType.Install)
+                    appLogic.searchApp();
                 break;
         }
 

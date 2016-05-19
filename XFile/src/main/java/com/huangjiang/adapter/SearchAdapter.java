@@ -85,7 +85,7 @@ public class SearchAdapter extends BaseAdapter {
     public void removeFile(TFileInfo tFileInfo) {
         if (mList == null) return;
         for (TFileInfo file : mList) {
-            if (tFileInfo.getFileType() == FileType.Apk) {
+            if (tFileInfo.getFileType() == FileType.Install) {
                 if (tFileInfo.getPackageName().equals(file.getPackageName())) {
                     mList.remove(file);
                     break;
@@ -101,6 +101,7 @@ public class SearchAdapter extends BaseAdapter {
     }
 
     public void updateFile(TFileInfo tFileInfo) {
+        if (mList == null) return;
         for (TFileInfo file : mList) {
             if (file.getTaskId().equals(tFileInfo.getTaskId())) {
                 file.setName(tFileInfo.getName());

@@ -22,13 +22,14 @@ public class BootReceiver extends BroadcastReceiver {
             String packageName = intent.getDataString();
             packageName = packageName.replace("package:", "");
             TFileInfo tFileInfo = new TFileInfo();
-            tFileInfo.setFileType(FileType.Apk);
+            tFileInfo.setFileType(FileType.Install);
             tFileInfo.setPackageName(packageName);
             OpFileEvent unInstallEvent = new OpFileEvent(OpFileEvent.OpType.UNINSTALL, tFileInfo);
             unInstallEvent.setSuccess(true);
             EventBus.getDefault().post(unInstallEvent);
         } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED) || intent.getAction().equals(Intent.ACTION_PACKAGE_REPLACED)) {
             OpFileEvent unInstallEvent = new OpFileEvent(OpFileEvent.OpType.CHANGE, null);
+            unInstallEvent.setFileType(FileType.Install);
             unInstallEvent.setSuccess(true);
             EventBus.getDefault().post(unInstallEvent);
         }

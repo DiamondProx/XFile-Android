@@ -86,11 +86,16 @@ public class AudioInterface {
                 audio_file.setLength(size);
                 audio_file.setPlayTime(play_time);
                 audio_file.setFullName(display_name);
-                if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") != -1) {
-                    audio_file.setExtension(display_name.substring(display_name.lastIndexOf(".")));
+
+                if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") > 0) {
+                    int extensionIndex = display_name.lastIndexOf(".");
+                    audio_file.setExtension(display_name.substring(extensionIndex + 1));
+                    audio_file.setName(display_name.substring(0, extensionIndex));
                 } else {
                     audio_file.setExtension("");
+                    audio_file.setName(display_name);
                 }
+
                 audio_file.setFileType(FileType.Audio);
                 list.add(audio_file);
             }

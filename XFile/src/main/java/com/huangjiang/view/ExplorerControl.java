@@ -135,6 +135,7 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
         Collections.sort(list);
         explorerAdapter.addTFiles(list);
         explorerAdapter.notifyDataSetChanged();
+        explorerListView.setSelection(0);
     }
 
     public void setActivity(Activity activity) {
@@ -218,7 +219,7 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
                 opLogic.deleteFile(tFileInfo);
                 break;
             case R.id.dialog_rename_ok:
-                opLogic.renameFile(tFileInfo, (String) params[0]);
+                opLogic.renameFile(tFileInfo, (String) params[0], OpFileEvent.Target.EXPLORER_CONTROL);
                 break;
         }
     }
@@ -250,27 +251,25 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(OpFileEvent opFileEvent) {
-        if (!opFileEvent.isSuccess()) {
-            switch (opFileEvent.getOpType()) {
-                case RENAME:
-                    Toast.makeText(mContext, opFileEvent.getMessage(), Toast.LENGTH_SHORT).show();
-                    break;
-            }
-            return;
-        }
         switch (opFileEvent.getOpType()) {
             case DELETE:
-            case UNINSTALL:
-                explorerAdapter.removeFile(opFileEvent.getTFileInfo());
+                if (opFileEvent.isSuccess()) {
+                    explorerAdapter.removeFile(opFileEvent.getTFileInfo());
+                    explorerAdapter.notifyDataSetChanged();
+                }
                 break;
             case RENAME:
-                explorerAdapter.updateFile(opFileEvent.getTFileInfo());
-                break;
-            case BACKUP:
-                Toast.makeText(mContext, R.string.backup_success, Toast.LENGTH_SHORT).show();
+                if (opFileEvent.getTarget() == OpFileEvent.Target.EXPLORER_CONTROL) {
+                    if (!opFileEvent.isSuccess()) {
+                        Toast.makeText(mContext, opFileEvent.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    explorerAdapter.updateFile(opFileEvent.getTFileInfo());
+                    explorerAdapter.notifyDataSetChanged();
+                }
                 break;
         }
-        explorerAdapter.notifyDataSetChanged();
+
     }
 
     public void onDestroy() {
