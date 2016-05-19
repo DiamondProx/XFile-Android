@@ -40,5 +40,7 @@
     <color name="green">#5EE0BA</color>
     <color name="gray">#BFCBD1</color>
 
+    <color name="transparent">#00000000</color>
+
 
 </resources>

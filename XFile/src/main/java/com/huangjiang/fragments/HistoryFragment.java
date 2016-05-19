@@ -68,8 +68,8 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
 
     @Override
     public void onDestroy() {
-        EventBus.getDefault().unregister(this);
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

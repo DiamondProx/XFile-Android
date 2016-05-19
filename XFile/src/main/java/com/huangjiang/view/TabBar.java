@@ -3,7 +3,6 @@ package com.huangjiang.view;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -13,8 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.huangjiang.xfile.R;
 import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.xfile.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +26,9 @@ public class TabBar extends HorizontalScrollView implements View.OnClickListener
     private LinearLayout mContainer;
     private Context mContext;
     private List<View> mChildViews;
-    private Resources resources;
     private int dp_20, dp_5;
     ColorStateList white_color;
     private int mScreenWidth;
-    private int mMarginLeft;
     private int mFirstWidth;
     private OnTabListener mListener;
     private int mCurrentIndex = -1;
@@ -43,7 +40,6 @@ public class TabBar extends HorizontalScrollView implements View.OnClickListener
 
     public TabBar(Context context) {
         super(context);
-
         init(context);
     }
 
@@ -59,7 +55,7 @@ public class TabBar extends HorizontalScrollView implements View.OnClickListener
 
     void init(Context context) {
         this.mContext = context;
-        this.resources = context.getResources();
+        Resources resources = context.getResources();
         mContainer = new LinearLayout(mContext);
         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -70,14 +66,14 @@ public class TabBar extends HorizontalScrollView implements View.OnClickListener
         tab_select_color = R.color.tab_blue_select;
         this.addView(mContainer);
         mChildViews = new ArrayList<>();
-        dp_20 = (int) this.resources.getDimension(R.dimen.dp_25);
-        dp_5 = (int) this.resources.getDimension(R.dimen.dp_5);
-        white_color = this.resources.getColorStateList(R.color.white);
+        dp_20 = (int) resources.getDimension(R.dimen.dp_25);
+        dp_5 = (int) resources.getDimension(R.dimen.dp_5);
+        white_color = resources.getColorStateList(R.color.white);
         this.setHorizontalScrollBarEnabled(false);
         this.mScreenWidth = XFileUtils.getScreenWidth(mContext);
     }
 
-    public void setTabBackground(int resid){
+    public void setTabBackground(int resid) {
         mContainer.setBackgroundResource(resid);
     }
 
@@ -142,7 +138,6 @@ public class TabBar extends HorizontalScrollView implements View.OnClickListener
             childContainer.measure(w, h);
             int width = childContainer.getMeasuredWidth();
             if (i == 0) {
-                mMarginLeft = (mScreenWidth - width) / 2;
                 childContainerLayoutParams.setMargins((mScreenWidth - width) / 2, 0, 0, 0);
             }
             if (i == size - 1) {
@@ -158,45 +153,36 @@ public class TabBar extends HorizontalScrollView implements View.OnClickListener
         if (currentTab == mCurrentIndex) {
             return;
         }
-
-
         scrollX = 0;
-
         for (int i = 0; i < mChildViews.size(); i++) {
             View view = mChildViews.get(i);
             int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             view.measure(w, h);
             int width = view.getMeasuredWidth();
-
+            if (i == 0) {
+                mFirstWidth = width;
+            }
             if (i == currentTab) {
                 scrollX += (width / 2);
                 break;
             } else {
                 scrollX += width;
             }
-            if (i == 0) {
-                mFirstWidth = width;
-            }
         }
         this.post(runnable);
-
         for (int i = 0; i < mChildViews.size(); i++) {
             View view = mChildViews.get(i);
             if (i == currentTab) {
                 view.setBackgroundResource(tab_select_color);
             } else {
-                view.setBackgroundColor(Color.TRANSPARENT);
+                view.setBackgroundResource(R.color.transparent);
             }
         }
-
         mCurrentIndex = currentTab;
-
         if (this.mListener != null) {
             this.mListener.onTabSelect(currentTab);
         }
-
-
 
     }
 
