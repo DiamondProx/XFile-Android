@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.xfile.R;
 
 /**
  * 对话框帮助
@@ -42,11 +43,25 @@ public class DialogHelper {
     /**
      * 删除确认
      */
-    public static void showDel(Activity activity, TFileInfo tFileInfo, CustomDialog.DialogCallback onListener) {
-        CustomDialog.DelBuilder builder = new CustomDialog.DelBuilder(activity);
+    public static void confirmDel(Activity activity, TFileInfo tFileInfo, CustomDialog.DialogCallback onListener) {
+        CustomDialog.ConfirmBuilder builder = new CustomDialog.ConfirmBuilder(activity);
         builder.setTFileInfo(tFileInfo);
         builder.setOnListener(onListener);
+        builder.setTitle(activity.getString(R.string.sure_delete_file));
+        builder.setContent(tFileInfo.getName());
         builder.create().show();
+    }
+
+    /**
+     * 确认退出连接
+     */
+    public static void confirmClose(Activity activity, CustomDialog.DialogCallback onListener) {
+        CustomDialog.ConfirmBuilder builder = new CustomDialog.ConfirmBuilder(activity);
+        builder.setOnListener(onListener);
+        builder.setTitle(activity.getString(R.string.progress_title));
+        builder.setContent(activity.getString(R.string.confirm_exit_link));
+        builder.create().show();
+
     }
 
 }

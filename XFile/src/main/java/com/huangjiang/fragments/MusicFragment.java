@@ -99,7 +99,7 @@ public class MusicFragment extends Fragment implements PopupMenu.MenuCallback, C
     public void onDialogClick(int id, TFileInfo tFileInfo, Object... param) {
         switch (id) {
             case R.id.more_del:
-                DialogHelper.showDel(getActivity(), tFileInfo, MusicFragment.this);
+                DialogHelper.confirmDel(getActivity(), tFileInfo, MusicFragment.this);
                 break;
             case R.id.more_rename:
                 DialogHelper.showRename(getActivity(), tFileInfo, MusicFragment.this);
@@ -113,7 +113,7 @@ public class MusicFragment extends Fragment implements PopupMenu.MenuCallback, C
             case R.id.more_property:
                 DialogHelper.showProperty(getActivity(), tFileInfo);
                 break;
-            case R.id.dialog_del_ok:
+            case R.id.dialog_confirm_ok:
                 opLogic.deleteFile(tFileInfo);
                 break;
             case R.id.dialog_rename_ok:

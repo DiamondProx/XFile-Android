@@ -207,7 +207,7 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
     public void onDialogClick(int id, TFileInfo tFileInfo, Object... params) {
         switch (id) {
             case R.id.more_del:
-                DialogHelper.showDel(activity, tFileInfo, ExplorerControl.this);
+                DialogHelper.confirmDel(activity, tFileInfo, ExplorerControl.this);
                 break;
             case R.id.more_rename:
                 DialogHelper.showRename(activity, tFileInfo, ExplorerControl.this);
@@ -215,7 +215,7 @@ public class ExplorerControl extends FrameLayout implements OnItemClickListener,
             case R.id.more_property:
                 DialogHelper.showProperty(activity, tFileInfo);
                 break;
-            case R.id.dialog_del_ok:
+            case R.id.dialog_confirm_ok:
                 opLogic.deleteFile(tFileInfo);
                 break;
             case R.id.dialog_rename_ok:

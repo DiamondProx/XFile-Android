@@ -49,6 +49,8 @@ import com.huangjiang.utils.VibratorUtils;
 import com.huangjiang.utils.WifiHelper;
 import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.AnimationHelper;
+import com.huangjiang.view.CustomDialog;
+import com.huangjiang.view.DialogHelper;
 import com.huangjiang.xfile.R;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.umeng.analytics.MobclickAgent;
@@ -384,16 +386,23 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
      * 关闭连接(服务端暂时重启)
      */
     void shutDownLink() {
-        switch (XFileApp.mLinkType) {
-            case CLIENT:
-                IMClientMessageManager.getInstance().stop();
-                IMClientFileManager.getInstance().stop();
-                break;
-            case SERVER:
-                IMServerMessageManager.getInstance().start();
-                IMServerFileManager.getInstance().start();
-                break;
-        }
+        DialogHelper.confirmClose(HomeActivity.this, new CustomDialog.DialogCallback() {
+            @Override
+            public void onDialogClick(int id, TFileInfo tFileInfo, Object... params) {
+                if (id == R.id.dialog_confirm_ok) {
+                    switch (XFileApp.mLinkType) {
+                        case CLIENT:
+                            IMClientMessageManager.getInstance().stop();
+                            IMClientFileManager.getInstance().stop();
+                            break;
+                        case SERVER:
+                            IMServerMessageManager.getInstance().start();
+                            IMServerFileManager.getInstance().start();
+                            break;
+                    }
+                }
+            }
+        });
     }
 
 
@@ -441,6 +450,10 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (XFileApp.mLinkType != LinkType.NONE) {
+                shutDownLink();
+                return true;
+            }
             long secondTime = System.currentTimeMillis();
             if (secondTime - firstTime > 1200) {
                 Toast.makeText(HomeActivity.this, R.string.exit_confirm, Toast.LENGTH_SHORT).show();

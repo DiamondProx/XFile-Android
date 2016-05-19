@@ -114,7 +114,7 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
     public void onDialogClick(int id, TFileInfo tFileInfo, Object... param) {
         switch (id) {
             case R.id.more_del:
-                DialogHelper.showDel(getActivity(), tFileInfo, SearchFragment.this);
+                DialogHelper.confirmDel(getActivity(), tFileInfo, SearchFragment.this);
                 break;
             case R.id.more_rename:
                 DialogHelper.showRename(getActivity(), tFileInfo, SearchFragment.this);
@@ -128,7 +128,7 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
             case R.id.more_property:
                 DialogHelper.showProperty(getActivity(), tFileInfo);
                 break;
-            case R.id.dialog_del_ok:
+            case R.id.dialog_confirm_ok:
                 opLogic.deleteFile(tFileInfo);
                 break;
             case R.id.dialog_rename_ok:

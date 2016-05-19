@@ -27,15 +27,16 @@ public class CustomDialog extends Dialog {
     /**
      * 删除对话框
      */
-    public static class DelBuilder {
+    public static class ConfirmBuilder {
 
         private Context context;
         private TFileInfo tFileInfo;
-        private TextView txt_del_name;
+        private TextView txt_title, txt_content;
         private Button btn_cancel, btn_ok;
         private DialogCallback onListener;
+        private String title, content;
 
-        public DelBuilder(Context context) {
+        public ConfirmBuilder(Context context) {
             this.context = context;
         }
 
@@ -51,17 +52,18 @@ public class CustomDialog extends Dialog {
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final CustomDialog dialog = new CustomDialog(context, R.style.Dialog);
-            View layout = inflater.inflate(R.layout.dialog_file_delete, null);
+            View layout = inflater.inflate(R.layout.dialog_file_confirm, null);
             dialog.addContentView(layout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            txt_del_name = (TextView) layout.findViewById(R.id.txt_del_name);
-            btn_cancel = (Button) layout.findViewById(R.id.dialog_del_cancel);
+            txt_title = (TextView) layout.findViewById(R.id.txt_title);
+            txt_content = (TextView) layout.findViewById(R.id.txt_content);
+            btn_cancel = (Button) layout.findViewById(R.id.dialog_confirm_cancel);
             btn_cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
                 }
             });
-            btn_ok = (Button) layout.findViewById(R.id.dialog_del_ok);
+            btn_ok = (Button) layout.findViewById(R.id.dialog_confirm_ok);
             btn_ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -71,12 +73,27 @@ public class CustomDialog extends Dialog {
                     }
                 }
             });
-            if (tFileInfo != null) {
-                txt_del_name.setText(tFileInfo.getName());
-            }
+            txt_title.setText(title);
+            txt_content.setText(content);
 
             dialog.setContentView(layout);
             return dialog;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
         }
     }
 

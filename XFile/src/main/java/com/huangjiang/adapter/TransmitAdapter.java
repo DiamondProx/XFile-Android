@@ -171,10 +171,11 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         }
         // 接受者才显示箭头按钮
         if (!tFileInfo.isSend() && holder.btn_step != null) {
-            setStepState(holder.btn_step, tFileInfo.getFileEvent());
+            setStepState(holder, tFileInfo.getFileEvent());
             holder.btn_step.setTag(tFileInfo.getTaskId());
             holder.btn_step.setOnClickListener(this);
         }
+        setPercentState(holder, tFileInfo.getFileEvent());
     }
 
     public TFileInfo getWaitFile() {
@@ -275,29 +276,58 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
     }
 
 
-    void setStepState(Button btnStep, FileEvent fileEvent) {
+    /**
+     * 操作按钮-查看/暂停/继续
+     */
+    void setStepState(ViewHolder viewHolder, FileEvent fileEvent) {
         switch (fileEvent) {
             case CREATE_FILE_SUCCESS:
             case CHECK_TASK_SUCCESS:
-                btnStep.setVisibility(View.GONE);
+                viewHolder.btn_step.setVisibility(View.GONE);
                 break;
             case CREATE_FILE_FAILED:
             case CHECK_TASK_FAILED:
             case SET_FILE_FAILED:
-                btnStep.setText(retry);
-                btnStep.setVisibility(View.VISIBLE);
+                viewHolder.btn_step.setText(retry);
+                viewHolder.btn_step.setVisibility(View.VISIBLE);
                 break;
             case SET_FILE_SUCCESS:
-                btnStep.setText(view);
-                btnStep.setVisibility(View.VISIBLE);
+                viewHolder.btn_step.setText(view);
+                viewHolder.btn_step.setVisibility(View.VISIBLE);
                 break;
             case SET_FILE_STOP:
-                btnStep.setText(resume);
-                btnStep.setVisibility(View.VISIBLE);
+                viewHolder.btn_step.setText(resume);
+                viewHolder.btn_step.setVisibility(View.VISIBLE);
                 break;
             case SET_FILE:
-                btnStep.setText(stop);
-                btnStep.setVisibility(View.VISIBLE);
+                viewHolder.btn_step.setText(stop);
+                viewHolder.btn_step.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    /**
+     * 显示隐藏状态,百分比
+     */
+    void setPercentState(ViewHolder viewHolder, FileEvent fileEvent) {
+        switch (fileEvent) {
+            case CREATE_FILE_SUCCESS:
+            case CHECK_TASK_SUCCESS:
+            case CREATE_FILE_FAILED:
+            case CHECK_TASK_FAILED:
+            case SET_FILE_FAILED:
+            case SET_FILE_STOP:
+            case SET_FILE:
+                viewHolder.status.setVisibility(View.VISIBLE);
+                viewHolder.line1.setVisibility(View.VISIBLE);
+                viewHolder.remainPercent.setVisibility(View.VISIBLE);
+                viewHolder.line2.setVisibility(View.VISIBLE);
+                break;
+            case SET_FILE_SUCCESS:
+                viewHolder.status.setVisibility(View.GONE);
+                viewHolder.line1.setVisibility(View.GONE);
+                viewHolder.remainPercent.setVisibility(View.GONE);
+                viewHolder.line2.setVisibility(View.GONE);
                 break;
         }
     }

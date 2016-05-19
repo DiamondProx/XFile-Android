@@ -107,7 +107,7 @@ public class VideoFragment extends Fragment implements PopupMenu.MenuCallback, C
     public void onDialogClick(int id, TFileInfo tFileInfo, Object... param) {
         switch (id) {
             case R.id.more_del:
-                DialogHelper.showDel(getActivity(), tFileInfo, VideoFragment.this);
+                DialogHelper.confirmDel(getActivity(), tFileInfo, VideoFragment.this);
                 break;
             case R.id.more_rename:
                 DialogHelper.showRename(getActivity(), tFileInfo, VideoFragment.this);
@@ -121,7 +121,7 @@ public class VideoFragment extends Fragment implements PopupMenu.MenuCallback, C
             case R.id.more_property:
                 DialogHelper.showProperty(getActivity(), tFileInfo);
                 break;
-            case R.id.dialog_del_ok:
+            case R.id.dialog_confirm_ok:
                 opLogic.deleteFile(tFileInfo);
                 break;
             case R.id.dialog_rename_ok:

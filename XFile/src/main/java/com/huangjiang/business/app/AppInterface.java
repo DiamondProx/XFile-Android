@@ -32,7 +32,10 @@ public class AppInterface {
      * 查找所有安装程序
      */
     public List<TFileInfo> searchApp(String... searchKey) {
-
+        String key = null;
+        if (searchKey != null && searchKey.length > 0) {
+            key = searchKey[0];
+        }
         List<TFileInfo> list = new ArrayList<>();
         try {
             PackageManager pm = mContext.getPackageManager();
@@ -56,8 +59,8 @@ public class AppInterface {
                         appFile.setExtension("");
                     }
                     appFile.setFileType(FileType.Install);
-                    if (searchKey != null && searchKey.length > 0) {
-                        if (display_name.startsWith(searchKey[0])) {
+                    if (!StringUtils.isEmpty(key)) {
+                        if (display_name.startsWith(key)) {
                             list.add(appFile);
                         }
                     } else {

@@ -105,7 +105,7 @@ public class PictureFragment extends Fragment implements PictureAdapter.CallBack
     public void onDialogClick(int id, TFileInfo tFileInfo, Object... params) {
         switch (id) {
             case R.id.more_del:
-                DialogHelper.showDel(getActivity(), tFileInfo, PictureFragment.this);
+                DialogHelper.confirmDel(getActivity(), tFileInfo, PictureFragment.this);
                 break;
             case R.id.more_rename:
                 DialogHelper.showRename(getActivity(), tFileInfo, PictureFragment.this);
@@ -119,7 +119,7 @@ public class PictureFragment extends Fragment implements PictureAdapter.CallBack
             case R.id.more_property:
                 DialogHelper.showProperty(getActivity(), tFileInfo);
                 break;
-            case R.id.dialog_del_ok:
+            case R.id.dialog_confirm_ok:
                 opLogic.deleteFile(tFileInfo);
                 break;
             case R.id.dialog_rename_ok:

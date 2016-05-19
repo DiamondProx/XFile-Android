@@ -163,6 +163,7 @@
     <string name="open_install_failed">启动程序失败</string>
     <string name="repeat_name">存在同名文件</string>
     <string name="rename_failed">文件重命名失败</string>
+    <string name="confirm_exit_link">退出当前连接?</string>
 
 
 </resources>
