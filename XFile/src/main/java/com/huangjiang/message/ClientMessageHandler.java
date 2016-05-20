@@ -30,7 +30,8 @@ public class ClientMessageHandler extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         logger.e("****ClientMessageChannelRead");
-        IMClientMessageManager.getInstance().packetDispatch((ByteBuf) msg);
+        if (msg instanceof ByteBuf)
+            IMClientMessageManager.getInstance().packetDispatch((ByteBuf) msg);
     }
 
     @Override
@@ -41,16 +42,4 @@ public class ClientMessageHandler extends ChannelHandlerAdapter {
         logger.e("****ClientMessageExceptionCaught");
     }
 
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        super.channelReadComplete(ctx);
-        logger.e("****ClientMessageChannelReadComplete");
-    }
-
-    @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        super.handlerRemoved(ctx);
-        logger.e("****ClientMessageHandlerRemoved");
-        // EventBus.getDefault().post(new ServerMessageSocketEvent(SocketEvent.CONNECT_CLOSE));
-    }
 }

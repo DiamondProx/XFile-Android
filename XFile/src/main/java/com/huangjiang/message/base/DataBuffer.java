@@ -3,8 +3,6 @@ package com.huangjiang.message.base;
 
 import com.huangjiang.config.SysConstant;
 
-import java.nio.charset.Charset;
-
 import io.netty.buffer.ByteBuf;
 
 /**

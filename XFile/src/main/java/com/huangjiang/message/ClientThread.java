@@ -2,7 +2,6 @@ package com.huangjiang.message;
 
 import com.google.protobuf.GeneratedMessage;
 import com.huangjiang.manager.event.ClientFileSocketEvent;
-import com.huangjiang.manager.event.ClientMessageSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.utils.Logger;

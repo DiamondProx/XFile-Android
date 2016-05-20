@@ -51,12 +51,6 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
     }
 
     @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        super.channelReadComplete(ctx);
-        logger.e("****ServerMessage-ChannelReadComplete");
-    }
-
-    @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         super.handlerAdded(ctx);
         logger.e("****ServerMessage-HandlerAdded");

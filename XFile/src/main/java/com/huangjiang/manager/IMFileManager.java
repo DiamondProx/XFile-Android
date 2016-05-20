@@ -6,6 +6,7 @@ import com.google.protobuf.ByteString;
 import com.huangjiang.XFileApp;
 import com.huangjiang.business.model.LinkType;
 import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.config.Config;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.dao.DFile;
 import com.huangjiang.dao.DFileDao;
@@ -16,6 +17,8 @@ import com.huangjiang.manager.event.FileEvent;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
+import com.huangjiang.utils.SoundHelper;
+import com.huangjiang.utils.VibratorUtils;
 import com.huangjiang.utils.XFileUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -208,7 +211,12 @@ public class IMFileManager extends IMBaseManager {
             } else {
                 IMServerMessageManager.getInstance().sendMessage(sid, cid, rspFile.build(), null, header.getSeqnum());
             }
-
+            if (Config.getSound()) {
+                SoundHelper.playReceiveFile();
+            }
+            if (Config.getVibration()) {
+                VibratorUtils.Vibrate();
+            }
             triggerEvent(reqTFile);
 
 
@@ -317,7 +325,7 @@ public class IMFileManager extends IMBaseManager {
             // 答复发送端创建成功
             if (XFileApp.mLinkType == LinkType.CLIENT) {
                 IMClientMessageManager.getInstance().sendMessage(sid, cid, requestFile, header.getSeqnum());
-            } else {
+            } else if (XFileApp.mLinkType == LinkType.SERVER) {
                 IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, header.getSeqnum());
             }
 

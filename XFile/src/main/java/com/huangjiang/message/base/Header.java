@@ -2,7 +2,6 @@ package com.huangjiang.message.base;
 
 
 import com.huangjiang.config.SysConstant;
-import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.SequenceNumberMaker;
 
 import io.netty.buffer.ByteBuf;
@@ -12,8 +11,6 @@ import io.netty.buffer.Unpooled;
  * 协议头文件
  */
 public class Header {
-
-    private Logger logger = Logger.getLogger(Header.class);
 
 
     private int length; // 数据包长度，包括包头
@@ -91,9 +88,6 @@ public class Header {
     }
 
     public Header(byte[] bytes) {
-        if (bytes == null) {
-            throw new NullPointerException();
-        }
         ByteBuf byteBuf = Unpooled.buffer(SysConstant.HEADER_LENGTH);
         byteBuf.writeBytes(bytes);
         this.length = byteBuf.readInt();

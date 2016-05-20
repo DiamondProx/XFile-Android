@@ -28,7 +28,7 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-//        logger.e("****ServerFile-ChannelRead");
+        // logger.e("****ServerFile-ChannelRead");
         IMServerFileManager imServerFileManager = IMServerFileManager.getInstance();
         if (imServerFileManager.getAuthChannelHandlerContext() != null) {
             // 连接已经认证,判断是否是认证连接
@@ -51,11 +51,6 @@ public class ServerFileHandler extends ChannelHandlerAdapter {
 
     }
 
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        super.channelReadComplete(ctx);
-//        logger.e("****ServerFile-ChannelReadComplete");
-    }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
