@@ -89,7 +89,7 @@ public class AudioInterface {
 
                 if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") > 0) {
                     int extensionIndex = display_name.lastIndexOf(".");
-                    audio_file.setExtension(display_name.substring(extensionIndex + 1));
+                    audio_file.setExtension(display_name.substring(extensionIndex));
                     audio_file.setName(display_name.substring(0, extensionIndex));
                 } else {
                     audio_file.setExtension("");

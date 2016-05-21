@@ -89,7 +89,7 @@ public class VideoInterface {
 
                 if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") > 0) {
                     int extensionIndex = display_name.lastIndexOf(".");
-                    video_file.setExtension(display_name.substring(extensionIndex + 1));
+                    video_file.setExtension(display_name.substring(extensionIndex));
                     video_file.setName(display_name.substring(0, extensionIndex));
                 } else {
                     video_file.setExtension("");

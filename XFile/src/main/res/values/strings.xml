@@ -164,6 +164,9 @@
     <string name="repeat_name">存在同名文件</string>
     <string name="rename_failed">文件重命名失败</string>
     <string name="confirm_exit_link">退出当前连接?</string>
+    <string name="file_send_failed">文件%1$s发送失败</string>
+    <string name="history_empty">暂无传输记录</string>
+    <string name="disk_enough">磁盘空间不足</string>
 
 
 </resources>

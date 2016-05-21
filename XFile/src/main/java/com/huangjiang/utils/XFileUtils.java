@@ -272,19 +272,21 @@ public class XFileUtils {
         sb.append(File.separator);
         sb.append("XFile");
         sb.append(File.separator);
-        switch (extension) {
-            case "doc":
-                sb.append("doc");
-                sb.append(File.separator);
-                break;
-            case "mp3":
-                sb.append("music");
-                sb.append(File.separator);
-                break;
-            default:
-                sb.append("other");
-                sb.append(File.separator);
-                break;
+        if (checkEndsWithInStringArray(extension, XFileApp.context.getResources().getStringArray(R.array.fileEndingImage))) {
+            sb.append("image");
+            sb.append(File.separator);
+        } else if (XFileUtils.checkEndsWithInStringArray(extension, XFileApp.context.getResources().getStringArray(R.array.fileEndingAudio))) {
+            sb.append("music");
+            sb.append(File.separator);
+        } else if (XFileUtils.checkEndsWithInStringArray(extension, XFileApp.context.getResources().getStringArray(R.array.fileEndingVideo))) {
+            sb.append("video");
+            sb.append(File.separator);
+        } else if (XFileUtils.checkEndsWithInStringArray(extension, XFileApp.context.getResources().getStringArray(R.array.fileEndingApk))) {
+            sb.append("apk");
+            sb.append(File.separator);
+        } else {
+            sb.append("other");
+            sb.append(File.separator);
         }
         return sb.toString();
     }

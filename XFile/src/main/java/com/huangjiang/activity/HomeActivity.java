@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huangjiang.XFileApp;
+import com.huangjiang.business.event.DiskEvent;
 import com.huangjiang.business.event.RecordEvent;
 import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.business.model.LinkType;
@@ -440,9 +441,25 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
                     rdb_message.setChecked(true);
                 }
                 break;
+            case CREATE_FILE_FAILED:
+                if (tFileInfo.isSend()) {
+                    Toast.makeText(HomeActivity.this, String.format(getString(R.string.file_send_failed), tFileInfo.getFullName()), Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
+    /**
+     * 读写错误:磁盘空间不足/权限拒绝
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(DiskEvent diskEvent) {
+        switch (diskEvent.getDiskState()){
+            case ENOUGH:
+                Toast.makeText(HomeActivity.this, R.string.disk_enough, Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
 
     /**
      * 点两次返回

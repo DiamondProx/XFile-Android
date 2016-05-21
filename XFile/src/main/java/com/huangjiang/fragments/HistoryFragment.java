@@ -18,6 +18,7 @@ import com.huangjiang.dao.DFileDao;
 import com.huangjiang.dao.DaoMaster;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
+import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.DialogHelper;
 import com.huangjiang.view.MenuHelper;
 import com.huangjiang.view.MenuItem;
@@ -59,6 +60,8 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         adapter = new TransmitAdapter(getActivity());
         lv_message.setAdapter(adapter);
         lv_message.setOnItemClickListener(this);
+        View empty = view.findViewById(R.id.empty_view);
+        lv_message.setEmptyView(empty);
         list_message = new ArrayList<>();
         history_logic = new HistoryLogic(getActivity());
         history_logic.getHistory();
@@ -137,6 +140,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         FileEvent fileEvent = tFileInfo.getFileEvent();
         switch (fileEvent) {
             case CREATE_FILE_SUCCESS: {
+                tFileInfo.setFileType(XFileUtils.getFileType(getActivity(), tFileInfo.getExtension()));
                 adapter.addTFileInfo(tFileInfo);
                 adapter.notifyDataSetChanged();
             }

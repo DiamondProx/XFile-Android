@@ -10,11 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.view.OpenFileHelper;
-import com.huangjiang.xfile.R;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
 import com.huangjiang.utils.XFileUtils;
+import com.huangjiang.view.OpenFileHelper;
+import com.huangjiang.xfile.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,14 +178,6 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         setPercentState(holder, tFileInfo.getFileEvent());
     }
 
-    public TFileInfo getWaitFile() {
-        for (TFileInfo fileInfo : listTFileInfo) {
-            if (fileInfo.getFileEvent().equals(FileEvent.WAITING)) {
-                return fileInfo;
-            }
-        }
-        return null;
-    }
 
     public void addTFileInfo(TFileInfo tFileInfo) {
         listTFileInfo.add(tFileInfo);
@@ -228,6 +220,7 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
                 fileInfo.setPercent(tFileInfo.getPercent());
                 fileInfo.setPosition(tFileInfo.getPosition());
                 fileInfo.setFileEvent(tFileInfo.getFileEvent());
+                fileInfo.setPath(tFileInfo.getPath());
                 break;
             }
         }

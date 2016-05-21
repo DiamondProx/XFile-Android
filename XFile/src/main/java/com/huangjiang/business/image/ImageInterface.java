@@ -87,7 +87,7 @@ public class ImageInterface {
 
                 if (!StringUtils.isEmpty(display_name) && display_name.lastIndexOf(".") > 0) {
                     int extensionIndex = display_name.lastIndexOf(".");
-                    image_file.setExtension(display_name.substring(extensionIndex + 1));
+                    image_file.setExtension(display_name.substring(extensionIndex));
                     image_file.setName(display_name.substring(0, extensionIndex));
                 } else {
                     image_file.setExtension("");

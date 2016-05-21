@@ -238,11 +238,11 @@ public class DFileDao extends BaseDao<DFile, Long> {
 
     public boolean updateTransferStatus(DFile dFile) {
         ContentValues values = new ContentValues();
-        values.put(Properties.Percent.name, dFile.getPercent());
-        values.put(Properties.Position.name, dFile.getPosition());
-        values.put(Properties.Status.name, dFile.getStatus());
+        values.put(Properties.Percent.columnName, dFile.getPercent());
+        values.put(Properties.Position.columnName, dFile.getPosition());
+        values.put(Properties.Status.columnName, dFile.getStatus());
         String where = String.format("%s='%s'", Properties.TaskId.columnName, dFile.getTaskId());
-        return update(TABLENAME, values, where, null) > 0 ? true : false;
+        return update(TABLENAME, values, where, null) > 0;
 
     }
 
@@ -257,6 +257,13 @@ public class DFileDao extends BaseDao<DFile, Long> {
     public void deleteByTaskId(String taskId) {
         String where = String.format("%s='%s'", Properties.TaskId.columnName, taskId);
         delete(TABLENAME, where, null);
+    }
+
+    public boolean updateSavePath(String taskId, String savePath) {
+        ContentValues values = new ContentValues();
+        values.put(Properties.SavePath.columnName, savePath);
+        String where = String.format("%s='%s'", Properties.TaskId.columnName, taskId);
+        return update(TABLENAME, values, where, null) > 0;
     }
 
 }
