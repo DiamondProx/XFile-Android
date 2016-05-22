@@ -338,6 +338,20 @@ public class XFileUtils {
         return tFile;
     }
 
+    public static XFileProtocol.File buildSFile(DFile dFile){
+        XFileProtocol.File.Builder sendFile = XFileProtocol.File.newBuilder();
+        sendFile.setName(dFile.getName());
+        sendFile.setPosition(dFile.getPosition());
+        sendFile.setLength(dFile.getLength());
+        sendFile.setPath(dFile.getPath());
+        sendFile.setExtension(dFile.getExtension());
+        sendFile.setFullName(dFile.getFullName());
+        sendFile.setTaskId(dFile.getTaskId());
+        sendFile.setIsSend(dFile.getIsSend());
+        sendFile.setFrom(dFile.getFrom());
+        return sendFile.build();
+    }
+
     public static DFile buildDFile(TFileInfo tFileInfo) {
         DFile dFile = new DFile();
         dFile.setName(tFileInfo.getName());
