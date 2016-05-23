@@ -568,11 +568,11 @@ public class IMFileManager extends IMBaseManager {
                     // 更新接收状态
                     rspTFile.setPercent(writePercent);
                     triggerEvent(rspTFile);
-                    logger.e("****writePercent222:" + writePercent + ",tempPercent" + tempPercent);
+//                    logger.e("****writePercent222:" + writePercent + ",tempPercent" + tempPercent);
                 }
                 short sid;
                 if (reqFile.getPosition() + fileData.length == reqFile.getLength()) {
-                    logger.e("****writePercent333:" + writePercent + ",tempPercent" + tempPercent);
+//                    logger.e("****writePercent333:" + writePercent + ",tempPercent" + tempPercent);
                     // 文件发送完成,提醒接收端结束状态
                     writePercent = 0;
                     writeIndex = 0;
@@ -603,7 +603,7 @@ public class IMFileManager extends IMBaseManager {
                     }
                 }
                 if (isCancel) {
-                    logger.e("****dispatchReceive-isCancel=true1111");
+//                    logger.e("****dispatchReceive-isCancel=true1111");
                     sid = SysConstant.SERVICE_FILE_SET_STOP;
                     // 暂停操作
                     rspTFile.setFileEvent(FileEvent.SET_FILE_STOP);
@@ -618,7 +618,7 @@ public class IMFileManager extends IMBaseManager {
                     triggerEvent(rspTFile);
                 } else {
                     sid = SysConstant.SERVICE_FILE_SET_SUCCESS;
-                    logger.e("****dispatchReceive-isCancel=false2222");
+//                    logger.e("****dispatchReceive-isCancel=false2222");
                 }
 
                 short cid = SysConstant.CMD_FILE_SET_RSP;
@@ -714,16 +714,15 @@ public class IMFileManager extends IMBaseManager {
             removeTask(tFileInfo);
             logger.e("****cancelTask3333");
         }
-        // 数据库删除
-        if (tFileInfo != null) {
-            DFile dFile = fileDao.getDFileByTaskId(tFileInfo.getTaskId());
-            if (!tFileInfo.isSend()) {
-                delCacheFile(dFile);
-            }
-            fileDao.deleteByTaskId(tFileInfo.getTaskId());
-            tFileInfo.setFileEvent(FileEvent.CANCEL_FILE);
-            triggerEvent(tFileInfo);
+        // 删除数据库记录
+        DFile dFile = fileDao.getDFileByTaskId(tFileInfo.getTaskId());
+        fileDao.deleteByTaskId(tFileInfo.getTaskId());
+        // 删除缓存文件
+        if (!tFileInfo.isSend()) {
+            delCacheFile(dFile);
         }
+        tFileInfo.setFileEvent(FileEvent.CANCEL_FILE);
+        triggerEvent(tFileInfo);
         // 删除的是当前正在传送的任务
         short sid = SysConstant.SERVICE_DEFAULT;
         short cid = SysConstant.CMD_FILE_CANCEL;
@@ -732,7 +731,6 @@ public class IMFileManager extends IMBaseManager {
         } else if (XFileApp.mLinkType == LinkType.SERVER) {
             IMServerMessageManager.getInstance().sendMessage(sid, cid, requestFile, null, (short) 0);
         }
-
 
     }
 
@@ -744,12 +742,10 @@ public class IMFileManager extends IMBaseManager {
             logger.e("****dispatchCancel1111");
             final XFileProtocol.File reqFile = XFileProtocol.File.parseFrom(bodyData);
             final TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
-            reqTFile.setIsSend(!reqTFile.isSend());
+            boolean flag = false;
             if (isTransmit && currentTask != null && reqTFile.getTaskId().equals(currentTask.getTaskId())) {
-                // 删除当前任务
                 reset();
-                // 检查是否还有任务尚未完成
-                checkUndone();
+                flag = true;
                 logger.e("****dispatchCancel2222");
 
             } else {
@@ -757,14 +753,18 @@ public class IMFileManager extends IMBaseManager {
                 removeTask(reqTFile);
                 logger.e("****dispatchCancel3333");
             }
-            // 删除数据库保存记录
+            // 删除数据库记录
             DFile dFile = fileDao.getDFileByTaskId(reqTFile.getTaskId());
-            if (!reqTFile.isSend()) {
+            fileDao.deleteByTaskId(reqTFile.getTaskId());
+            if (!dFile.getIsSend()) {
                 delCacheFile(dFile);
             }
-            fileDao.deleteByTaskId(reqTFile.getTaskId());
             reqTFile.setFileEvent(FileEvent.CANCEL_FILE);
             triggerEvent(reqTFile);
+            if (flag) {
+                // 检查是否还有任务尚未完成
+                checkUndone();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -784,20 +784,12 @@ public class IMFileManager extends IMBaseManager {
 
 
     /**
-     * 通知界面
-     */
-    private void triggerEvent(TFileInfo tFileInfo) {
-        EventBus.getDefault().post(tFileInfo);
-    }
-
-
-    /**
      * 移除等待任务
      */
     private void removeTask(TFileInfo task) {
         for (int i = 0; i < taskQueue.size(); i++) {
             TFileInfo currentTask = taskQueue.get(i);
-            if (currentTask.getTaskId().equals(task.getTaskId())) {
+            if (currentTask.getTaskId() != null && currentTask.getTaskId().equals(task.getTaskId())) {
                 taskQueue.remove(i);
                 break;
             }
@@ -828,14 +820,17 @@ public class IMFileManager extends IMBaseManager {
         isCancel = false;
     }
 
-    private void delCacheFile(DFile dFile) {
-        // 删除本地缓存文件
+    /**
+     * 删除本地缓存文件
+     */
+    private boolean delCacheFile(DFile dFile) {
         File cacheFile = new File(dFile.getSavePath());
-        if (cacheFile.exists()) {
-            cacheFile.delete();
-        }
+        return cacheFile.delete();
     }
 
+    /**
+     * 是否包含任务
+     */
     public boolean containsTask(String taskId) {
         for (TFileInfo tFileInfo : taskQueue) {
             if (tFileInfo.getTaskId().equals(taskId)) {
@@ -844,6 +839,14 @@ public class IMFileManager extends IMBaseManager {
         }
         return false;
     }
+
+    /**
+     * 通知界面
+     */
+    private void triggerEvent(TFileInfo tFileInfo) {
+        EventBus.getDefault().post(tFileInfo);
+    }
+
 
 
 }
