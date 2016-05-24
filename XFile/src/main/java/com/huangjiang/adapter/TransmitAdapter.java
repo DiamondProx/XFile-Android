@@ -127,7 +127,7 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
                 IMFileManager.getInstance().resumeReceive(taskInfo);
                 break;
             case SET_FILE:
-                IMFileManager.getInstance().stopReceive();
+                IMFileManager.getInstance().stopReceive(taskInfo);
                 break;
             case SET_FILE_SUCCESS:
                 OpenFileHelper.openFile(mContext, taskInfo);

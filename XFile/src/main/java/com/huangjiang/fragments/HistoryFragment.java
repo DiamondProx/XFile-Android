@@ -99,7 +99,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                 IMFileManager.getInstance().resumeReceive(menu.getTFileInfo());
                 break;
             case R.id.menu_stop:
-                IMFileManager.getInstance().stopReceive();
+                IMFileManager.getInstance().stopReceive(menu.getTFileInfo());
                 break;
             case R.id.menu_property:
                 DialogHelper.showProperty(getActivity(), menu.getTFileInfo());

@@ -20,7 +20,6 @@ import com.huangjiang.utils.XFileUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
 import java.io.RandomAccessFile;
 
 /**
@@ -72,7 +71,7 @@ public class TaskInstance {
     private DTransferDetailDao transferDetailDao;
 
 
-    public void TaskInstance() {
+    public TaskInstance() {
         fileDao = DaoMaster.getInstance().newSession().getDFileDao();
         transferDetailDao = DaoMaster.getInstance().newSession().getDTransferDetailDao();
     }
@@ -81,7 +80,7 @@ public class TaskInstance {
     /**
      * 发送文件
      */
-    private void transferFile(final XFileProtocol.File reqFile) {
+    public void transferFile(final XFileProtocol.File reqFile) {
 
         short cid = SysConstant.CMD_FILE_SET;
         short sid = SysConstant.SERVICE_DEFAULT;
@@ -194,11 +193,11 @@ public class TaskInstance {
     /**
      * 接收保存文件
      */
-    private void dispatchReceiveData(Header header, byte[] bodyData) {
+    public void dispatchReceiveData(Header header, byte[] bodyData) {
         try {
             final XFileProtocol.File reqFile = XFileProtocol.File.parseFrom(bodyData);
-            TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
-            String fullPath = reqTFile.getPath();
+            DFile dbCheckFile = fileDao.getDFileByTaskId(reqFile.getTaskId());
+            String fullPath = dbCheckFile.getSavePath();
             byte[] fileData = reqFile.getData().toByteArray();
             RandomAccessFile randomAccessFile = new RandomAccessFile(fullPath, "rw");
             randomAccessFile.seek(reqFile.getPosition());
@@ -293,7 +292,7 @@ public class TaskInstance {
     }
 
 
-    private void resume() {
+    public void resume() {
         final XFileProtocol.File reqFile = XFileUtils.buildSFile(currentTask);
         if (currentTask.isSend()) {
             transferFile(reqFile);
@@ -308,20 +307,18 @@ public class TaskInstance {
         }
     }
 
-    private void dispatchResume(XFileProtocol.File reqFile) {
+    public void stop() {
+        isCancel = true;
+    }
+
+    public void dispatchResume(XFileProtocol.File reqFile) {
         // 删除数据库记录
         transferFile(reqFile);
     }
 
-    private void cancel() {
+    public void cancel() {
         final XFileProtocol.File requestFile = XFileUtils.buildSFile(currentTask);
-        // 删除数据库记录
-        DFile dFile = fileDao.getDFileByTaskId(currentTask.getTaskId());
-        fileDao.deleteByTaskId(currentTask.getTaskId());
-        // 删除缓存文件
-        if (!currentTask.isSend()) {
-            delCacheFile(dFile);
-        }
+
         // 通知界面
         currentTask.setFileEvent(FileEvent.CANCEL_FILE);
         triggerEvent(currentTask);
@@ -336,15 +333,7 @@ public class TaskInstance {
         }
     }
 
-    private void dispatchCancel(XFileProtocol.File reqFile) {
-        final TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
-        // 删除数据库记录
-        DFile dFile = fileDao.getDFileByTaskId(currentTask.getTaskId());
-        fileDao.deleteByTaskId(currentTask.getTaskId());
-        // 删除缓存文件
-        if (!currentTask.isSend()) {
-            delCacheFile(dFile);
-        }
+    public void dispatchCancel(XFileProtocol.File reqFile) {
         // 通知界面
         currentTask.setFileEvent(FileEvent.CANCEL_FILE);
         triggerEvent(currentTask);
@@ -354,7 +343,7 @@ public class TaskInstance {
     /**
      * 重置发送任务
      */
-    private void reset() {
+    public void reset() {
         readIndex = 0;
         readPercent = 0;
         writeIndex = 0;
@@ -368,20 +357,24 @@ public class TaskInstance {
     /**
      * 通知界面
      */
-    private void triggerEvent(TFileInfo tFileInfo) {
+    public void triggerEvent(TFileInfo tFileInfo) {
         EventBus.getDefault().post(tFileInfo);
     }
 
-    /**
-     * 删除本地缓存文件
-     */
-    private boolean delCacheFile(DFile dFile) {
-        File cacheFile = new File(dFile.getSavePath());
-        return cacheFile.delete();
-    }
 
     public boolean isTransmit() {
         return isTransmit;
     }
 
+    public String getTaskId() {
+        return currentTask == null ? "" : currentTask.getTaskId();
+    }
+
+    public void setCurrentTask(TFileInfo currentTask) {
+        this.currentTask = currentTask;
+    }
+
+    public void waitReceive() {
+        isTransmit = true;
+    }
 }
