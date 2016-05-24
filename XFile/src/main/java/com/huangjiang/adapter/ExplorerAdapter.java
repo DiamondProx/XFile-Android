@@ -54,7 +54,7 @@ public class ExplorerAdapter extends BaseAdapter {
 
     public void removeFile(TFileInfo tFileInfo) {
         for (TFileInfo file : list) {
-            if (tFileInfo.getFileType() == FileType.Apk) {
+            if (tFileInfo.getFileType() == FileType.Install) {
                 if (tFileInfo.getPackageName().equals(file.getPackageName())) {
                     list.remove(file);
                     break;
@@ -105,6 +105,7 @@ public class ExplorerAdapter extends BaseAdapter {
             holder.size.setVisibility(View.VISIBLE);
             holder.size.setText(XFileUtils.parseSize(tFileInfo.getLength()));
             holder.name.setText(tFileInfo.getFullName());
+            holder.image.setTag(tFileInfo.getPath());
             switch (tFileInfo.getFileType()) {
                 case Normal:
                     holder.image.setImageResource(R.mipmap.data_folder_documents_placeholder);

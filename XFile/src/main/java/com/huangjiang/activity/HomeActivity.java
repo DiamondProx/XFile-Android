@@ -295,25 +295,26 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
         originImage.getLocationOnScreen(startLocation);
         originImage.measure(w, h);
         Drawable drawable = originImage.getDrawable();
+        if (drawable != null) {
+            // 修改坐标位置,图标大小
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) iv_throw.getLayoutParams();
+            layoutParams.width = originImage.getWidth();
+            layoutParams.height = originImage.getHeight();
+            layoutParams.setMargins(startLocation[0], startLocation[1] - XFileApp.mAndroidTitleBar, 0, 0);
+            iv_throw.setLayoutParams(layoutParams);
+            iv_throw.setImageDrawable(drawable.getConstantState().newDrawable());
+            iv_throw.setVisibility(View.VISIBLE);
 
-        // 修改坐标位置,图标大小
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) iv_throw.getLayoutParams();
-        layoutParams.width = originImage.getWidth();
-        layoutParams.height = originImage.getHeight();
-        layoutParams.setMargins(startLocation[0], startLocation[1] - XFileApp.mAndroidTitleBar, 0, 0);
-        iv_throw.setLayoutParams(layoutParams);
-        iv_throw.setImageDrawable(drawable);
-        iv_throw.setVisibility(View.VISIBLE);
-
-        iv_throw.measure(w, h);
-        // 读取头像坐标
-        int[] endLocation = new int[2];
-        head_layout.getLocationOnScreen(endLocation);
-        if (Config.getSound()) {
-            SoundHelper.playDragThrow();
+            iv_throw.measure(w, h);
+            // 读取头像坐标
+            int[] endLocation = new int[2];
+            head_layout.getLocationOnScreen(endLocation);
+            if (Config.getSound()) {
+                SoundHelper.playDragThrow();
+            }
+            // 执行动画
+            AnimationHelper.startSendFileAnimation(iv_throw, head_layout, startLocation[0], startLocation[1], endLocation[0], endLocation[1]);
         }
-        // 执行动画
-        AnimationHelper.startSendFileAnimation(iv_throw, head_layout, startLocation[0], startLocation[1], endLocation[0], endLocation[1]);
     }
 
     /**
@@ -454,7 +455,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DiskEvent diskEvent) {
-        switch (diskEvent.getDiskState()){
+        switch (diskEvent.getDiskState()) {
             case ENOUGH:
                 Toast.makeText(HomeActivity.this, R.string.disk_enough, Toast.LENGTH_SHORT).show();
                 break;

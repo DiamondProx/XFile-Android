@@ -800,7 +800,7 @@ public class IMFileManager extends IMBaseManager {
     /**
      * 检查是否还有未完成的任务
      */
-    private void checkUndone() {
+    public void checkUndone() {
         if (taskQueue != null && taskQueue.size() > 0) {
             TFileInfo task = taskQueue.pop();
             checkTask(task);
