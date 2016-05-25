@@ -13,6 +13,7 @@ import com.huangjiang.dao.DTransferDetailDao;
 import com.huangjiang.dao.DaoMaster;
 import com.huangjiang.manager.callback.Packetlistener;
 import com.huangjiang.manager.event.FileEvent;
+import com.huangjiang.manager.event.IMFileEvent;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
@@ -21,6 +22,8 @@ import com.huangjiang.utils.XFileUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.RandomAccessFile;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * 传输任务实例
@@ -71,6 +74,11 @@ public class TaskInstance {
     private DTransferDetailDao transferDetailDao;
 
 
+    Timer timer = null;
+
+    TimerTask timerTask = null;
+
+
     public TaskInstance() {
         fileDao = DaoMaster.getInstance().newSession().getDFileDao();
         transferDetailDao = DaoMaster.getInstance().newSession().getDTransferDetailDao();
@@ -92,6 +100,7 @@ public class TaskInstance {
 
             // 判断传回来的position是否等于文件length，相等的情况下，当作已经传输完成
             if (remain == 0) {
+                currentTask.setPosition(reqFile.getPosition());
                 reqTFile.setFileEvent(FileEvent.SET_FILE_SUCCESS);
                 reqTFile.setPercent(100);
                 // 重置标记
@@ -99,6 +108,7 @@ public class TaskInstance {
                 readIndex = 0;
                 isTransmit = false;
                 triggerEvent(reqTFile);
+                IMFileManager.getInstance().removeTask(getTaskId());
                 return;
             }
             // 继续传输未完成任务
@@ -130,6 +140,7 @@ public class TaskInstance {
                         rspTFile.setFileEvent(FileEvent.SET_FILE);
                         // 通知界面进度
                         readIndex = rspFile.getPosition();
+                        currentTask.setPosition(readIndex);
                         long temPercent = readIndex * 100 / rspFile.getLength();
                         if (readPercent < temPercent) {
                             readPercent = temPercent;
@@ -196,6 +207,9 @@ public class TaskInstance {
     public void dispatchReceiveData(Header header, byte[] bodyData) {
         try {
             final XFileProtocol.File reqFile = XFileProtocol.File.parseFrom(bodyData);
+
+            cancelTimeout();
+
             DFile dbCheckFile = fileDao.getDFileByTaskId(reqFile.getTaskId());
             String fullPath = dbCheckFile.getSavePath();
             byte[] fileData = reqFile.getData().toByteArray();
@@ -237,7 +251,9 @@ public class TaskInstance {
                         triggerEvent(rspTFile);
                     }
                 };
+                rspTFile.setFileEvent(FileEvent.SET_FILE);
                 writeIndex = responseFile.getPosition();
+                currentTask.setPosition(responseFile.getPosition());
                 long tempPercent = writeIndex * 100 / reqFile.getLength();
 
                 //logger.e("****writePercent111:" + writePercent + ",tempPercent" + tempPercent);
@@ -259,6 +275,13 @@ public class TaskInstance {
                     isTransmit = false;
                     isCancel = false;
                     rspTFile.setFileEvent(FileEvent.SET_FILE_SUCCESS);
+
+
+                    IMFileEvent imFileEvent = new IMFileEvent(IMFileEvent.EventType.COMPLETE);
+                    imFileEvent.setTaskId(getTaskId());
+                    EventBus.getDefault().post(imFileEvent);
+                    long threadId = Thread.currentThread().getId();
+                    System.out.println("****dispatchReceiveDataThreadId:"+threadId);
 
                 }
                 if (isCancel) {
@@ -295,8 +318,10 @@ public class TaskInstance {
     public void resume() {
         final XFileProtocol.File reqFile = XFileUtils.buildSFile(currentTask);
         if (currentTask.isSend()) {
+            isTransmit = true;
             transferFile(reqFile);
         } else {
+            isCancel = false;
             short sid = SysConstant.SERVICE_DEFAULT;
             short cid = SysConstant.CMD_FILE_RESUME;
             if (XFileApp.mLinkType == LinkType.CLIENT) {
@@ -304,6 +329,7 @@ public class TaskInstance {
             } else if (XFileApp.mLinkType == LinkType.SERVER) {
                 IMServerMessageManager.getInstance().sendMessage(sid, cid, reqFile, null, (short) 0);
             }
+            logger.d("****TaskInstanceResume:"+getTaskId());
         }
     }
 
@@ -313,6 +339,7 @@ public class TaskInstance {
 
     public void dispatchResume(XFileProtocol.File reqFile) {
         // 删除数据库记录
+        isCancel = false;
         transferFile(reqFile);
     }
 
@@ -376,5 +403,28 @@ public class TaskInstance {
 
     public void waitReceive() {
         isTransmit = true;
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                isTransmit = false;
+                currentTask.setFileEvent(FileEvent.SET_FILE_FAILED);
+                triggerEvent(currentTask);
+            }
+        };
+        timer.schedule(timerTask, 8000);
+
     }
+
+    public void cancelTimeout() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
+    }
+
 }

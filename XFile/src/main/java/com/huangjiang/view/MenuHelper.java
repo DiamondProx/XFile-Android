@@ -63,6 +63,8 @@ public class MenuHelper {
                 case CHECK_TASK_SUCCESS:
                 case CREATE_FILE_SUCCESS:
                 case WAITING:
+                case CHECK_TASK_FAILED:
+                case SET_FILE_FAILED:
                     if (tFileInfo.isSend()) {
                         // 等待发送文件:取消,打开,属性
                         menu.add(R.id.menu_cancel, R.string.cancel).setIcon(context.getResources().getDrawable(R.mipmap.data_downmenu_cancel));
@@ -92,7 +94,6 @@ public class MenuHelper {
             }
 
         }
-
         menu.show(anchorView);
     }
 

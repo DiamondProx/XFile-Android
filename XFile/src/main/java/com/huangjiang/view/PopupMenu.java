@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.xfile.R;
@@ -156,7 +157,7 @@ public class PopupMenu {
     public void show(View anchor) {
 
         if (mItems.size() == 0) {
-            throw new IllegalStateException("PopupMenu#add was not called with a menu item to display.");
+            Toast.makeText(mContext, "PopupMenu#add was not called with a menu item to display.", Toast.LENGTH_SHORT).show();
         }
 
         preShow();

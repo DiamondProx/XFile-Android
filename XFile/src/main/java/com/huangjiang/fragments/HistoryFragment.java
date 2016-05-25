@@ -89,10 +89,12 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                 break;
             case R.id.menu_cancel:
                 IMFileManager.getInstance().cancelTask(menu.getTFileInfo());
+                adapter.cancelTask(menu.getTFileInfo());
+                adapter.notifyDataSetChanged();
                 break;
             case R.id.menu_delete:
-                dFileDao.deleteByTaskId(menu.getTFileInfo().getTaskId());
                 adapter.cancelTask(menu.getTFileInfo());
+                dFileDao.deleteByTaskId(menu.getTFileInfo().getTaskId());
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.menu_resume:
