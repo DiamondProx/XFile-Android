@@ -217,7 +217,6 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
     public void updateTFileInfo(TFileInfo tFileInfo) {
         for (TFileInfo fileInfo : listTFileInfo) {
             if (tFileInfo.getTaskId().equals(fileInfo.getTaskId())) {
-                fileInfo.setPercent(tFileInfo.getPercent());
                 fileInfo.setPosition(tFileInfo.getPosition());
                 fileInfo.setFileEvent(tFileInfo.getFileEvent());
                 fileInfo.setPath(tFileInfo.getPath());

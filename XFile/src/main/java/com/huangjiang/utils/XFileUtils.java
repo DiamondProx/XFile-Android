@@ -16,8 +16,8 @@ import com.huangjiang.XFileApp;
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.dao.DFile;
-import com.huangjiang.xfile.R;
 import com.huangjiang.message.protocol.XFileProtocol;
+import com.huangjiang.xfile.R;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -363,7 +363,7 @@ public class XFileUtils {
         dFile.setExtension(tFileInfo.getExtension());
         dFile.setFullName(tFileInfo.getFullName());
         dFile.setFrom(tFileInfo.getFrom());
-        dFile.setPercent(tFileInfo.getPercent());
+        dFile.setPercent(0l);
         switch (tFileInfo.getFileEvent()) {
             case CREATE_FILE_SUCCESS:
             case CHECK_TASK_SUCCESS:

@@ -7,7 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
 
-import com.huangjiang.business.event.WIFIEvent;
+import com.huangjiang.business.event.WifiEvent;
 import com.huangjiang.config.Config;
 import com.huangjiang.service.IMService;
 import com.huangjiang.utils.Logger;
@@ -37,7 +37,7 @@ public class NetWorkReceiver extends BroadcastReceiver {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        WIFIEvent wifiEvent = new WIFIEvent();
+                        WifiEvent wifiEvent = new WifiEvent();
                         wifiEvent.setConnected(true);
                         EventBus.getDefault().post(wifiEvent);
                     }

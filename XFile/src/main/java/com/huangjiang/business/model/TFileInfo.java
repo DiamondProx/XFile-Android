@@ -1,5 +1,7 @@
 package com.huangjiang.business.model;
 
+import android.support.annotation.NonNull;
+
 import com.huangjiang.manager.event.FileEvent;
 
 /**
@@ -44,10 +46,6 @@ public class TFileInfo implements Comparable<TFileInfo> {
      */
     private String from;
     /**
-     * 传输百分比
-     */
-    private long percent;
-    /**
      * 传输状态
      */
     private FileEvent fileEvent = FileEvent.NONE;
@@ -78,7 +76,7 @@ public class TFileInfo implements Comparable<TFileInfo> {
     public TFileInfo() {
     }
 
-    public TFileInfo(String name, long position, long length, String path, String extension, String fullName, String taskId, boolean isSend, String from, long percent, String createTime, int playTime, String packageName, boolean directory, FileEvent fileEvent, FileType fileType) {
+    public TFileInfo(String name, long position, long length, String path, String extension, String fullName, String taskId, boolean isSend, String from, String createTime, int playTime, String packageName, boolean directory, FileEvent fileEvent, FileType fileType) {
         this.name = name;
         this.position = position;
         this.length = length;
@@ -88,7 +86,6 @@ public class TFileInfo implements Comparable<TFileInfo> {
         this.taskId = taskId;
         this.isSend = isSend;
         this.from = from;
-        this.percent = percent;
         this.createTime = createTime;
         this.playTime = playTime;
         this.packageName = packageName;
@@ -170,14 +167,6 @@ public class TFileInfo implements Comparable<TFileInfo> {
         this.from = from;
     }
 
-    public long getPercent() {
-        return percent;
-    }
-
-    public void setPercent(long percent) {
-        this.percent = percent;
-    }
-
     public FileEvent getFileEvent() {
         return fileEvent;
     }
@@ -219,7 +208,7 @@ public class TFileInfo implements Comparable<TFileInfo> {
     }
 
     @Override
-    public int compareTo(TFileInfo fileInfo) {
+    public int compareTo(@NonNull TFileInfo fileInfo) {
         if (this.name != null)
             return this.name.compareTo(fileInfo.getName());
         else
@@ -227,7 +216,7 @@ public class TFileInfo implements Comparable<TFileInfo> {
     }
 
     public TFileInfo newInstance() {
-        return new TFileInfo(this.name, this.position, this.length, this.path, this.extension, this.fullName, this.taskId, this.isSend, this.from, this.percent, this.createTime, this.playTime, this.packageName, this.directory, this.fileEvent, this.fileType);
+        return new TFileInfo(this.name, this.position, this.length, this.path, this.extension, this.fullName, this.taskId, this.isSend, this.from, this.createTime, this.playTime, this.packageName, this.directory, this.fileEvent, this.fileType);
     }
 
     public boolean isDirectory() {

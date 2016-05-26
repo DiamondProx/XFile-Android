@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.huangjiang.XFileApp;
 import com.huangjiang.adapter.ScanAdapter;
-import com.huangjiang.business.event.WIFIEvent;
+import com.huangjiang.business.event.WifiEvent;
 import com.huangjiang.business.model.ScanInfo;
 import com.huangjiang.config.Config;
 import com.huangjiang.config.SysConstant;
@@ -307,7 +307,7 @@ public class ConnectActivity extends BaseActivity implements View.OnClickListene
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(WIFIEvent event) {
+    public void onEventMainThread(WifiEvent event) {
         if (event.isConnected() && isLinkHotspot && linkInfo != null) {
             connectToDevice(linkInfo);
             linkInfo = null;

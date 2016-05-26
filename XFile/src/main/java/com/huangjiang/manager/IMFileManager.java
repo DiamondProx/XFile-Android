@@ -13,19 +13,19 @@ import com.huangjiang.dao.DFileDao;
 import com.huangjiang.dao.DaoMaster;
 import com.huangjiang.manager.callback.Packetlistener;
 import com.huangjiang.manager.event.FileEvent;
-import com.huangjiang.manager.event.IMFileEvent;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.SoundHelper;
+import com.huangjiang.utils.StringUtils;
 import com.huangjiang.utils.VibratorUtils;
 import com.huangjiang.utils.XFileUtils;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-import java.util.LinkedList;
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * 文件管理
@@ -37,7 +37,7 @@ public class IMFileManager extends IMBaseManager {
     /**
      * 任务列表,记录尚未发送的任务
      */
-    private LinkedList<TaskInstance> taskQueue = new LinkedList<>();
+    private Hashtable<String, TaskInstance> taskTable = new Hashtable<>();
 
     private DFileDao fileDao;
 
@@ -57,12 +57,12 @@ public class IMFileManager extends IMBaseManager {
 
     @Override
     public void start() {
-        EventBus.getDefault().register(this);
+
     }
 
     @Override
     public void stop() {
-        EventBus.getDefault().unregister(this);
+
     }
 
     /**
@@ -254,16 +254,12 @@ public class IMFileManager extends IMBaseManager {
                 try {
                     checkFile.setFileEvent(FileEvent.CHECK_TASK_SUCCESS);
                     triggerEvent(checkFile);
-                    logger.e("***checkTaskSuccess");
-
                     // 加入任务列表
                     TaskInstance taskInstance = new TaskInstance();
                     taskInstance.setCurrentTask(checkFile);
-                    if (!containsTask(reqFile.getTaskId())) {
-                        taskQueue.addLast(taskInstance);
-                    }
+                    putTask(taskInstance);
                     if (!isTransmit()) {
-                        taskInstance.resume();
+                        taskInstance.transmit();
                     } else {
                         checkFile.setFileEvent(FileEvent.WAITING);
                         triggerEvent(checkFile);
@@ -311,6 +307,8 @@ public class IMFileManager extends IMBaseManager {
 
             // 判断本地是否有这个taskId,找不到这个taskId返回失败信息,停止传送/续传
             if (fileDao.getDFileByTaskId(reqFile.getTaskId()) != null) {
+                DFile dbCheckFile = fileDao.getDFileByTaskId(reqFile.getTaskId());
+                reqTFile.setPath(dbCheckFile.getSavePath());
                 reqTFile.setFileEvent(FileEvent.CHECK_TASK_SUCCESS);
                 reqTFile.setIsSend(!reqTFile.isSend());
                 triggerEvent(reqTFile);
@@ -318,9 +316,7 @@ public class IMFileManager extends IMBaseManager {
                 TaskInstance taskInstance = new TaskInstance();
                 taskInstance.setCurrentTask(reqTFile);
                 triggerEvent(reqTFile);
-                if (!containsTask(reqFile.getTaskId())) {
-                    taskQueue.addLast(taskInstance);
-                }
+                putTask(taskInstance);
                 if (!isTransmit()) {
                     taskInstance.waitReceive();
                 } else {
@@ -352,7 +348,7 @@ public class IMFileManager extends IMBaseManager {
     private void dispatchReceiveData(Header header, byte[] bodyData) {
         try {
             final XFileProtocol.File reqFile = XFileProtocol.File.parseFrom(bodyData);
-            TaskInstance taskInstance = getTaskInstance(reqFile.getTaskId());
+            TaskInstance taskInstance = taskTable.get(reqFile.getTaskId());
             if (taskInstance != null) {
                 taskInstance.dispatchReceiveData(header, bodyData);
             }
@@ -368,25 +364,27 @@ public class IMFileManager extends IMBaseManager {
      */
     public void resumeReceive(TFileInfo tFileInfo) {
         TaskInstance taskInstance;
-        if (!containsTask(tFileInfo.getTaskId())) {
+        if (!taskTable.containsKey(tFileInfo.getTaskId())) {
             taskInstance = new TaskInstance();
             taskInstance.setCurrentTask(tFileInfo);
-            taskQueue.addLast(taskInstance);
+            putTask(taskInstance);
         } else {
-            taskInstance = getTaskInstance(tFileInfo.getTaskId());
+            taskInstance = taskTable.get(tFileInfo.getTaskId());
         }
         if (!isTransmit()) {
-            taskInstance.resume();
+            taskInstance.transmit();
         } else {
-//            taskInstance.resume();
             tFileInfo.setFileEvent(FileEvent.WAITING);
             triggerEvent(tFileInfo);
         }
 
     }
 
+    /**
+     * 暂停
+     */
     public void stopReceive(TFileInfo tFileInfo) {
-        TaskInstance taskInstance = getTaskInstance(tFileInfo.getTaskId());
+        TaskInstance taskInstance = taskTable.get(tFileInfo.getTaskId());
         if (taskInstance != null) {
             taskInstance.stop();
         }
@@ -400,10 +398,9 @@ public class IMFileManager extends IMBaseManager {
         try {
 
             final XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
-            logger.d("****dispatchResume:"+requestFile.getTaskId());
-            TaskInstance taskInstance = getTaskInstance(requestFile.getTaskId());
+            TaskInstance taskInstance = taskTable.get(requestFile.getTaskId());
             if (taskInstance != null) {
-                taskInstance.dispatchResume(requestFile);
+                taskInstance.transmit();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -415,11 +412,11 @@ public class IMFileManager extends IMBaseManager {
      * 取消任务1取消当前任务，2取消等待任务
      */
     public void cancelTask(final TFileInfo tFileInfo) {
-        logger.e("****cancelTask1111");
-        TaskInstance taskInstance = getTaskInstance(tFileInfo.getTaskId());
+        TaskInstance taskInstance = taskTable.get(tFileInfo.getTaskId());
         if (taskInstance != null) {
             taskInstance.cancel();
         }
+        removeTask(tFileInfo.getTaskId());
         // 删除数据库记录
         DFile dFile = fileDao.getDFileByTaskId(tFileInfo.getTaskId());
         fileDao.deleteByTaskId(tFileInfo.getTaskId());
@@ -434,11 +431,10 @@ public class IMFileManager extends IMBaseManager {
      */
     private void dispatchCancel(byte[] bodyData) {
         try {
-            logger.e("****dispatchCancel1111");
             final XFileProtocol.File reqFile = XFileProtocol.File.parseFrom(bodyData);
-            TaskInstance taskInstance = getTaskInstance(reqFile.getTaskId());
+            TaskInstance taskInstance = taskTable.get(reqFile.getTaskId());
             if (taskInstance != null) {
-                taskInstance.dispatchCancel(reqFile);
+                taskInstance.dispatchCancel();
                 removeTask(taskInstance.getTaskId());
             }
             // 删除数据库记录
@@ -448,7 +444,6 @@ public class IMFileManager extends IMBaseManager {
             if (!reqFile.getIsSend()) {
                 delCacheFile(dFile);
             }
-
             checkUndone();
 
         } catch (Exception e) {
@@ -462,25 +457,9 @@ public class IMFileManager extends IMBaseManager {
      * 移除等待任务
      */
     public void removeTask(String taskId) {
-        for (int i = 0; i < taskQueue.size(); i++) {
-            TaskInstance currentTask = taskQueue.get(i);
-            if (currentTask.getTaskId() != null && currentTask.getTaskId().equals(taskId)) {
-                taskQueue.remove(i);
-                break;
-            }
+        if (taskTable.containsKey(taskId)) {
+            taskTable.remove(taskId);
         }
-    }
-
-    /**
-     * 获取当前实例
-     */
-    public TaskInstance getTaskInstance(String taskId) {
-        for (TaskInstance taskInstance : taskQueue) {
-            if (taskInstance.getTaskId().equals(taskId)) {
-                return taskInstance;
-            }
-        }
-        return null;
     }
 
 
@@ -489,25 +468,21 @@ public class IMFileManager extends IMBaseManager {
      */
     public void checkUndone() {
         if (!isTransmit()) {
-            if (taskQueue != null && taskQueue.size() > 0) {
-                TaskInstance task = taskQueue.pop();
-                task.resume();
+            long createTime = 0;
+            TaskInstance taskInstance = null;
+            for (Map.Entry entry : taskTable.entrySet()) {
+                TaskInstance val = (TaskInstance) entry.getValue();
+                if ((createTime == 0 || createTime > val.getCreateTime()) && !StringUtils.isEmpty(val.getTaskId())) {
+                    createTime = val.getCreateTime();
+                    taskInstance = val;
+                }
+            }
+            if (taskInstance != null) {
+                taskInstance.transmit();
             }
         }
     }
 
-
-    /**
-     * 是否包含任务
-     */
-    public boolean containsTask(String taskId) {
-        for (TaskInstance taskInstance : taskQueue) {
-            if (taskInstance.getTaskId().equals(taskId)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * 通知界面
@@ -517,8 +492,9 @@ public class IMFileManager extends IMBaseManager {
     }
 
     public boolean isTransmit() {
-        for (TaskInstance taskInstance : taskQueue) {
-            if (taskInstance.isTransmit()) {
+        for (Map.Entry entry : taskTable.entrySet()) {
+            TaskInstance val = (TaskInstance) entry.getValue();
+            if (val.isTransmit()) {
                 return true;
             }
         }
@@ -533,15 +509,12 @@ public class IMFileManager extends IMBaseManager {
         return cacheFile.delete();
     }
 
-    @Subscribe
-    public void onEvent(IMFileEvent event) {
-        long threadId = Thread.currentThread().getId();
-        System.out.println("****onEventThreadId:"+threadId);
-        switch (event.getEventType()) {
-            case COMPLETE:
-                removeTask(event.getTaskId());
-                checkUndone();
-                break;
+    /**
+     * 添加任务
+     */
+    private void putTask(TaskInstance taskInstance) {
+        if (!taskTable.containsKey(taskInstance.getTaskId())) {
+            taskTable.put(taskInstance.getTaskId(), taskInstance);
         }
     }
 

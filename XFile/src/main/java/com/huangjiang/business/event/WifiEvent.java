@@ -3,7 +3,8 @@ package com.huangjiang.business.event;
 /**
  * 连接事件
  */
-public class WIFIEvent {
+public class WifiEvent {
+
     private boolean isConnected;
 
     public boolean isConnected() {

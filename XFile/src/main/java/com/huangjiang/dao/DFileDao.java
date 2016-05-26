@@ -71,7 +71,7 @@ public class DFileDao extends BaseDao<DFile, Long> {
                 "\"FULL_NAME\" TEXT," + // 8: fullName
                 "\"FROM\" TEXT," + // 9: from
                 "\"PERCENT\" INTEGER," + // 10: percent
-                "\"STATUS\" INTEGER NOT NULL,"+ // 11: status
+                "\"STATUS\" INTEGER NOT NULL," + // 11: status
                 "\"SAVE_PATH\" TEXT);"); // 12: savePath
     }
 
@@ -244,6 +244,20 @@ public class DFileDao extends BaseDao<DFile, Long> {
         String where = String.format("%s='%s'", Properties.TaskId.columnName, dFile.getTaskId());
         return update(TABLENAME, values, where, null) > 0;
 
+    }
+
+    /**
+     * @param taskId   任务编号
+     * @param position 传送位置
+     * @param state    0传输中,1完成,2错误
+     * @return
+     */
+    public boolean completeTransmit(String taskId, long position, int state) {
+        ContentValues values = new ContentValues();
+        values.put(Properties.Position.columnName, position);
+        values.put(Properties.Status.columnName, state);
+        String where = String.format("%s='%s'", Properties.TaskId.columnName, taskId);
+        return update(TABLENAME, values, where, null) > 0;
     }
 
     public DFile getDFileByTaskId(String taskId) {
