@@ -137,7 +137,13 @@ public class TaskInstance {
                 triggerEvent(reqTFile);
                 fileDao.completeTransmit(reqFile.getTaskId(), reqFile.getPosition(), 1);
                 transferDetailDao.addTotalSize(reqFile.getLength());
-                IMFileManager.getInstance().removeTask(getTaskId());
+                ThreadPoolManager.getInstance(TaskInstance.class.getName()).startTaskThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        IMFileManager.getInstance().removeTask(getTaskId());
+                        IMFileManager.getInstance().checkUndone();
+                    }
+                });
                 return;
             }
             // 继续传输未完成任务
@@ -168,6 +174,7 @@ public class TaskInstance {
                         XFileProtocol.File rspFile = XFileProtocol.File.parseFrom(rsp);
                         TFileInfo rspTFile = XFileUtils.buildTFile(rspFile);
                         rspTFile.setIsSend(true);
+                        cancelTimeout();
                         fileDao.completeTransmit(rspFile.getTaskId(), rspFile.getPosition(), 0);
                         rspTFile.setFileEvent(FileEvent.SET_FILE);
                         readIndex = rspFile.getPosition();
@@ -186,6 +193,13 @@ public class TaskInstance {
                             readPercent = 0;
                             isCancel = true;
                             isTransmit = false;
+                            ThreadPoolManager.getInstance(TaskInstance.class.getName()).startTaskThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    IMFileManager.getInstance().removeTask(getTaskId());
+                                    IMFileManager.getInstance().checkUndone();
+                                }
+                            });
                         }
 
                         if (!isCancel) {
@@ -263,7 +277,7 @@ public class TaskInstance {
                 responseFile.setFrom(Build.MODEL);
                 responseFile.setIsSend(false);
                 final TFileInfo rspTFile = XFileUtils.buildTFile(responseFile.build());
-
+                rspTFile.setPath(currentTask.getPath());
                 Packetlistener packetlistener = new Packetlistener() {
                     @Override
                     public void onSuccess(short service, Object response) {
@@ -318,7 +332,6 @@ public class TaskInstance {
                         @Override
                         public void run() {
                             IMFileManager.getInstance().removeTask(getTaskId());
-                            IMFileManager.getInstance().checkUndone();
                         }
                     });
                 }
@@ -332,6 +345,12 @@ public class TaskInstance {
                     writePercent = 0;
                     writeIndex = 0;
                     triggerEvent(rspTFile);
+                    ThreadPoolManager.getInstance(TaskInstance.class.getName()).startTaskThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            IMFileManager.getInstance().removeTask(getTaskId());
+                        }
+                    });
                 } else {
                     sid = SysConstant.SERVICE_FILE_SET_SUCCESS;
                 }
@@ -451,7 +470,5 @@ public class TaskInstance {
         return createTime;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
+
 }

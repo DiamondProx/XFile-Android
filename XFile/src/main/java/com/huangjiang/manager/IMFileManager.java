@@ -202,7 +202,7 @@ public class IMFileManager extends IMBaseManager {
                 // 保存数据库
                 DFile dbFile = XFileUtils.buildDFile(reqTFile);
                 // 本地保存文件路径-临时文件
-                dbFile.setSavePath(saveFile.getAbsolutePath());
+                dbFile.setPath(saveFile.getAbsolutePath());
                 fileDao.insert(dbFile);
             }
 
@@ -254,10 +254,17 @@ public class IMFileManager extends IMBaseManager {
                 try {
                     checkFile.setFileEvent(FileEvent.CHECK_TASK_SUCCESS);
                     triggerEvent(checkFile);
-                    // 加入任务列表
-                    TaskInstance taskInstance = new TaskInstance();
-                    taskInstance.setCurrentTask(checkFile);
-                    putTask(taskInstance);
+
+                    TaskInstance taskInstance = taskTable.get(checkFile.getTaskId());
+                    if (taskInstance == null) {
+                        taskInstance = new TaskInstance();
+                        taskInstance.setCurrentTask(checkFile);
+                        DFile dbFile = fileDao.getDFileByTaskId(checkFile.getTaskId());
+                        if (dbFile != null) {
+                            checkFile.setPath(dbFile.getPath());
+                        }
+                        putTask(taskInstance);
+                    }
                     if (!isTransmit()) {
                         taskInstance.transmit();
                     } else {
@@ -304,25 +311,27 @@ public class IMFileManager extends IMBaseManager {
             TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
             short sid;
             short cid = SysConstant.CMD_TASK_CHECK_RSP;
-
+            DFile dbFile = fileDao.getDFileByTaskId(reqFile.getTaskId());
             // 判断本地是否有这个taskId,找不到这个taskId返回失败信息,停止传送/续传
-            if (fileDao.getDFileByTaskId(reqFile.getTaskId()) != null) {
-                DFile dbCheckFile = fileDao.getDFileByTaskId(reqFile.getTaskId());
-                reqTFile.setPath(dbCheckFile.getSavePath());
+            if (dbFile != null) {
+                reqTFile.setPath(dbFile.getPath());
                 reqTFile.setFileEvent(FileEvent.CHECK_TASK_SUCCESS);
                 reqTFile.setIsSend(!reqTFile.isSend());
                 triggerEvent(reqTFile);
-                // 加入任务列表
-                TaskInstance taskInstance = new TaskInstance();
-                taskInstance.setCurrentTask(reqTFile);
-                triggerEvent(reqTFile);
-                putTask(taskInstance);
+
+                TaskInstance taskInstance = taskTable.get(reqTFile.getTaskId());
+                if (taskInstance == null) {
+                    taskInstance = new TaskInstance();
+                    taskInstance.setCurrentTask(reqTFile);
+                    putTask(taskInstance);
+                }
                 if (!isTransmit()) {
                     taskInstance.waitReceive();
                 } else {
-                    // 正在传送,等待
                     reqTFile.setFileEvent(FileEvent.WAITING);
+                    triggerEvent(reqTFile);
                 }
+
                 sid = SysConstant.SERVICE_TASK_CHECK_SUCCESS;
             } else {
                 sid = SysConstant.SERVICE_TASK_CHECK_FAILED;
@@ -363,21 +372,20 @@ public class IMFileManager extends IMBaseManager {
      * 继续接收数据/短点续传
      */
     public void resumeReceive(TFileInfo tFileInfo) {
-        TaskInstance taskInstance;
-        if (!taskTable.containsKey(tFileInfo.getTaskId())) {
-            taskInstance = new TaskInstance();
-            taskInstance.setCurrentTask(tFileInfo);
-            putTask(taskInstance);
+        TaskInstance taskInstance = taskTable.get(tFileInfo.getTaskId());
+        if (taskInstance != null) {
+            if (!isTransmit()) {
+                // 校验成功
+                taskInstance.transmit();
+            } else {
+                // 等待发送
+                tFileInfo.setFileEvent(FileEvent.WAITING);
+                triggerEvent(tFileInfo);
+            }
         } else {
-            taskInstance = taskTable.get(tFileInfo.getTaskId());
+            // 尚未校验
+            checkTask(tFileInfo);
         }
-        if (!isTransmit()) {
-            taskInstance.transmit();
-        } else {
-            tFileInfo.setFileEvent(FileEvent.WAITING);
-            triggerEvent(tFileInfo);
-        }
-
     }
 
     /**
@@ -396,7 +404,6 @@ public class IMFileManager extends IMBaseManager {
      */
     private void dispatchResume(byte[] bodyData) {
         try {
-
             final XFileProtocol.File requestFile = XFileProtocol.File.parseFrom(bodyData);
             TaskInstance taskInstance = taskTable.get(requestFile.getTaskId());
             if (taskInstance != null) {
@@ -505,7 +512,7 @@ public class IMFileManager extends IMBaseManager {
      * 删除本地缓存文件
      */
     public boolean delCacheFile(DFile dFile) {
-        File cacheFile = new File(dFile.getSavePath());
+        File cacheFile = new File(dFile.getPath());
         return cacheFile.delete();
     }
 
