@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
@@ -15,21 +13,13 @@ import android.view.WindowManager;
 import com.huangjiang.XFileApp;
 import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.dao.DFile;
 import com.huangjiang.message.protocol.XFileProtocol;
 import com.huangjiang.xfile.R;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -108,26 +98,6 @@ public class XFileUtils {
         return sizeStr;
     }
 
-    /**
-     * 获取视频的缩略图 先通过ThumbnailUtils来创建一个视频的缩略图，然后再利用ThumbnailUtils来生成指定大小的缩略图。
-     * 如果想要的缩略图的宽和高都小于MICRO_KIND，则类型要使用MICRO_KIND作为kind的值，这样会节省内存。
-     *
-     * @param videoPath 视频的路径
-     * @param width     指定输出视频缩略图的宽度
-     * @param height    指定输出视频缩略图的高度度
-     * @param kind      参照MediaStore.Images.Thumbnails类中的常量MINI_KIND和MICRO_KIND。
-     *                  其中，MINI_KIND: 512 x 384，MICRO_KIND: 96 x 96
-     * @return 指定大小的视频缩略图
-     */
-    public static Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
-        Bitmap bitmap;
-        // 获取视频的缩略图
-        bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
-        System.out.println("w" + bitmap.getWidth());
-        System.out.println("h" + bitmap.getHeight());
-        bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-        return bitmap;
-    }
 
     /*
      * 获取外置存储卡路径
@@ -231,29 +201,6 @@ public class XFileUtils {
         return dm.widthPixels;
     }
 
-    /**
-     * 获取文件MD5值
-     */
-    public static String getMD5(File file) throws FileNotFoundException {
-        String value = null;
-        FileInputStream in = new FileInputStream(file);
-        try {
-            MappedByteBuffer byteBuffer = in.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length());
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            md5.update(byteBuffer);
-            BigInteger bi = new BigInteger(1, md5.digest());
-            value = bi.toString(16);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return value;
-    }
 
     /**
      * 读取设备号
@@ -310,82 +257,34 @@ public class XFileUtils {
         return fileType;
     }
 
-    public static XFileProtocol.File buildSFile(TFileInfo fileInfo) {
-        XFileProtocol.File.Builder sendFile = XFileProtocol.File.newBuilder();
-        sendFile.setName(fileInfo.getName());
-        sendFile.setPosition(fileInfo.getPosition());
-        sendFile.setLength(fileInfo.getLength());
-        sendFile.setPath(fileInfo.getPath());
-        sendFile.setExtension(fileInfo.getExtension());
-        sendFile.setFullName(fileInfo.getFullName());
-        sendFile.setTaskId(fileInfo.getTaskId());
-        sendFile.setIsSend(fileInfo.isSend());
-        sendFile.setFrom(fileInfo.getFrom());
-        return sendFile.build();
+    public static XFileProtocol.File parseProtocol(TFileInfo TFile) {
+        XFileProtocol.File.Builder protocol = XFileProtocol.File.newBuilder();
+        protocol.setName(TFile.getName());
+        protocol.setPosition(TFile.getPosition());
+        protocol.setLength(TFile.getLength());
+        protocol.setPath(TFile.getPath());
+        protocol.setExtension(TFile.getExtension());
+        protocol.setFullName(TFile.getFullName());
+        protocol.setTaskId(TFile.getTaskId());
+        protocol.setIsSend(TFile.isSend());
+        protocol.setFrom(TFile.getFrom());
+        return protocol.build();
     }
 
-    public static TFileInfo buildTFile(XFileProtocol.File fileInfo) {
-        TFileInfo tFile = new TFileInfo();
-        tFile.setName(fileInfo.getName());
-        tFile.setPosition(fileInfo.getPosition());
-        tFile.setLength(fileInfo.getLength());
-        tFile.setPath(fileInfo.getPath());
-        tFile.setExtension(fileInfo.getExtension());
-        tFile.setFullName(fileInfo.getFullName());
-        tFile.setTaskId(fileInfo.getTaskId());
-        tFile.setFrom(fileInfo.getFrom());
-        tFile.setIsSend(fileInfo.getIsSend());
-        return tFile;
+    public static TFileInfo parseTFile(XFileProtocol.File protocol) {
+        TFileInfo TFile = new TFileInfo();
+        TFile.setName(protocol.getName());
+        TFile.setPosition(protocol.getPosition());
+        TFile.setLength(protocol.getLength());
+        TFile.setPath(protocol.getPath());
+        TFile.setExtension(protocol.getExtension());
+        TFile.setFullName(protocol.getFullName());
+        TFile.setTaskId(protocol.getTaskId());
+        TFile.setFrom(protocol.getFrom());
+        TFile.setIsSend(protocol.getIsSend());
+        return TFile;
     }
 
-    public static XFileProtocol.File buildSFile(DFile dFile){
-        XFileProtocol.File.Builder sendFile = XFileProtocol.File.newBuilder();
-        sendFile.setName(dFile.getName());
-        sendFile.setPosition(dFile.getPosition());
-        sendFile.setLength(dFile.getLength());
-        sendFile.setPath(dFile.getPath());
-        sendFile.setExtension(dFile.getExtension());
-        sendFile.setFullName(dFile.getFullName());
-        sendFile.setTaskId(dFile.getTaskId());
-        sendFile.setIsSend(dFile.getIsSend());
-        sendFile.setFrom(dFile.getFrom());
-        return sendFile.build();
-    }
-
-    public static DFile buildDFile(TFileInfo tFileInfo) {
-        DFile dFile = new DFile();
-        dFile.setName(tFileInfo.getName());
-        dFile.setTaskId(tFileInfo.getTaskId());
-        dFile.setLength(tFileInfo.getLength());
-        dFile.setPosition(tFileInfo.getPosition());
-        dFile.setPath(tFileInfo.getPath());
-        dFile.setIsSend(tFileInfo.isSend());
-        dFile.setExtension(tFileInfo.getExtension());
-        dFile.setFullName(tFileInfo.getFullName());
-        dFile.setFrom(tFileInfo.getFrom());
-        dFile.setPercent(0l);
-        switch (tFileInfo.getFileEvent()) {
-            case CREATE_FILE_SUCCESS:
-            case CHECK_TASK_SUCCESS:
-            case SET_FILE:
-            case SET_FILE_STOP:
-            case WAITING:
-                // 正在传送
-                dFile.setStatus(0);
-                break;
-            case SET_FILE_SUCCESS:
-                // 传输完成
-                dFile.setStatus(1);
-                break;
-            case CREATE_FILE_FAILED:
-            case CHECK_TASK_FAILED:
-            case SET_FILE_FAILED:
-                // 传输失败
-                dFile.setStatus(2);
-                break;
-        }
-        return dFile;
-    }
 
     /**
      * 获取当前程序安装路径
@@ -434,6 +333,36 @@ public class XFileUtils {
         return allBlocks * blockSize; //单位Byte
         //return (allBlocks * blockSize)/1024; //单位KB
         //return (allBlocks * blockSize)/1024/1024; //单位MB
+    }
+
+    /**
+     * 缓存文件重命名
+     */
+    public static String rename(String filePath, String extension) {
+        File originalFile = new File(filePath);
+        String fileName = originalFile.getName();
+        String prePath;
+        if (!originalFile.getParentFile().toString().equals(File.separator)) {
+            if (!originalFile.getParentFile().exists()) {
+                if (!originalFile.getParentFile().mkdirs())
+                    return "";
+            }
+            prePath = originalFile.getParentFile().getPath();
+        } else {
+            prePath = File.separator;
+        }
+        File reSaveFile = new File(prePath + File.separator + fileName + extension);
+        int i = 0;
+        while (reSaveFile.exists()) {
+            i++;
+            reSaveFile = new File(prePath + File.separator + fileName + "-" + i + extension);
+        }
+        if (!reSaveFile.exists()) {
+            if (!originalFile.renameTo(reSaveFile)) {
+                return "";
+            }
+        }
+        return reSaveFile.getAbsolutePath();
     }
 
 

@@ -4,19 +4,19 @@ package com.huangjiang.dao;
 /**
  * Entity mapped to table "DTRANSFER_DETAIL".
  */
-public class DTransferDetail {
+public class TransferDetail {
 
     private Long id;
     private Long totalSize;
 
-    public DTransferDetail() {
+    public TransferDetail() {
     }
 
-    public DTransferDetail(Long id) {
+    public TransferDetail(Long id) {
         this.id = id;
     }
 
-    public DTransferDetail(Long id, Long totalSize) {
+    public TransferDetail(Long id, Long totalSize) {
         this.id = id;
         this.totalSize = totalSize;
     }

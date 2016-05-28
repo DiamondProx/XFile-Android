@@ -14,14 +14,14 @@ message Echo {
   required string device_id = 5;
 }
 message File{
-  required string name = 1;
-  optional bytes data = 2;
-  required int64 position = 3;
-  required int64 length = 4;
-  required string path = 5;
-  required string extension = 6;
-  required string full_name = 7;
-  required string task_id = 8;
+  required string task_id = 1;
+  optional string name = 2;
+  optional bytes data = 3;
+  optional int64 position = 4;
+  optional int64 length = 5;
+  optional string path = 6;
+  optional string extension = 7;
+  optional string full_name = 8;
   optional string from = 9;
   optional bool is_send = 10;
 }

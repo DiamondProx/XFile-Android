@@ -4,11 +4,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
-import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.internal.DaoConfig;
-
-import com.huangjiang.dao.DTransferDetail;
 
 import java.util.List;
 
@@ -17,12 +14,12 @@ import java.util.List;
 /**
  * DAO for table "DTRANSFER_DETAIL".
  */
-public class DTransferDetailDao extends BaseDao<DTransferDetail, Long> {
+public class TransferDetailDao extends BaseDao<TransferDetail, Long> {
 
     public static final String TABLENAME = "DTRANSFER_DETAIL";
 
     /**
-     * Properties of entity DTransferDetail.<br/>
+     * Properties of entity TransferDetail.<br/>
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
@@ -33,11 +30,11 @@ public class DTransferDetailDao extends BaseDao<DTransferDetail, Long> {
     ;
 
 
-    public DTransferDetailDao(DaoConfig config) {
+    public TransferDetailDao(DaoConfig config) {
         super(config);
     }
 
-    public DTransferDetailDao(DaoConfig config, DaoSession daoSession) {
+    public TransferDetailDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
     }
 
@@ -63,7 +60,7 @@ public class DTransferDetailDao extends BaseDao<DTransferDetail, Long> {
      * @inheritdoc
      */
     @Override
-    protected void bindValues(SQLiteStatement stmt, DTransferDetail entity) {
+    protected void bindValues(SQLiteStatement stmt, TransferDetail entity) {
         stmt.clearBindings();
 
         Long id = entity.getId();
@@ -89,8 +86,8 @@ public class DTransferDetailDao extends BaseDao<DTransferDetail, Long> {
      * @inheritdoc
      */
     @Override
-    public DTransferDetail readEntity(Cursor cursor, int offset) {
-        DTransferDetail entity = new DTransferDetail( //
+    public TransferDetail readEntity(Cursor cursor, int offset) {
+        TransferDetail entity = new TransferDetail( //
                 cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
                 cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1) // totalSize
         );
@@ -101,7 +98,7 @@ public class DTransferDetailDao extends BaseDao<DTransferDetail, Long> {
      * @inheritdoc
      */
     @Override
-    public void readEntity(Cursor cursor, DTransferDetail entity, int offset) {
+    public void readEntity(Cursor cursor, TransferDetail entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setTotalSize(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
     }
@@ -110,7 +107,7 @@ public class DTransferDetailDao extends BaseDao<DTransferDetail, Long> {
      * @inheritdoc
      */
     @Override
-    protected Long updateKeyAfterInsert(DTransferDetail entity, long rowId) {
+    protected Long updateKeyAfterInsert(TransferDetail entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
@@ -119,7 +116,7 @@ public class DTransferDetailDao extends BaseDao<DTransferDetail, Long> {
      * @inheritdoc
      */
     @Override
-    public Long getKey(DTransferDetail entity) {
+    public Long getKey(TransferDetail entity) {
         if (entity != null) {
             return entity.getId();
         } else {
@@ -139,13 +136,13 @@ public class DTransferDetailDao extends BaseDao<DTransferDetail, Long> {
      * 添加累计传输文件大小
      */
     public void addTotalSize(long size) {
-        List<DTransferDetail> list = queryBuilder().list();
+        List<TransferDetail> list = queryBuilder().list();
         if (list != null && list.size() > 0) {
-            DTransferDetail dTransferDetail = list.get(0);
+            TransferDetail dTransferDetail = list.get(0);
             dTransferDetail.setTotalSize(dTransferDetail.getTotalSize() + size);
             update(dTransferDetail);
         } else {
-            DTransferDetail dTransferDetail = new DTransferDetail();
+            TransferDetail dTransferDetail = new TransferDetail();
             dTransferDetail.setTotalSize(size);
             insert(dTransferDetail);
         }

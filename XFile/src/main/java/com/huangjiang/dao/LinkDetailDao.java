@@ -4,11 +4,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
-import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.internal.DaoConfig;
-
-import com.huangjiang.dao.DLinkDetail;
 
 import java.util.List;
 
@@ -17,12 +14,12 @@ import java.util.List;
 /**
  * DAO for table "DLINK_DETAIL".
  */
-public class DLinkDetailDao extends BaseDao<DLinkDetail, Long> {
+public class LinkDetailDao extends BaseDao<LinkDetail, Long> {
 
     public static final String TABLENAME = "DLINK_DETAIL";
 
     /**
-     * Properties of entity DLinkDetail.<br/>
+     * Properties of entity LinkDetail.<br/>
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
@@ -34,11 +31,11 @@ public class DLinkDetailDao extends BaseDao<DLinkDetail, Long> {
     ;
 
 
-    public DLinkDetailDao(DaoConfig config) {
+    public LinkDetailDao(DaoConfig config) {
         super(config);
     }
 
-    public DLinkDetailDao(DaoConfig config, DaoSession daoSession) {
+    public LinkDetailDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
     }
 
@@ -65,7 +62,7 @@ public class DLinkDetailDao extends BaseDao<DLinkDetail, Long> {
      * @inheritdoc
      */
     @Override
-    protected void bindValues(SQLiteStatement stmt, DLinkDetail entity) {
+    protected void bindValues(SQLiteStatement stmt, LinkDetail entity) {
         stmt.clearBindings();
 
         Long id = entity.getId();
@@ -96,8 +93,8 @@ public class DLinkDetailDao extends BaseDao<DLinkDetail, Long> {
      * @inheritdoc
      */
     @Override
-    public DLinkDetail readEntity(Cursor cursor, int offset) {
-        DLinkDetail entity = new DLinkDetail( //
+    public LinkDetail readEntity(Cursor cursor, int offset) {
+        LinkDetail entity = new LinkDetail( //
                 cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
                 cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // deviceId
                 cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2) // count
@@ -109,7 +106,7 @@ public class DLinkDetailDao extends BaseDao<DLinkDetail, Long> {
      * @inheritdoc
      */
     @Override
-    public void readEntity(Cursor cursor, DLinkDetail entity, int offset) {
+    public void readEntity(Cursor cursor, LinkDetail entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setDeviceId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setCount(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
@@ -119,7 +116,7 @@ public class DLinkDetailDao extends BaseDao<DLinkDetail, Long> {
      * @inheritdoc
      */
     @Override
-    protected Long updateKeyAfterInsert(DLinkDetail entity, long rowId) {
+    protected Long updateKeyAfterInsert(LinkDetail entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
@@ -128,7 +125,7 @@ public class DLinkDetailDao extends BaseDao<DLinkDetail, Long> {
      * @inheritdoc
      */
     @Override
-    public Long getKey(DLinkDetail entity) {
+    public Long getKey(LinkDetail entity) {
         if (entity != null) {
             return entity.getId();
         } else {
@@ -148,13 +145,13 @@ public class DLinkDetailDao extends BaseDao<DLinkDetail, Long> {
      * 累计一次连接
      */
     public void addCount(String deviceId) {
-        List<DLinkDetail> list = queryBuilder().where(Properties.DeviceId.eq(deviceId)).list();
+        List<LinkDetail> list = queryBuilder().where(Properties.DeviceId.eq(deviceId)).list();
         if (list != null && list.size() > 0) {
-            DLinkDetail dLinkDetail = list.get(0);
+            LinkDetail dLinkDetail = list.get(0);
             dLinkDetail.setCount(dLinkDetail.getCount() + 1);
             update(dLinkDetail);
         } else {
-            DLinkDetail dLinkDetail = new DLinkDetail();
+            LinkDetail dLinkDetail = new LinkDetail();
             dLinkDetail.setDeviceId(deviceId);
             dLinkDetail.setCount(1);
             insert(dLinkDetail);

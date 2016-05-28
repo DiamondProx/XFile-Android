@@ -1734,101 +1734,101 @@ public final class XFileProtocol {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required string name = 1;</code>
+     * <code>required string task_id = 1;</code>
+     */
+    boolean hasTaskId();
+    /**
+     * <code>required string task_id = 1;</code>
+     */
+    String getTaskId();
+    /**
+     * <code>required string task_id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getTaskIdBytes();
+
+    /**
+     * <code>optional string name = 2;</code>
      */
     boolean hasName();
     /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 2;</code>
      */
     String getName();
     /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 2;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>optional bytes data = 2;</code>
+     * <code>optional bytes data = 3;</code>
      */
     boolean hasData();
     /**
-     * <code>optional bytes data = 2;</code>
+     * <code>optional bytes data = 3;</code>
      */
     com.google.protobuf.ByteString getData();
 
     /**
-     * <code>required int64 position = 3;</code>
+     * <code>optional int64 position = 4;</code>
      */
     boolean hasPosition();
     /**
-     * <code>required int64 position = 3;</code>
+     * <code>optional int64 position = 4;</code>
      */
     long getPosition();
 
     /**
-     * <code>required int64 length = 4;</code>
+     * <code>optional int64 length = 5;</code>
      */
     boolean hasLength();
     /**
-     * <code>required int64 length = 4;</code>
+     * <code>optional int64 length = 5;</code>
      */
     long getLength();
 
     /**
-     * <code>required string path = 5;</code>
+     * <code>optional string path = 6;</code>
      */
     boolean hasPath();
     /**
-     * <code>required string path = 5;</code>
+     * <code>optional string path = 6;</code>
      */
     String getPath();
     /**
-     * <code>required string path = 5;</code>
+     * <code>optional string path = 6;</code>
      */
     com.google.protobuf.ByteString
         getPathBytes();
 
     /**
-     * <code>required string extension = 6;</code>
+     * <code>optional string extension = 7;</code>
      */
     boolean hasExtension();
     /**
-     * <code>required string extension = 6;</code>
+     * <code>optional string extension = 7;</code>
      */
     String getExtension();
     /**
-     * <code>required string extension = 6;</code>
+     * <code>optional string extension = 7;</code>
      */
     com.google.protobuf.ByteString
         getExtensionBytes();
 
     /**
-     * <code>required string full_name = 7;</code>
+     * <code>optional string full_name = 8;</code>
      */
     boolean hasFullName();
     /**
-     * <code>required string full_name = 7;</code>
+     * <code>optional string full_name = 8;</code>
      */
     String getFullName();
     /**
-     * <code>required string full_name = 7;</code>
+     * <code>optional string full_name = 8;</code>
      */
     com.google.protobuf.ByteString
         getFullNameBytes();
-
-    /**
-     * <code>required string task_id = 8;</code>
-     */
-    boolean hasTaskId();
-    /**
-     * <code>required string task_id = 8;</code>
-     */
-    String getTaskId();
-    /**
-     * <code>required string task_id = 8;</code>
-     */
-    com.google.protobuf.ByteString
-        getTaskIdBytes();
 
     /**
      * <code>optional string from = 9;</code>
@@ -1908,46 +1908,46 @@ public final class XFileProtocol {
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              name_ = bs;
+              taskId_ = bs;
               break;
             }
             case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              data_ = input.readBytes();
+              name_ = bs;
               break;
             }
-            case 24: {
+            case 26: {
               bitField0_ |= 0x00000004;
-              position_ = input.readInt64();
+              data_ = input.readBytes();
               break;
             }
             case 32: {
               bitField0_ |= 0x00000008;
-              length_ = input.readInt64();
+              position_ = input.readInt64();
               break;
             }
-            case 42: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+            case 40: {
               bitField0_ |= 0x00000010;
-              path_ = bs;
+              length_ = input.readInt64();
               break;
             }
             case 50: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000020;
-              extension_ = bs;
+              path_ = bs;
               break;
             }
             case 58: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000040;
-              fullName_ = bs;
+              extension_ = bs;
               break;
             }
             case 66: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000080;
-              taskId_ = bs;
+              fullName_ = bs;
               break;
             }
             case 74: {
@@ -2001,229 +2001,16 @@ public final class XFileProtocol {
     }
 
     private int bitField0_;
-    public static final int NAME_FIELD_NUMBER = 1;
-    private Object name_;
+    public static final int TASK_ID_FIELD_NUMBER = 1;
+    private Object taskId_;
     /**
-     * <code>required string name = 1;</code>
+     * <code>required string task_id = 1;</code>
      */
-    public boolean hasName() {
+    public boolean hasTaskId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required string name = 1;</code>
-     */
-    public String getName() {
-      Object ref = name_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string name = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getNameBytes() {
-      Object ref = name_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
-        name_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int DATA_FIELD_NUMBER = 2;
-    private com.google.protobuf.ByteString data_;
-    /**
-     * <code>optional bytes data = 2;</code>
-     */
-    public boolean hasData() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional bytes data = 2;</code>
-     */
-    public com.google.protobuf.ByteString getData() {
-      return data_;
-    }
-
-    public static final int POSITION_FIELD_NUMBER = 3;
-    private long position_;
-    /**
-     * <code>required int64 position = 3;</code>
-     */
-    public boolean hasPosition() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>required int64 position = 3;</code>
-     */
-    public long getPosition() {
-      return position_;
-    }
-
-    public static final int LENGTH_FIELD_NUMBER = 4;
-    private long length_;
-    /**
-     * <code>required int64 length = 4;</code>
-     */
-    public boolean hasLength() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>required int64 length = 4;</code>
-     */
-    public long getLength() {
-      return length_;
-    }
-
-    public static final int PATH_FIELD_NUMBER = 5;
-    private Object path_;
-    /**
-     * <code>required string path = 5;</code>
-     */
-    public boolean hasPath() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>required string path = 5;</code>
-     */
-    public String getPath() {
-      Object ref = path_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          path_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string path = 5;</code>
-     */
-    public com.google.protobuf.ByteString
-        getPathBytes() {
-      Object ref = path_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
-        path_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int EXTENSION_FIELD_NUMBER = 6;
-    private Object extension_;
-    /**
-     * <code>required string extension = 6;</code>
-     */
-    public boolean hasExtension() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>required string extension = 6;</code>
-     */
-    public String getExtension() {
-      Object ref = extension_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          extension_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string extension = 6;</code>
-     */
-    public com.google.protobuf.ByteString
-        getExtensionBytes() {
-      Object ref = extension_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
-        extension_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int FULL_NAME_FIELD_NUMBER = 7;
-    private Object fullName_;
-    /**
-     * <code>required string full_name = 7;</code>
-     */
-    public boolean hasFullName() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>required string full_name = 7;</code>
-     */
-    public String getFullName() {
-      Object ref = fullName_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          fullName_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string full_name = 7;</code>
-     */
-    public com.google.protobuf.ByteString
-        getFullNameBytes() {
-      Object ref = fullName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
-        fullName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int TASK_ID_FIELD_NUMBER = 8;
-    private Object taskId_;
-    /**
-     * <code>required string task_id = 8;</code>
-     */
-    public boolean hasTaskId() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>required string task_id = 8;</code>
+     * <code>required string task_id = 1;</code>
      */
     public String getTaskId() {
       Object ref = taskId_;
@@ -2240,7 +2027,7 @@ public final class XFileProtocol {
       }
     }
     /**
-     * <code>required string task_id = 8;</code>
+     * <code>required string task_id = 1;</code>
      */
     public com.google.protobuf.ByteString
         getTaskIdBytes() {
@@ -2250,6 +2037,219 @@ public final class XFileProtocol {
             com.google.protobuf.ByteString.copyFromUtf8(
                 (String) ref);
         taskId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NAME_FIELD_NUMBER = 2;
+    private Object name_;
+    /**
+     * <code>optional string name = 2;</code>
+     */
+    public boolean hasName() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string name = 2;</code>
+     */
+    public String getName() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          name_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string name = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DATA_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString data_;
+    /**
+     * <code>optional bytes data = 3;</code>
+     */
+    public boolean hasData() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional bytes data = 3;</code>
+     */
+    public com.google.protobuf.ByteString getData() {
+      return data_;
+    }
+
+    public static final int POSITION_FIELD_NUMBER = 4;
+    private long position_;
+    /**
+     * <code>optional int64 position = 4;</code>
+     */
+    public boolean hasPosition() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional int64 position = 4;</code>
+     */
+    public long getPosition() {
+      return position_;
+    }
+
+    public static final int LENGTH_FIELD_NUMBER = 5;
+    private long length_;
+    /**
+     * <code>optional int64 length = 5;</code>
+     */
+    public boolean hasLength() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional int64 length = 5;</code>
+     */
+    public long getLength() {
+      return length_;
+    }
+
+    public static final int PATH_FIELD_NUMBER = 6;
+    private Object path_;
+    /**
+     * <code>optional string path = 6;</code>
+     */
+    public boolean hasPath() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional string path = 6;</code>
+     */
+    public String getPath() {
+      Object ref = path_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          path_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string path = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPathBytes() {
+      Object ref = path_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        path_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EXTENSION_FIELD_NUMBER = 7;
+    private Object extension_;
+    /**
+     * <code>optional string extension = 7;</code>
+     */
+    public boolean hasExtension() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>optional string extension = 7;</code>
+     */
+    public String getExtension() {
+      Object ref = extension_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          extension_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string extension = 7;</code>
+     */
+    public com.google.protobuf.ByteString
+        getExtensionBytes() {
+      Object ref = extension_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        extension_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int FULL_NAME_FIELD_NUMBER = 8;
+    private Object fullName_;
+    /**
+     * <code>optional string full_name = 8;</code>
+     */
+    public boolean hasFullName() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>optional string full_name = 8;</code>
+     */
+    public String getFullName() {
+      Object ref = fullName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          fullName_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string full_name = 8;</code>
+     */
+    public com.google.protobuf.ByteString
+        getFullNameBytes() {
+      Object ref = fullName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        fullName_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -2314,6 +2314,7 @@ public final class XFileProtocol {
     }
 
     private void initFields() {
+      taskId_ = "";
       name_ = "";
       data_ = com.google.protobuf.ByteString.EMPTY;
       position_ = 0L;
@@ -2321,7 +2322,6 @@ public final class XFileProtocol {
       path_ = "";
       extension_ = "";
       fullName_ = "";
-      taskId_ = "";
       from_ = "";
       isSend_ = false;
     }
@@ -2331,30 +2331,6 @@ public final class XFileProtocol {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasName()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasPosition()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasLength()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasPath()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasExtension()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasFullName()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       if (!hasTaskId()) {
         memoizedIsInitialized = 0;
         return false;
@@ -2367,28 +2343,28 @@ public final class XFileProtocol {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getNameBytes());
+        output.writeBytes(1, getTaskIdBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, data_);
+        output.writeBytes(2, getNameBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt64(3, position_);
+        output.writeBytes(3, data_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt64(4, length_);
+        output.writeInt64(4, position_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeBytes(5, getPathBytes());
+        output.writeInt64(5, length_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBytes(6, getExtensionBytes());
+        output.writeBytes(6, getPathBytes());
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeBytes(7, getFullNameBytes());
+        output.writeBytes(7, getExtensionBytes());
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeBytes(8, getTaskIdBytes());
+        output.writeBytes(8, getFullNameBytes());
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         output.writeBytes(9, getFromBytes());
@@ -2407,35 +2383,35 @@ public final class XFileProtocol {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getNameBytes());
+          .computeBytesSize(1, getTaskIdBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, data_);
+          .computeBytesSize(2, getNameBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, position_);
+          .computeBytesSize(3, data_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, length_);
+          .computeInt64Size(4, position_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getPathBytes());
+          .computeInt64Size(5, length_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(6, getExtensionBytes());
+          .computeBytesSize(6, getPathBytes());
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(7, getFullNameBytes());
+          .computeBytesSize(7, getExtensionBytes());
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(8, getTaskIdBytes());
+          .computeBytesSize(8, getFullNameBytes());
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
@@ -2562,21 +2538,21 @@ public final class XFileProtocol {
 
       public Builder clear() {
         super.clear();
-        name_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        data_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        position_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        length_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000008);
-        path_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
-        extension_ = "";
-        bitField0_ = (bitField0_ & ~0x00000020);
-        fullName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000040);
         taskId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        name_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        data_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        position_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        length_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        path_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
+        extension_ = "";
+        bitField0_ = (bitField0_ & ~0x00000040);
+        fullName_ = "";
         bitField0_ = (bitField0_ & ~0x00000080);
         from_ = "";
         bitField0_ = (bitField0_ & ~0x00000100);
@@ -2613,35 +2589,35 @@ public final class XFileProtocol {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.name_ = name_;
+        result.taskId_ = taskId_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.data_ = data_;
+        result.name_ = name_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.position_ = position_;
+        result.data_ = data_;
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.length_ = length_;
+        result.position_ = position_;
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
-        result.path_ = path_;
+        result.length_ = length_;
         if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
           to_bitField0_ |= 0x00000020;
         }
-        result.extension_ = extension_;
+        result.path_ = path_;
         if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
           to_bitField0_ |= 0x00000040;
         }
-        result.fullName_ = fullName_;
+        result.extension_ = extension_;
         if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
           to_bitField0_ |= 0x00000080;
         }
-        result.taskId_ = taskId_;
+        result.fullName_ = fullName_;
         if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
           to_bitField0_ |= 0x00000100;
         }
@@ -2666,8 +2642,13 @@ public final class XFileProtocol {
 
       public Builder mergeFrom(File other) {
         if (other == File.getDefaultInstance()) return this;
-        if (other.hasName()) {
+        if (other.hasTaskId()) {
           bitField0_ |= 0x00000001;
+          taskId_ = other.taskId_;
+          onChanged();
+        }
+        if (other.hasName()) {
+          bitField0_ |= 0x00000002;
           name_ = other.name_;
           onChanged();
         }
@@ -2681,23 +2662,18 @@ public final class XFileProtocol {
           setLength(other.getLength());
         }
         if (other.hasPath()) {
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000020;
           path_ = other.path_;
           onChanged();
         }
         if (other.hasExtension()) {
-          bitField0_ |= 0x00000020;
+          bitField0_ |= 0x00000040;
           extension_ = other.extension_;
           onChanged();
         }
         if (other.hasFullName()) {
-          bitField0_ |= 0x00000040;
-          fullName_ = other.fullName_;
-          onChanged();
-        }
-        if (other.hasTaskId()) {
           bitField0_ |= 0x00000080;
-          taskId_ = other.taskId_;
+          fullName_ = other.fullName_;
           onChanged();
         }
         if (other.hasFrom()) {
@@ -2713,30 +2689,6 @@ public final class XFileProtocol {
       }
 
       public final boolean isInitialized() {
-        if (!hasName()) {
-          
-          return false;
-        }
-        if (!hasPosition()) {
-          
-          return false;
-        }
-        if (!hasLength()) {
-          
-          return false;
-        }
-        if (!hasPath()) {
-          
-          return false;
-        }
-        if (!hasExtension()) {
-          
-          return false;
-        }
-        if (!hasFullName()) {
-          
-          return false;
-        }
         if (!hasTaskId()) {
           
           return false;
@@ -2763,418 +2715,15 @@ public final class XFileProtocol {
       }
       private int bitField0_;
 
-      private Object name_ = "";
+      private Object taskId_ = "";
       /**
-       * <code>required string name = 1;</code>
+       * <code>required string task_id = 1;</code>
        */
-      public boolean hasName() {
+      public boolean hasTaskId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required string name = 1;</code>
-       */
-      public String getName() {
-        Object ref = name_;
-        if (!(ref instanceof String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            name_ = s;
-          }
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      /**
-       * <code>required string name = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
-        Object ref = name_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
-          name_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string name = 1;</code>
-       */
-      public Builder setName(
-          String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        name_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string name = 1;</code>
-       */
-      public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        name_ = getDefaultInstance().getName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string name = 1;</code>
-       */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        name_ = value;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
-      /**
-       * <code>optional bytes data = 2;</code>
-       */
-      public boolean hasData() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional bytes data = 2;</code>
-       */
-      public com.google.protobuf.ByteString getData() {
-        return data_;
-      }
-      /**
-       * <code>optional bytes data = 2;</code>
-       */
-      public Builder setData(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        data_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bytes data = 2;</code>
-       */
-      public Builder clearData() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        data_ = getDefaultInstance().getData();
-        onChanged();
-        return this;
-      }
-
-      private long position_ ;
-      /**
-       * <code>required int64 position = 3;</code>
-       */
-      public boolean hasPosition() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required int64 position = 3;</code>
-       */
-      public long getPosition() {
-        return position_;
-      }
-      /**
-       * <code>required int64 position = 3;</code>
-       */
-      public Builder setPosition(long value) {
-        bitField0_ |= 0x00000004;
-        position_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required int64 position = 3;</code>
-       */
-      public Builder clearPosition() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        position_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private long length_ ;
-      /**
-       * <code>required int64 length = 4;</code>
-       */
-      public boolean hasLength() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>required int64 length = 4;</code>
-       */
-      public long getLength() {
-        return length_;
-      }
-      /**
-       * <code>required int64 length = 4;</code>
-       */
-      public Builder setLength(long value) {
-        bitField0_ |= 0x00000008;
-        length_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required int64 length = 4;</code>
-       */
-      public Builder clearLength() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        length_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private Object path_ = "";
-      /**
-       * <code>required string path = 5;</code>
-       */
-      public boolean hasPath() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>required string path = 5;</code>
-       */
-      public String getPath() {
-        Object ref = path_;
-        if (!(ref instanceof String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            path_ = s;
-          }
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      /**
-       * <code>required string path = 5;</code>
-       */
-      public com.google.protobuf.ByteString
-          getPathBytes() {
-        Object ref = path_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
-          path_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string path = 5;</code>
-       */
-      public Builder setPath(
-          String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
-        path_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string path = 5;</code>
-       */
-      public Builder clearPath() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        path_ = getDefaultInstance().getPath();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string path = 5;</code>
-       */
-      public Builder setPathBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
-        path_ = value;
-        onChanged();
-        return this;
-      }
-
-      private Object extension_ = "";
-      /**
-       * <code>required string extension = 6;</code>
-       */
-      public boolean hasExtension() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>required string extension = 6;</code>
-       */
-      public String getExtension() {
-        Object ref = extension_;
-        if (!(ref instanceof String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            extension_ = s;
-          }
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      /**
-       * <code>required string extension = 6;</code>
-       */
-      public com.google.protobuf.ByteString
-          getExtensionBytes() {
-        Object ref = extension_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
-          extension_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string extension = 6;</code>
-       */
-      public Builder setExtension(
-          String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
-        extension_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string extension = 6;</code>
-       */
-      public Builder clearExtension() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        extension_ = getDefaultInstance().getExtension();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string extension = 6;</code>
-       */
-      public Builder setExtensionBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
-        extension_ = value;
-        onChanged();
-        return this;
-      }
-
-      private Object fullName_ = "";
-      /**
-       * <code>required string full_name = 7;</code>
-       */
-      public boolean hasFullName() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>required string full_name = 7;</code>
-       */
-      public String getFullName() {
-        Object ref = fullName_;
-        if (!(ref instanceof String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            fullName_ = s;
-          }
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      /**
-       * <code>required string full_name = 7;</code>
-       */
-      public com.google.protobuf.ByteString
-          getFullNameBytes() {
-        Object ref = fullName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
-          fullName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string full_name = 7;</code>
-       */
-      public Builder setFullName(
-          String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000040;
-        fullName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string full_name = 7;</code>
-       */
-      public Builder clearFullName() {
-        bitField0_ = (bitField0_ & ~0x00000040);
-        fullName_ = getDefaultInstance().getFullName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string full_name = 7;</code>
-       */
-      public Builder setFullNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000040;
-        fullName_ = value;
-        onChanged();
-        return this;
-      }
-
-      private Object taskId_ = "";
-      /**
-       * <code>required string task_id = 8;</code>
-       */
-      public boolean hasTaskId() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>required string task_id = 8;</code>
+       * <code>required string task_id = 1;</code>
        */
       public String getTaskId() {
         Object ref = taskId_;
@@ -3191,7 +2740,7 @@ public final class XFileProtocol {
         }
       }
       /**
-       * <code>required string task_id = 8;</code>
+       * <code>required string task_id = 1;</code>
        */
       public com.google.protobuf.ByteString
           getTaskIdBytes() {
@@ -3207,37 +2756,440 @@ public final class XFileProtocol {
         }
       }
       /**
-       * <code>required string task_id = 8;</code>
+       * <code>required string task_id = 1;</code>
        */
       public Builder setTaskId(
           String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000080;
+  bitField0_ |= 0x00000001;
         taskId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string task_id = 8;</code>
+       * <code>required string task_id = 1;</code>
        */
       public Builder clearTaskId() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000001);
         taskId_ = getDefaultInstance().getTaskId();
         onChanged();
         return this;
       }
       /**
-       * <code>required string task_id = 8;</code>
+       * <code>required string task_id = 1;</code>
        */
       public Builder setTaskIdBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000080;
+  bitField0_ |= 0x00000001;
         taskId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private Object name_ = "";
+      /**
+       * <code>optional string name = 2;</code>
+       */
+      public boolean hasName() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string name = 2;</code>
+       */
+      public String getName() {
+        Object ref = name_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>optional string name = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string name = 2;</code>
+       */
+      public Builder setName(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string name = 2;</code>
+       */
+      public Builder clearName() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string name = 2;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes data = 3;</code>
+       */
+      public boolean hasData() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional bytes data = 3;</code>
+       */
+      public com.google.protobuf.ByteString getData() {
+        return data_;
+      }
+      /**
+       * <code>optional bytes data = 3;</code>
+       */
+      public Builder setData(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        data_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bytes data = 3;</code>
+       */
+      public Builder clearData() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+
+      private long position_ ;
+      /**
+       * <code>optional int64 position = 4;</code>
+       */
+      public boolean hasPosition() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional int64 position = 4;</code>
+       */
+      public long getPosition() {
+        return position_;
+      }
+      /**
+       * <code>optional int64 position = 4;</code>
+       */
+      public Builder setPosition(long value) {
+        bitField0_ |= 0x00000008;
+        position_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 position = 4;</code>
+       */
+      public Builder clearPosition() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        position_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long length_ ;
+      /**
+       * <code>optional int64 length = 5;</code>
+       */
+      public boolean hasLength() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional int64 length = 5;</code>
+       */
+      public long getLength() {
+        return length_;
+      }
+      /**
+       * <code>optional int64 length = 5;</code>
+       */
+      public Builder setLength(long value) {
+        bitField0_ |= 0x00000010;
+        length_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 length = 5;</code>
+       */
+      public Builder clearLength() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        length_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private Object path_ = "";
+      /**
+       * <code>optional string path = 6;</code>
+       */
+      public boolean hasPath() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional string path = 6;</code>
+       */
+      public String getPath() {
+        Object ref = path_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            path_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>optional string path = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPathBytes() {
+        Object ref = path_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          path_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string path = 6;</code>
+       */
+      public Builder setPath(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        path_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string path = 6;</code>
+       */
+      public Builder clearPath() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        path_ = getDefaultInstance().getPath();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string path = 6;</code>
+       */
+      public Builder setPathBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        path_ = value;
+        onChanged();
+        return this;
+      }
+
+      private Object extension_ = "";
+      /**
+       * <code>optional string extension = 7;</code>
+       */
+      public boolean hasExtension() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>optional string extension = 7;</code>
+       */
+      public String getExtension() {
+        Object ref = extension_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            extension_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>optional string extension = 7;</code>
+       */
+      public com.google.protobuf.ByteString
+          getExtensionBytes() {
+        Object ref = extension_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          extension_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string extension = 7;</code>
+       */
+      public Builder setExtension(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000040;
+        extension_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string extension = 7;</code>
+       */
+      public Builder clearExtension() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        extension_ = getDefaultInstance().getExtension();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string extension = 7;</code>
+       */
+      public Builder setExtensionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000040;
+        extension_ = value;
+        onChanged();
+        return this;
+      }
+
+      private Object fullName_ = "";
+      /**
+       * <code>optional string full_name = 8;</code>
+       */
+      public boolean hasFullName() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>optional string full_name = 8;</code>
+       */
+      public String getFullName() {
+        Object ref = fullName_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            fullName_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>optional string full_name = 8;</code>
+       */
+      public com.google.protobuf.ByteString
+          getFullNameBytes() {
+        Object ref = fullName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          fullName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string full_name = 8;</code>
+       */
+      public Builder setFullName(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000080;
+        fullName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string full_name = 8;</code>
+       */
+      public Builder clearFullName() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        fullName_ = getDefaultInstance().getFullName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string full_name = 8;</code>
+       */
+      public Builder setFullNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000080;
+        fullName_ = value;
         onChanged();
         return this;
       }
@@ -5167,10 +5119,10 @@ public final class XFileProtocol {
       "\004port\030\002 \002(\r\022\021\n\tdevice_id\030\003 \002(\t\"\\\n\004Echo\022\n" +
       "\n\002ip\030\001 \002(\t\022\014\n\004name\030\002 \002(\t\022\024\n\014message_port" +
       "\030\003 \002(\r\022\021\n\tfile_port\030\004 \002(\r\022\021\n\tdevice_id\030\005" +
-      " \002(\t\"\250\001\n\004File\022\014\n\004name\030\001 \002(\t\022\014\n\004data\030\002 \001(" +
-      "\014\022\020\n\010position\030\003 \002(\003\022\016\n\006length\030\004 \002(\003\022\014\n\004p" +
-      "ath\030\005 \002(\t\022\021\n\textension\030\006 \002(\t\022\021\n\tfull_nam" +
-      "e\030\007 \002(\t\022\017\n\007task_id\030\010 \002(\t\022\014\n\004from\030\t \001(\t\022\017" +
+      " \002(\t\"\250\001\n\004File\022\017\n\007task_id\030\001 \002(\t\022\014\n\004name\030\002" +
+      " \001(\t\022\014\n\004data\030\003 \001(\014\022\020\n\010position\030\004 \001(\003\022\016\n\006" +
+      "length\030\005 \001(\003\022\014\n\004path\030\006 \001(\t\022\021\n\textension\030" +
+      "\007 \001(\t\022\021\n\tfull_name\030\010 \001(\t\022\014\n\004from\030\t \001(\t\022\017" +
       "\n\007is_send\030\n \001(\010\";\n\004Chat\022\017\n\007content\030\001 \002(\t",
       "\022\024\n\014message_type\030\002 \002(\r\022\014\n\004from\030\003 \002(\t\"v\n\t" +
       "ShakeHand\022\014\n\004step\030\001 \002(\r\022\025\n\006verify\030\002 \001(\010:" +
@@ -5206,7 +5158,7 @@ public final class XFileProtocol {
     internal_static_com_huangjiang_message_protocol_File_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_huangjiang_message_protocol_File_descriptor,
-        new String[] { "Name", "Data", "Position", "Length", "Path", "Extension", "FullName", "TaskId", "From", "IsSend", });
+        new String[] { "TaskId", "Name", "Data", "Position", "Length", "Path", "Extension", "FullName", "From", "IsSend", });
     internal_static_com_huangjiang_message_protocol_Chat_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_com_huangjiang_message_protocol_Chat_fieldAccessorTable = new

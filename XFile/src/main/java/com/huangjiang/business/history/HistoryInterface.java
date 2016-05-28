@@ -3,12 +3,10 @@ package com.huangjiang.business.history;
 import android.content.Context;
 
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.dao.DFile;
-import com.huangjiang.dao.DFileDao;
+import com.huangjiang.dao.TFileDao;
 import com.huangjiang.dao.DaoMaster;
 import com.huangjiang.utils.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,14 +17,14 @@ public class HistoryInterface {
     private Logger logger = Logger.getLogger(HistoryInterface.class);
 
     private Context mContext;
-    private DFileDao dFileDao;
+    private TFileDao dFileDao;
 
     public HistoryInterface(Context context) {
         this.mContext = context;
-        dFileDao = DaoMaster.getInstance().newSession().getDFileDao();
+        dFileDao = DaoMaster.getInstance().newSession().getFileDao();
     }
 
-    public List<DFile> getHistory() {
-        return dFileDao.queryBuilder().orderDesc(DFileDao.Properties.Id).list();
+    public List<TFileInfo> getHistory() {
+        return dFileDao.queryBuilder().orderDesc(TFileDao.Properties.Id).list();
     }
 }

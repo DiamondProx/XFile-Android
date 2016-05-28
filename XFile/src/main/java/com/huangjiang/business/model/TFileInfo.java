@@ -3,12 +3,18 @@ package com.huangjiang.business.model;
 import android.support.annotation.NonNull;
 
 import com.huangjiang.manager.event.FileEvent;
+import com.huangjiang.utils.XFileUtils;
 
 /**
  * 传输文件实体
  */
 public class TFileInfo implements Comparable<TFileInfo> {
 
+
+    /**
+     * 数据库编号
+     */
+    private Long id;
     /**
      * 文件名称
      */
@@ -92,6 +98,28 @@ public class TFileInfo implements Comparable<TFileInfo> {
         this.directory = directory;
         this.fileEvent = fileEvent;
         this.fileType = fileType;
+    }
+
+    public TFileInfo(Long id, String name, String taskId, Long length, Long position, String path, Boolean isSend, String extension, String fullName, String from, Integer status) {
+        this.id = id;
+        this.name = name;
+        this.taskId = taskId;
+        this.length = length;
+        this.position = position;
+        this.path = path;
+        this.isSend = isSend;
+        this.extension = extension;
+        this.fullName = fullName;
+        this.from = from;
+        setStatus(status);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -225,5 +253,41 @@ public class TFileInfo implements Comparable<TFileInfo> {
 
     public void setDirectory(boolean directory) {
         this.directory = directory;
+    }
+
+    public Integer getStatus() {
+        switch (fileEvent) {
+            case CREATE_FILE_SUCCESS:
+            case CHECK_TASK_SUCCESS:
+            case SET_FILE:
+            case SET_FILE_STOP:
+            case WAITING:
+                // 正在传送
+                return 0;
+            case SET_FILE_SUCCESS:
+                // 传输完成
+                return 1;
+            case CREATE_FILE_FAILED:
+            case CHECK_TASK_FAILED:
+            case SET_FILE_FAILED:
+                // 传输失败
+                return 2;
+            default:
+                return 0;
+        }
+    }
+
+    public void setStatus(Integer status) {
+        switch (status) {
+            case 0:
+                this.fileEvent = FileEvent.SET_FILE_STOP;
+                break;
+            case 1:
+                this.fileEvent = FileEvent.SET_FILE_SUCCESS;
+                break;
+            case 2:
+                this.fileEvent = FileEvent.SET_FILE_FAILED;
+                break;
+        }
     }
 }

@@ -13,8 +13,7 @@ import com.huangjiang.adapter.TransmitAdapter;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.business.model.TFileInfo;
-import com.huangjiang.dao.DFile;
-import com.huangjiang.dao.DFileDao;
+import com.huangjiang.dao.TFileDao;
 import com.huangjiang.dao.DaoMaster;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
@@ -31,6 +30,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
     TransmitAdapter adapter;
     ListView lv_message;
     HistoryLogic history_logic;
-    DFileDao dFileDao;
+    TFileDao dFileDao;
     public static boolean isInit = false;
 
     @Override
@@ -65,7 +65,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         list_message = new ArrayList<>();
         history_logic = new HistoryLogic(getActivity());
         history_logic.getHistory();
-        dFileDao = DaoMaster.getInstance().newSession().getDFileDao();
+        dFileDao = DaoMaster.getInstance().newSession().getFileDao();
         isInit = true;
     }
 
@@ -148,9 +148,9 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
             }
             break;
             case SET_FILE_SUCCESS: {
-                DFile dFileInfo = dFileDao.getDFileByTaskId(tFileInfo.getTaskId());
+                TFileInfo dFileInfo = dFileDao.getTFileByTaskId(tFileInfo.getTaskId());
                 // 替换保存路径
-                tFileInfo.setPath(dFileInfo.getSavePath());
+                tFileInfo.setPath(dFileInfo.getPath());
                 adapter.updateTFileInfo(tFileInfo);
                 updateTransmitState(tFileInfo);
                 Fragment fragment = getParentFragment();
@@ -190,5 +190,13 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
             return adapter.getCount();
         }
         return 0;
+    }
+
+    /**
+     * 删除本地缓存文件
+     */
+    public boolean delCacheFile(TFileInfo tFileInfo) {
+        File cacheFile = new File(tFileInfo.getPath());
+        return cacheFile.delete();
     }
 }

@@ -8,9 +8,8 @@ import com.huangjiang.business.model.LinkType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.config.Config;
 import com.huangjiang.config.SysConstant;
-import com.huangjiang.dao.DFile;
-import com.huangjiang.dao.DFileDao;
 import com.huangjiang.dao.DaoMaster;
+import com.huangjiang.dao.TFileDao;
 import com.huangjiang.manager.callback.Packetlistener;
 import com.huangjiang.manager.event.FileEvent;
 import com.huangjiang.message.base.Header;
@@ -39,7 +38,7 @@ public class IMFileManager extends IMBaseManager {
      */
     private Hashtable<String, TaskInstance> taskTable = new Hashtable<>();
 
-    private DFileDao fileDao;
+    private TFileDao fileDao;
 
     private static IMFileManager inst = null;
 
@@ -51,7 +50,7 @@ public class IMFileManager extends IMBaseManager {
     }
 
     IMFileManager() {
-        fileDao = DaoMaster.getInstance().newSession().getDFileDao();
+        fileDao = DaoMaster.getInstance().newSession().getFileDao();
     }
 
 
@@ -96,13 +95,14 @@ public class IMFileManager extends IMBaseManager {
     /**
      * 创建发送文件任务
      */
-    public void createTask(final TFileInfo createNewFile) {
+    public void createTask(final TFileInfo task) {
         short cid = SysConstant.CMD_FILE_NEW;
         short sid = SysConstant.SERVICE_DEFAULT;
+        final TFileInfo createNewFile = task.newInstance();
         createNewFile.setTaskId(XFileUtils.buildTaskId());
         createNewFile.setFrom(Build.MODEL);
         createNewFile.setIsSend(true);
-        XFileProtocol.File reqFile = XFileUtils.buildSFile(createNewFile);
+        XFileProtocol.File reqFile = XFileUtils.parseProtocol(createNewFile);
         Packetlistener packetlistener = new Packetlistener() {
             @Override
             public void onSuccess(short serviceId, Object response) {
@@ -120,11 +120,9 @@ public class IMFileManager extends IMBaseManager {
                     createNewFile.setFrom(rspFile.getFrom());
 
                     // 保存数据库,记录传输状态
-                    DFile dbFile = XFileUtils.buildDFile(createNewFile);
-                    fileDao.insert(dbFile);
+                    fileDao.insert(createNewFile);
 
                     triggerEvent(createNewFile);
-                    logger.e("****createTaskSuccess");
 
                     checkTask(createNewFile);
 
@@ -153,7 +151,7 @@ public class IMFileManager extends IMBaseManager {
         } else if (XFileApp.mLinkType == LinkType.SERVER) {
             IMServerMessageManager.getInstance().sendMessage(sid, cid, reqFile, packetlistener, (short) 0);
         }
-        logger.e("****createTaskSend");
+        logger.e("****createTask");
 
     }
 
@@ -192,33 +190,26 @@ public class IMFileManager extends IMBaseManager {
                 }
             }
 
-            TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
+            TFileInfo reqTFile = XFileUtils.parseTFile(reqFile);
             // 设置为接收文件
             reqTFile.setIsSend(false);
 
             if (createFile) {
                 // 创建成功
                 reqTFile.setFileEvent(FileEvent.CREATE_FILE_SUCCESS);
-                // 保存数据库
-                DFile dbFile = XFileUtils.buildDFile(reqTFile);
                 // 本地保存文件路径-临时文件
-                dbFile.setPath(saveFile.getAbsolutePath());
-                fileDao.insert(dbFile);
+                reqTFile.setPath(saveFile.getAbsolutePath());
+                fileDao.insert(reqTFile);
             }
 
             // 答复-本机机型
-            XFileProtocol.File.Builder rspFile = reqFile.toBuilder();
+            XFileProtocol.File.Builder rspFile = XFileProtocol.File.newBuilder();
+            rspFile.setTaskId(reqFile.getTaskId());
             rspFile.setFrom(Build.MODEL);
-            rspFile.setIsSend(false);
 
             short sid = createFile ? SysConstant.SERVICE_FILE_NEW_SUCCESS : SysConstant.SERVICE_FILE_NEW_FAILED;
             short cid = SysConstant.CMD_FILE_NEW_RSP;
 
-            if (XFileApp.mLinkType == LinkType.CLIENT) {
-                IMClientMessageManager.getInstance().sendMessage(sid, cid, rspFile.build(), header.getSeqnum());
-            } else if (XFileApp.mLinkType == LinkType.SERVER) {
-                IMServerMessageManager.getInstance().sendMessage(sid, cid, rspFile.build(), null, header.getSeqnum());
-            }
             if (createFile) {
                 if (Config.getSound()) {
                     SoundHelper.playReceiveFile();
@@ -229,19 +220,28 @@ public class IMFileManager extends IMBaseManager {
                 triggerEvent(reqTFile);
             }
 
+            if (XFileApp.mLinkType == LinkType.CLIENT) {
+                IMClientMessageManager.getInstance().sendMessage(sid, cid, rspFile.build(), header.getSeqnum());
+            } else if (XFileApp.mLinkType == LinkType.SERVER) {
+                IMServerMessageManager.getInstance().sendMessage(sid, cid, rspFile.build(), null, header.getSeqnum());
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
             logger.e(e.getMessage());
         }
+        logger.e("****dispatchCreateTask");
     }
 
     /**
      * 检查接收方任务是否存在
      */
-    public void checkTask(final TFileInfo checkFile) {
+    public void checkTask(final TFileInfo task) {
         short cid = SysConstant.CMD_TASK_CHECK;
         short sid = SysConstant.SERVICE_DEFAULT;
-        final XFileProtocol.File reqFile = XFileUtils.buildSFile(checkFile);
+        final TFileInfo checkFile = task.newInstance();
+        final XFileProtocol.File reqFile = XFileUtils.parseProtocol(checkFile);
         Packetlistener packetlistener = new Packetlistener() {
             @Override
             public void onSuccess(short serviceId, Object response) {
@@ -257,9 +257,8 @@ public class IMFileManager extends IMBaseManager {
 
                     TaskInstance taskInstance = taskTable.get(checkFile.getTaskId());
                     if (taskInstance == null) {
-                        taskInstance = new TaskInstance();
-                        taskInstance.setCurrentTask(checkFile);
-                        DFile dbFile = fileDao.getDFileByTaskId(checkFile.getTaskId());
+                        taskInstance = new TaskInstance(checkFile);
+                        TFileInfo dbFile = fileDao.getTFileByTaskId(checkFile.getTaskId());
                         if (dbFile != null) {
                             checkFile.setPath(dbFile.getPath());
                         }
@@ -299,7 +298,7 @@ public class IMFileManager extends IMBaseManager {
         } else if (XFileApp.mLinkType == LinkType.SERVER) {
             IMServerMessageManager.getInstance().sendMessage(sid, cid, reqFile, packetlistener, (short) 0);
         }
-        logger.e("****checkTaskSend");
+        logger.e("****checkTask");
     }
 
     /**
@@ -308,28 +307,24 @@ public class IMFileManager extends IMBaseManager {
     private void dispatchCheckTask(Header header, byte[] bodyData) {
         try {
             XFileProtocol.File reqFile = XFileProtocol.File.parseFrom(bodyData);
-            TFileInfo reqTFile = XFileUtils.buildTFile(reqFile);
             short sid;
             short cid = SysConstant.CMD_TASK_CHECK_RSP;
-            DFile dbFile = fileDao.getDFileByTaskId(reqFile.getTaskId());
+            TFileInfo dbFile = fileDao.getTFileByTaskId(reqFile.getTaskId());
             // 判断本地是否有这个taskId,找不到这个taskId返回失败信息,停止传送/续传
             if (dbFile != null) {
-                reqTFile.setPath(dbFile.getPath());
-                reqTFile.setFileEvent(FileEvent.CHECK_TASK_SUCCESS);
-                reqTFile.setIsSend(!reqTFile.isSend());
-                triggerEvent(reqTFile);
+                dbFile.setFileEvent(FileEvent.CHECK_TASK_SUCCESS);
+                triggerEvent(dbFile);
 
-                TaskInstance taskInstance = taskTable.get(reqTFile.getTaskId());
+                TaskInstance taskInstance = taskTable.get(dbFile.getTaskId());
                 if (taskInstance == null) {
-                    taskInstance = new TaskInstance();
-                    taskInstance.setCurrentTask(reqTFile);
+                    taskInstance = new TaskInstance(dbFile);
                     putTask(taskInstance);
                 }
                 if (!isTransmit()) {
                     taskInstance.waitReceive();
                 } else {
-                    reqTFile.setFileEvent(FileEvent.WAITING);
-                    triggerEvent(reqTFile);
+                    dbFile.setFileEvent(FileEvent.WAITING);
+                    triggerEvent(dbFile);
                 }
 
                 sid = SysConstant.SERVICE_TASK_CHECK_SUCCESS;
@@ -337,18 +332,20 @@ public class IMFileManager extends IMBaseManager {
                 sid = SysConstant.SERVICE_TASK_CHECK_FAILED;
             }
 
+            XFileProtocol.File rspFile = XFileProtocol.File.newBuilder().setTaskId(reqFile.getTaskId()).build();
             // 答复发送端创建成功
             if (XFileApp.mLinkType == LinkType.CLIENT) {
-                IMClientMessageManager.getInstance().sendMessage(sid, cid, reqFile, header.getSeqnum());
+                IMClientMessageManager.getInstance().sendMessage(sid, cid, rspFile, header.getSeqnum());
             } else if (XFileApp.mLinkType == LinkType.SERVER) {
-                IMServerMessageManager.getInstance().sendMessage(sid, cid, reqFile, null, header.getSeqnum());
+                IMServerMessageManager.getInstance().sendMessage(sid, cid, rspFile, null, header.getSeqnum());
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.e(e.getMessage());
         }
-        logger.e("****checkTaskReceive");
+        logger.e("****dispatchCheckTask");
+
     }
 
     /**
@@ -422,13 +419,13 @@ public class IMFileManager extends IMBaseManager {
         TaskInstance taskInstance = taskTable.get(tFileInfo.getTaskId());
         if (taskInstance != null) {
             taskInstance.cancel();
+            removeTask(tFileInfo.getTaskId());
         }
-        removeTask(tFileInfo.getTaskId());
         // 删除数据库记录
-        DFile dFile = fileDao.getDFileByTaskId(tFileInfo.getTaskId());
+        TFileInfo dFile = fileDao.getTFileByTaskId(tFileInfo.getTaskId());
         fileDao.deleteByTaskId(tFileInfo.getTaskId());
         // 删除缓存文件
-        if (!tFileInfo.isSend()) {
+        if (!dFile.isSend() && dFile.getStatus() != 1) {
             delCacheFile(dFile);
         }
     }
@@ -445,10 +442,10 @@ public class IMFileManager extends IMBaseManager {
                 removeTask(taskInstance.getTaskId());
             }
             // 删除数据库记录
-            DFile dFile = fileDao.getDFileByTaskId(reqFile.getTaskId());
+            TFileInfo dFile = fileDao.getTFileByTaskId(reqFile.getTaskId());
             fileDao.deleteByTaskId(reqFile.getTaskId());
             // 删除缓存文件
-            if (!reqFile.getIsSend()) {
+            if (!dFile.isSend() && dFile.getStatus() != 1) {
                 delCacheFile(dFile);
             }
             checkUndone();
@@ -511,8 +508,8 @@ public class IMFileManager extends IMBaseManager {
     /**
      * 删除本地缓存文件
      */
-    public boolean delCacheFile(DFile dFile) {
-        File cacheFile = new File(dFile.getPath());
+    public boolean delCacheFile(TFileInfo tFileInfo) {
+        File cacheFile = new File(tFileInfo.getPath());
         return cacheFile.delete();
     }
 

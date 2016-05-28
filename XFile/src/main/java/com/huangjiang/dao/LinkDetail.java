@@ -4,20 +4,20 @@ package com.huangjiang.dao;
 /**
  * Entity mapped to table "DLINK_DETAIL".
  */
-public class DLinkDetail {
+public class LinkDetail {
 
     private Long id;
     private String deviceId;
     private Integer count;
 
-    public DLinkDetail() {
+    public LinkDetail() {
     }
 
-    public DLinkDetail(Long id) {
+    public LinkDetail(Long id) {
         this.id = id;
     }
 
-    public DLinkDetail(Long id, String deviceId, int count) {
+    public LinkDetail(Long id, String deviceId, int count) {
         this.id = id;
         this.deviceId = deviceId;
         this.count = count;

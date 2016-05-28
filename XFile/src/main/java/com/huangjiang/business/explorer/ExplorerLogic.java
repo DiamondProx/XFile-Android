@@ -52,7 +52,7 @@ public class ExplorerLogic {
                 String fileName = file.getName();
                 if (!StringUtils.isEmpty(fileName) && fileName.lastIndexOf(".") > 0) {
                     int extensionIndex = fileName.lastIndexOf(".");
-                    tFileInfo.setExtension(fileName.substring(extensionIndex + 1));
+                    tFileInfo.setExtension(fileName.substring(extensionIndex));
                     tFileInfo.setName(fileName.substring(0, extensionIndex));
                 } else {
                     tFileInfo.setExtension("");

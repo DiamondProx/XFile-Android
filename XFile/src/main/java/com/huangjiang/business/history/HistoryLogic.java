@@ -6,19 +6,15 @@ import com.huangjiang.business.BaseLogic;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.event.HistoryEvent;
 import com.huangjiang.business.event.RecordEvent;
-import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.core.ThreadPoolManager;
-import com.huangjiang.dao.DFile;
-import com.huangjiang.dao.DFileDao;
-import com.huangjiang.dao.DLinkDetailDao;
-import com.huangjiang.dao.DTransferDetailDao;
+import com.huangjiang.dao.TFileDao;
+import com.huangjiang.dao.LinkDetailDao;
+import com.huangjiang.dao.TransferDetailDao;
 import com.huangjiang.dao.DaoMaster;
-import com.huangjiang.manager.event.FileEvent;
 import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.XFileUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,16 +25,16 @@ public class HistoryLogic extends BaseLogic {
     private Logger logger = Logger.getLogger(HistoryLogic.class);
     private HistoryInterface historyInterface;
     private Context context;
-    private DFileDao fileDao;
-    private DLinkDetailDao linkDetailDao;
-    private DTransferDetailDao transferDetailDao;
+    private TFileDao fileDao;
+    private LinkDetailDao linkDetailDao;
+    private TransferDetailDao transferDetailDao;
 
     public HistoryLogic(Context context) {
         historyInterface = new HistoryInterface(context);
         this.context = context;
-        this.fileDao = DaoMaster.getInstance().newSession().getDFileDao();
-        this.linkDetailDao = DaoMaster.getInstance().newSession().getDLinkDetailDao();
-        this.transferDetailDao = DaoMaster.getInstance().newSession().getDTransferDetailDao();
+        this.fileDao = DaoMaster.getInstance().newSession().getFileDao();
+        this.linkDetailDao = DaoMaster.getInstance().newSession().getLinkDetailDao();
+        this.transferDetailDao = DaoMaster.getInstance().newSession().getTransferDetailDao();
     }
 
     /**
@@ -48,10 +44,12 @@ public class HistoryLogic extends BaseLogic {
         ThreadPoolManager.getInstance(HistoryLogic.class.getName()).startTaskThread(new Runnable() {
             @Override
             public void run() {
-                List<DFile> history = historyInterface.getHistory();
+                List<TFileInfo> history = historyInterface.getHistory();
                 if (history != null) {
-                    List<TFileInfo> tFileInfoList = convertDFileToTFile(history);
-                    triggerEvent(FindResEvent.MimeType.HISTORY, tFileInfoList);
+                    for (TFileInfo file : history) {
+                        file.setFileType(XFileUtils.getFileType(context, file.getFullName()));
+                    }
+                    triggerEvent(FindResEvent.MimeType.HISTORY, history);
                 }
             }
         });
@@ -94,6 +92,9 @@ public class HistoryLogic extends BaseLogic {
         });
     }
 
+    /**
+     * 连接统计
+     */
     public void getRecordInfo() {
         ThreadPoolManager.getInstance(HistoryLogic.class.getName()).startTaskThread(new Runnable() {
             @Override
@@ -116,45 +117,4 @@ public class HistoryLogic extends BaseLogic {
         });
     }
 
-
-    public void addTMessage(TFileInfo tFileInfo) {
-        DFile dFile = XFileUtils.buildDFile(tFileInfo);
-        fileDao.insert(dFile);
-    }
-
-    public List<TFileInfo> convertDFileToTFile(List<DFile> dList) {
-        List<TFileInfo> list = new ArrayList<>();
-        for (DFile dFile : dList) {
-            TFileInfo tFileInfo = new TFileInfo();
-            tFileInfo.setName(dFile.getName());
-            tFileInfo.setPosition(dFile.getPosition());
-            tFileInfo.setLength(dFile.getLength());
-            tFileInfo.setExtension(dFile.getExtension());
-            tFileInfo.setFullName(dFile.getFullName());
-            tFileInfo.setTaskId(dFile.getTaskId());
-            tFileInfo.setIsSend(dFile.getIsSend());
-            tFileInfo.setFrom(dFile.getFrom());
-//            tFileInfo.setPercent(dFile.getPercent());
-            if (dFile.getIsSend()) {
-                tFileInfo.setPath(dFile.getPath());
-            } else {
-                tFileInfo.setPath(dFile.getSavePath());
-            }
-            switch (dFile.getStatus()) {
-                case 0:
-                    tFileInfo.setFileEvent(FileEvent.SET_FILE_STOP);
-                    break;
-                case 1:
-                    tFileInfo.setFileEvent(FileEvent.SET_FILE_SUCCESS);
-                    break;
-                case 2:
-                    tFileInfo.setFileEvent(FileEvent.SET_FILE_FAILED);
-                    break;
-            }
-            FileType fileType = XFileUtils.getFileType(context, dFile.getFullName());
-            tFileInfo.setFileType(fileType);
-            list.add(tFileInfo);
-        }
-        return list;
-    }
 }

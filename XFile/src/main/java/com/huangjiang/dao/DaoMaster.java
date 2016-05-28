@@ -36,18 +36,18 @@ public class DaoMaster extends AbstractDaoMaster {
      * Creates underlying database table using DAOs.
      */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
-        DFileDao.createTable(db, ifNotExists);
-        DLinkDetailDao.createTable(db, ifNotExists);
-        DTransferDetailDao.createTable(db, ifNotExists);
+        TFileDao.createTable(db, ifNotExists);
+        LinkDetailDao.createTable(db, ifNotExists);
+        TransferDetailDao.createTable(db, ifNotExists);
     }
 
     /**
      * Drops underlying database table using DAOs.
      */
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
-        DFileDao.dropTable(db, ifExists);
-        DLinkDetailDao.dropTable(db, ifExists);
-        DTransferDetailDao.dropTable(db, ifExists);
+        TFileDao.dropTable(db, ifExists);
+        LinkDetailDao.dropTable(db, ifExists);
+        TransferDetailDao.dropTable(db, ifExists);
     }
 
     public static abstract class OpenHelper extends SQLiteOpenHelper {
@@ -81,9 +81,9 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(SQLiteDatabase db) {
         super(db, SCHEMA_VERSION);
-        registerDaoClass(DFileDao.class);
-        registerDaoClass(DLinkDetailDao.class);
-        registerDaoClass(DTransferDetailDao.class);
+        registerDaoClass(TFileDao.class);
+        registerDaoClass(LinkDetailDao.class);
+        registerDaoClass(TransferDetailDao.class);
     }
 
     public DaoSession newSession() {
