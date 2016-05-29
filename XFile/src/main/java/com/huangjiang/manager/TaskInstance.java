@@ -244,7 +244,7 @@ public class TaskInstance {
             currentTask.setFileEvent(FileEvent.SET_FILE_FAILED);
             triggerEvent(currentTask);
             e.printStackTrace();
-            logger.e(e.getMessage());
+            logger.e("****transferFile Exception:"+e.getMessage());
         }
 
     }
@@ -365,8 +365,10 @@ public class TaskInstance {
             }
 
         } catch (Exception e) {
+            currentTask.setFileEvent(FileEvent.SET_FILE_FAILED);
+            triggerEvent(currentTask);
             e.printStackTrace();
-            logger.e(e.getMessage());
+            logger.e("****dispatchReceiveData Exception:" + e.getMessage());
         }
     }
 

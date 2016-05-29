@@ -24,15 +24,13 @@ import java.util.List;
  */
 public class TransmitAdapter extends BaseAdapter implements View.OnClickListener {
 
-    private LayoutInflater mInflater;
     private Context mContext;
-    List<TFileInfo> listTFileInfo;
-    int RECEIVE_MESSAGE;
-    int SEND_MESSAGE;
-    String createFileSuccess, createFileFailed, checkTaskSuccess, checkTaskFailed,
+    private LayoutInflater mInflater;
+    private List<TFileInfo> listTFileInfo;
+    private static final int TYPE_COUNT = 2;
+    private String createFileSuccess, createFileFailed, checkTaskSuccess, checkTaskFailed,
             setFileComplete, setFileFailed, setFileTransmit, setFileStop, setFileWaiting,
             retry, view, resume, stop;
-    int redColor, blackColor;
 
 
     public TransmitAdapter(Context context) {
@@ -51,8 +49,6 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         view = context.getString(R.string.view);
         resume = context.getString(R.string.resume);
         stop = context.getString(R.string.stop);
-        redColor = mContext.getResources().getColor(R.color.red);
-        blackColor = mContext.getResources().getColor(R.color.black);
         listTFileInfo = new ArrayList<>();
     }
 
@@ -78,36 +74,49 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
     @Override
     public int getItemViewType(int position) {
         TFileInfo message = listTFileInfo.get(position);
-        if (!message.isSend()) {
-            return RECEIVE_MESSAGE;
+        if (message.isSend()) {
+            return IMsgViewType.FILE_SEND;
         } else {
-            return SEND_MESSAGE;
+            return IMsgViewType.FILE_RECEIVE;
         }
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return TYPE_COUNT;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final TFileInfo tFileInfo = listTFileInfo.get(position);
-        boolean isSend = tFileInfo.isSend();
-        ViewHolder holder;
+        int currentType = getItemViewType(position);
+        ViewHolder holder = null;
         if (convertView == null) {
-            holder = new ViewHolder();
-            if (!isSend) {
-                convertView = mInflater.inflate(R.layout.listview_transfer_message_revice, null);
-                holder.btn_step = (Button) convertView.findViewById(R.id.setup);
-            } else {
-                convertView = mInflater.inflate(R.layout.listview_transfer_message_send, null);
+            switch (currentType) {
+                case IMsgViewType.FILE_RECEIVE:
+                    holder = new ViewHolder();
+                    convertView = mInflater.inflate(R.layout.listview_transfer_message_revice, null);
+                    holder.btn_step = (Button) convertView.findViewById(R.id.setup);
+                    convertView.setTag(holder);
+                    break;
+                case IMsgViewType.FILE_SEND:
+                    holder = new ViewHolder();
+                    convertView = mInflater.inflate(R.layout.listview_transfer_message_send, null);
+                    convertView.setTag(holder);
+                    break;
             }
-            holder.headImg = (ImageView) convertView.findViewById(R.id.head);
-            holder.fileImg = (ImageView) convertView.findViewById(R.id.fileImg);
-            holder.from = (TextView) convertView.findViewById(R.id.from);
-            holder.name = (TextView) convertView.findViewById(R.id.fileName);
-            holder.size = (TextView) convertView.findViewById(R.id.fileSize);
-            holder.remainPercent = (TextView) convertView.findViewById(R.id.remainPercent);
-            holder.status = (TextView) convertView.findViewById(R.id.status);
-            holder.line1 = (TextView) convertView.findViewById(R.id.tv_line1);
-            holder.line2 = (TextView) convertView.findViewById(R.id.tv_line2);
-            convertView.setTag(holder);
+            if (holder != null) {
+                holder.headImg = (ImageView) convertView.findViewById(R.id.head);
+                holder.fileImg = (ImageView) convertView.findViewById(R.id.fileImg);
+                holder.from = (TextView) convertView.findViewById(R.id.from);
+                holder.name = (TextView) convertView.findViewById(R.id.fileName);
+                holder.size = (TextView) convertView.findViewById(R.id.fileSize);
+                holder.remainPercent = (TextView) convertView.findViewById(R.id.remainPercent);
+                holder.status = (TextView) convertView.findViewById(R.id.status);
+                holder.line1 = (TextView) convertView.findViewById(R.id.tv_line1);
+                holder.line2 = (TextView) convertView.findViewById(R.id.tv_line2);
+            }
+
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
@@ -147,6 +156,11 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         Button btn_step;
     }
 
+    interface IMsgViewType {
+        int FILE_SEND = 0;
+        int FILE_RECEIVE = 1;
+    }
+
     void initFileInfoView(ViewHolder holder, TFileInfo tFileInfo) {
         holder.headImg.setImageResource(R.mipmap.avatar_default);
         holder.fileImg.setImageResource(R.mipmap.data_folder_documents_placeholder);
@@ -169,7 +183,6 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         } else {
             holder.status.setText(getState(tFileInfo.getFileEvent()));
         }
-        // 接受者才显示箭头按钮
         if (!tFileInfo.isSend() && holder.btn_step != null) {
             setStepState(holder, tFileInfo.getFileEvent());
             holder.btn_step.setTag(tFileInfo.getTaskId());
@@ -179,11 +192,17 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
     }
 
 
+    /**
+     * 添加消息
+     */
     public void addTFileInfo(TFileInfo tFileInfo) {
-        listTFileInfo.add(tFileInfo);
+        listTFileInfo.add(0, tFileInfo);
     }
 
 
+    /**
+     * 根据任务号读取文件
+     */
     public TFileInfo getTFileByTaskId(String taskId) {
         for (TFileInfo fileInfo : listTFileInfo) {
             if (taskId.equals(fileInfo.getTaskId())) {
@@ -193,6 +212,9 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         return null;
     }
 
+    /**
+     * 取消任务
+     */
     public void cancelTask(TFileInfo tFileInfo) {
         for (TFileInfo fileInfo : listTFileInfo) {
             if (tFileInfo.getTaskId().equals(fileInfo.getTaskId())) {
@@ -202,6 +224,9 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         }
     }
 
+    /**
+     * 当前任务所在的列表位置
+     */
     public int getPosition(TFileInfo tFileInfo) {
         int position = -1;
         for (TFileInfo fileInfo : listTFileInfo) {
@@ -214,6 +239,9 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         return position;
     }
 
+    /**
+     * 更新状态
+     */
     public void updateTFileInfo(TFileInfo tFileInfo) {
         for (TFileInfo fileInfo : listTFileInfo) {
             if (tFileInfo.getTaskId().equals(fileInfo.getTaskId())) {
@@ -225,6 +253,9 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
         }
     }
 
+    /**
+     * 更新View显示
+     */
     public void updateTransmitState(ViewHolder holder, TFileInfo tFileInfo) {
         initFileInfoView(holder, tFileInfo);
     }

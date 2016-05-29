@@ -3,7 +3,6 @@ package com.huangjiang.business.model;
 import android.support.annotation.NonNull;
 
 import com.huangjiang.manager.event.FileEvent;
-import com.huangjiang.utils.XFileUtils;
 
 /**
  * 传输文件实体

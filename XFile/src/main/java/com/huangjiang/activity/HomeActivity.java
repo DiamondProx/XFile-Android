@@ -438,7 +438,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
         FileEvent fileEvent = tFileInfo.getFileEvent();
         switch (fileEvent) {
             case CREATE_FILE_SUCCESS:
-                if (!HistoryFragment.isInit && !tFileInfo.isSend()) {
+                if (!HistoryFragment.isInit) {
                     rdb_message.setChecked(true);
                 }
                 break;
