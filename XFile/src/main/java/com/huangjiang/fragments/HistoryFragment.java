@@ -138,7 +138,6 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(TFileInfo tFileInfo) {
-
         FileEvent fileEvent = tFileInfo.getFileEvent();
         switch (fileEvent) {
             case CREATE_FILE_SUCCESS: {
@@ -159,6 +158,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                 }
             }
             break;
+            case CHECK_TASK_FAILED:
             case SET_FILE_FAILED:
             case SET_FILE:
             case SET_FILE_STOP:

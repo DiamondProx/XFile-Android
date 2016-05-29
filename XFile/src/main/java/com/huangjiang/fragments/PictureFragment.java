@@ -45,13 +45,14 @@ public class PictureFragment extends Fragment implements PictureAdapter.CallBack
     PictureAdapter adapter;
     ImageLogic imageLogic;
     OpLogic opLogic;
+    GridLayoutManager manager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.picture_fragment, null);
         EventBus.getDefault().register(this);
         recycler_view = (RecyclerView) view.findViewById(R.id.recycler_view);
-        final GridLayoutManager manager = new GridLayoutManager(getActivity(), 4);
+        manager = new GridLayoutManager(getActivity(), 4);
         recycler_view.setLayoutManager(manager);
         recycler_view.setHasFixedSize(true);
         adapter = new PictureAdapter(getActivity());
@@ -132,10 +133,17 @@ public class PictureFragment extends Fragment implements PictureAdapter.CallBack
     public void onMenuClick(PopupMenu menu, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_transfer:
-                ImageView image = (ImageView) recycler_view.getChildAt(menu.getItemPosition()).findViewById(R.id.item_image);
-                if (image != null && getActivity() instanceof HomeActivity) {
-                    HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.sendTFile(menu.getTFileInfo(), image);
+                int firstPos = manager.findFirstVisibleItemPosition();
+                int lastPos = manager.findLastVisibleItemPosition();
+                if (menu.getItemPosition() >= firstPos && menu.getItemPosition() <= lastPos) {
+                    View view = recycler_view.getChildAt(menu.getItemPosition() - firstPos);
+                    if (view != null) {
+                        ImageView thumb = (ImageView) view.findViewById(R.id.item_image);
+                        if (thumb != null && getActivity() instanceof HomeActivity) {
+                            HomeActivity homeActivity = (HomeActivity) getActivity();
+                            homeActivity.sendTFile(menu.getTFileInfo(), thumb);
+                        }
+                    }
                 }
                 break;
             case R.id.menu_open:

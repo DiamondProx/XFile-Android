@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
+import com.huangjiang.utils.Logger;
 import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.OpenFileHelper;
 import com.huangjiang.xfile.R;
@@ -24,6 +25,7 @@ import java.util.List;
  */
 public class TransmitAdapter extends BaseAdapter implements View.OnClickListener {
 
+    Logger logger = Logger.getLogger(TransmitAdapter.class);
     private Context mContext;
     private LayoutInflater mInflater;
     private List<TFileInfo> listTFileInfo;
@@ -341,6 +343,7 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
             case SET_FILE_FAILED:
             case SET_FILE_STOP:
             case SET_FILE:
+            case WAITING:
                 viewHolder.status.setVisibility(View.VISIBLE);
                 viewHolder.line1.setVisibility(View.VISIBLE);
                 viewHolder.remainPercent.setVisibility(View.VISIBLE);
