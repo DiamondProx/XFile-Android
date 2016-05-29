@@ -29,7 +29,6 @@ public class NetWorkReceiver extends BroadcastReceiver {
         NetworkInfo wifiNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (!isWifiAvailable && wifiNetInfo != null && wifiNetInfo.isConnected()) {
             isWifiAvailable = true;
-            logger.e("****isWifiAvailable11:" + isWifiAvailable);
             context.stopService(new Intent(context, IMService.class));
             context.startService(new Intent(context, IMService.class));
             logger.e("****RestartServer");
@@ -45,7 +44,8 @@ public class NetWorkReceiver extends BroadcastReceiver {
             }
         } else {
             isWifiAvailable = false;
-            logger.e("****isWifiAvailable22:" + isWifiAvailable);
         }
+        logger.e("****isWifiAvailable11:" + isWifiAvailable);
     }
+
 }

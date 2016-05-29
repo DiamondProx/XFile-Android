@@ -1,5 +1,7 @@
 package com.huangjiang.message;
 
+import com.huangjiang.XFileApp;
+import com.huangjiang.business.model.LinkType;
 import com.huangjiang.manager.IMServerMessageManager;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
@@ -35,7 +37,7 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
                 // 分发认证数据
                 imServerMessageManager.packetDispatch((ByteBuf) msg);
             }
-        } else {
+        } else if (XFileApp.mLinkType == LinkType.NONE) {
             // 分发认证数据
             logger.e("****ServerMessage-DispatchAuth");
             imServerMessageManager.packetDispatchAuth(ctx, (ByteBuf) msg);

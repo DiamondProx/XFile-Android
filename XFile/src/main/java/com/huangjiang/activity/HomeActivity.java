@@ -1,11 +1,13 @@
 package com.huangjiang.activity;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huangjiang.XFileApp;
+import com.huangjiang.broadcast.NetWorkReceiver;
 import com.huangjiang.business.event.DiskEvent;
 import com.huangjiang.business.event.RecordEvent;
 import com.huangjiang.business.history.HistoryLogic;
@@ -88,6 +91,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
     ImageView iv_throw;
     HistoryLogic historyLogic;
     private long firstTime = 0;
+    NetWorkReceiver mNetWorkReceiver;
 
 
     @Override
@@ -160,6 +164,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
 
         EventBus.getDefault().register(this);
         startService(new Intent(this, IMService.class));
+        registerNetWorkReceiver();
         historyLogic.getRecordInfo();
 
 
@@ -328,9 +333,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
                 top_main_layout.setVisibility(View.INVISIBLE);
                 top_connect_layout.setVisibility(View.VISIBLE);
                 connect_device_name.setText(event.getDevice_name());
-                if (Config.getSound()) {
-                    SoundHelper.plaOnline();
-                }
+                if (Config.getSound())
                 if (Config.getVibration()) {
                     VibratorUtils.Vibrate();
                 }
@@ -344,6 +347,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
                     WifiHelper.removeWifi();
                     Config.is_ap = false;
                 }
+                IMClientMessageManager.getInstance().stop();
+                IMClientFileManager.getInstance().stop();
                 break;
             case SHAKE_INPUT_PASSWORD:
                 IMClientMessageManager.getInstance().sendShakeHandStepT("123456");
@@ -495,10 +500,18 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
         }
     }
 
+    void registerNetWorkReceiver() {
+        mNetWorkReceiver = new NetWorkReceiver();
+        IntentFilter mFilter = new IntentFilter();
+        mFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mNetWorkReceiver, mFilter);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        unregisterReceiver(mNetWorkReceiver);
         stopService(new Intent(HomeActivity.this, IMService.class));
     }
 }
