@@ -80,6 +80,12 @@ http://blog.163.com/zhuowh2006%40126/blog/static/101823724201421011641710/
 
 http://www.cnblogs.com/lesliefang/p/3619223.html
 
+http://blog.csdn.net/chen930724/article/details/49687067
+
+http://www.bubuko.com/infodetail-987756.html
+
+http://stackoverflow.com/questions/27083667/proguard-and-netty-5-on-android
+
 
 
 
