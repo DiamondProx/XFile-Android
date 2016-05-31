@@ -40,5 +40,4 @@ dependencies {
     compile files('src/main/libs/com.umeng.fb.5.4.0.jar')
     compile files('src/main/libs/universal-image-loader-1.9.5.jar')
     compile files('src/main/libs/umeng-analytics-v6.0.1.jar')
-    compile files('src/main/libs/utdid4all-1.0.4.jar')
 }
