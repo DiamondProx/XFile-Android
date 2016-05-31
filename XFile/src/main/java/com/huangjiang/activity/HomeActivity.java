@@ -69,7 +69,6 @@ import java.util.List;
 
 public class HomeActivity extends BaseActivity implements OnClickListener, OnCheckedChangeListener {
 
-    private final String mPageName = "HomeActivity";
 
     private int cursorWidth;
     private int offsetWidth;
@@ -167,6 +166,10 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
         registerNetWorkReceiver();
         historyLogic.getRecordInfo();
 
+        // 友盟
+        MobclickAgent.setDebugMode(true);
+        MobclickAgent.openActivityDurationTrack(false);
+        MobclickAgent.setScenarioType(HomeActivity.this, MobclickAgent.EScenarioType.E_UM_NORMAL);
 
     }
 
@@ -416,13 +419,13 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
     @Override
     public void onResume() {
         super.onResume();
-        MobclickAgent.onPageStart(mPageName);
+        MobclickAgent.onResume(HomeActivity.this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        MobclickAgent.onPageEnd(mPageName);
+        MobclickAgent.onPause(HomeActivity.this);
     }
 
     /**

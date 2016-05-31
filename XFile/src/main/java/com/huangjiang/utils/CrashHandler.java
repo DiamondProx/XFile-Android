@@ -67,7 +67,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         ThreadPoolManager.release();
         mContext.stopService(new Intent(mContext, IMService.class));
         XFileActivityManager.create().finishAllActivity();
+        MobclickAgent.onKillProcess(mContext);
         android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(10);
     }
 }

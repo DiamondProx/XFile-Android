@@ -10,7 +10,6 @@ import com.huangjiang.utils.SoundHelper;
 import com.huangjiang.utils.XFileUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 
 public class XFileApp extends Application {
@@ -29,8 +28,8 @@ public class XFileApp extends Application {
         super.onCreate();
         context = this;
         device_id = XFileUtils.getDeviceId();
-        initUMeg();
-//        initErrorHandler();
+        initUMegPush();
+        initErrorHandler();
         SoundHelper.init();
         initImageLoader();
     }
@@ -49,10 +48,9 @@ public class XFileApp extends Application {
     }
 
     /**
-     * 友盟
+     * 友盟消息推送
      */
-    void initUMeg() {
-        // Push
+    void initUMegPush() {
         PushAgent mPushAgent = PushAgent.getInstance(context);
         mPushAgent.setDebugMode(true);
         mPushAgent.onAppStart();
@@ -61,9 +59,6 @@ public class XFileApp extends Application {
         } else {
             mPushAgent.disable();
         }
-        // Analytics
-//        MobclickAgent.setDebugMode(true);
-        MobclickAgent.openActivityDurationTrack(false);
     }
 
 

@@ -79,6 +79,9 @@
 -dontwarn u.aly.**
 -keep class com.umeng.analytics.** { *; }
 -keep class u.aly.** { *; }
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
 # 友盟-推送
 -dontwarn com.ta.utdid2.**
 -dontwarn com.umeng.**
