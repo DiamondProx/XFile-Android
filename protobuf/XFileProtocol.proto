@@ -38,3 +38,6 @@ message ShakeHand{
  optional bool result = 5;
  optional string device_name = 6;
 }
+message Heart{
+ required string content = 1;
+}

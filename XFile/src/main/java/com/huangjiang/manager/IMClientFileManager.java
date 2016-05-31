@@ -16,6 +16,9 @@ import com.huangjiang.utils.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -38,6 +41,16 @@ public class IMClientFileManager extends IMBaseManager implements ClientThread.O
     private String token;
 
     private FileClientListenerQueue listenerQueue = FileClientListenerQueue.instance();
+
+    /**
+     * 心跳处理
+     */
+    Timer timer = null;
+
+    /**
+     * 心跳任务
+     */
+    TimerTask timerTask = null;
 
     public static IMClientFileManager getInstance() {
         if (inst == null) {
@@ -76,6 +89,7 @@ public class IMClientFileManager extends IMBaseManager implements ClientThread.O
         fileClientThread.setHost(this.host);
         fileClientThread.setPort(this.port);
         fileClientThread.start();
+        startHeart();
     }
 
     void stopClient() {
@@ -84,12 +98,14 @@ public class IMClientFileManager extends IMBaseManager implements ClientThread.O
             fileClientThread = null;
             listenerQueue.onDestory();
         }
+        cancelHeart();
     }
 
 
     public void sendMessage(short serviceId, short commandId, GeneratedMessage msg) {
         sendMessage(serviceId, commandId, msg, (short) 0);
     }
+
     public void sendMessage(short serviceId, short commandId, GeneratedMessage msg, short seqnum) {
         sendMessage(serviceId, commandId, msg, null, seqnum);
     }
@@ -118,9 +134,9 @@ public class IMClientFileManager extends IMBaseManager implements ClientThread.O
         int commandId = header.getCommandId();
         short serviceId = header.getServiceId();
         Packetlistener packetlistener = listenerQueue.pop(header.getSeqnum());
-//        logger.e("****ClientFilePacketDispatch1111");
+        // logger.e("****ClientFilePacketDispatch1111");
         if (packetlistener != null) {
-//            logger.e("****ClientFilePacketDispatch2222");
+            // logger.e("****ClientFilePacketDispatch2222");
             packetlistener.onSuccess(serviceId, body);
         }
         switch (commandId) {
@@ -193,8 +209,41 @@ public class IMClientFileManager extends IMBaseManager implements ClientThread.O
                 ctx.close();
                 EventBus.getDefault().post(new ClientFileSocketEvent(SocketEvent.SHAKE_HAND_FAILE));
             }
-        },(short)0);
+        }, (short) 0);
 
 
+    }
+
+    /**
+     * 心跳
+     */
+    public void startHeart() {
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                XFileProtocol.Heart.Builder builder = XFileProtocol.Heart.newBuilder();
+                builder.setContent("f");
+                short cid = SysConstant.CMD_HEART;
+                short sid = SysConstant.SERVICE_DEFAULT;
+                sendMessage(sid, cid, builder.build());
+            }
+        };
+        timer.schedule(timerTask, SysConstant.HEART_TIME, SysConstant.HEART_TIME);
+
+    }
+
+    /**
+     * 取消心跳
+     */
+    public void cancelHeart() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
     }
 }

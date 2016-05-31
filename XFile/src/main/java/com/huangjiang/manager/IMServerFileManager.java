@@ -7,8 +7,8 @@ import com.huangjiang.manager.callback.FileServerListenerQueue;
 import com.huangjiang.manager.callback.Packetlistener;
 import com.huangjiang.manager.event.ServerFileSocketEvent;
 import com.huangjiang.manager.event.SocketEvent;
-import com.huangjiang.message.XFileChannelInitializer;
 import com.huangjiang.message.ServerThread;
+import com.huangjiang.message.XFileChannelInitializer;
 import com.huangjiang.message.base.DataBuffer;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.message.protocol.XFileProtocol;
@@ -82,14 +82,15 @@ public class IMServerFileManager extends IMBaseManager {
         short commandId = header.getCommandId();
         short serviceId = header.getServiceId();
         Packetlistener packetlistener = listenerQueue.pop(header.getSeqnum());
-//        logger.e("****ServerFilePacketDispatch1111");
+        // logger.e("****ServerFilePacketDispatch1111");
         if (packetlistener != null) {
-//            logger.e("****ServerFilePacketDispatch2222");
+        // logger.e("****ServerFilePacketDispatch2222");
             packetlistener.onSuccess(serviceId, body);
         }
         switch (commandId) {
-            case SysConstant.CMD_SEND_MESSAGE:
-
+            case SysConstant.CMD_HEART:
+                // DiscardHeart
+                logger.e("****HEART_FILE");
                 break;
             case SysConstant.CMD_FILE_SET:
                 IMFileManager.getInstance().dispatchMessage(header, body);
@@ -108,6 +109,10 @@ public class IMServerFileManager extends IMBaseManager {
             case SysConstant.CMD_SHAKE_HAND:
                 logger.e("****ServerMessage-DispatchShakeHand");
                 ShakeHand(ctx, body, header.getSeqnum());
+                break;
+            case SysConstant.CMD_HEART:
+                // DiscardHeart
+                logger.e("****HEART_FILE");
                 break;
         }
     }

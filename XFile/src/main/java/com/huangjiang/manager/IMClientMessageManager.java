@@ -17,6 +17,9 @@ import com.huangjiang.utils.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -39,6 +42,16 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
     private MessageClientListenerQueue listenerQueue = MessageClientListenerQueue.instance();
 
     private boolean verify = false;
+
+    /**
+     * 心跳处理
+     */
+    Timer timer = null;
+
+    /**
+     * 心跳任务
+     */
+    TimerTask timerTask = null;
 
     public static IMClientMessageManager getInstance() {
         if (inst == null) {
@@ -77,6 +90,7 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
         messageClientThread.setHost(this.host);
         messageClientThread.setPort(this.port);
         messageClientThread.start();
+        startHeart();
     }
 
     void stopClient() {
@@ -85,6 +99,7 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
             messageClientThread = null;
             listenerQueue.onDestory();
         }
+        cancelHeart();
     }
 
     public void packetDispatch(ByteBuf byteBuf) throws InvalidProtocolBufferException {
@@ -94,9 +109,9 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
         short commandId = header.getCommandId();
         short serviceId = header.getServiceId();
         Packetlistener packetlistener = listenerQueue.pop(header.getSeqnum());
-        logger.e("****ClientMessagePacketDispatch1111");
+        // logger.e("****ClientMessagePacketDispatch1111");
         if (packetlistener != null) {
-            logger.e("****ClientMessagePacketDispatch2222");
+            // logger.e("****ClientMessagePacketDispatch2222");
             packetlistener.onSuccess(serviceId, body);
         }
         switch (commandId) {
@@ -250,5 +265,37 @@ public class IMClientMessageManager extends IMBaseManager implements ClientThrea
     @Override
     public void connectFailure() {
         EventBus.getDefault().post(new ClientMessageSocketEvent(SocketEvent.CONNECT_FAILE));
+    }
+
+    /**
+     * 心跳
+     */
+    public void startHeart() {
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                XFileProtocol.Heart.Builder builder = XFileProtocol.Heart.newBuilder();
+                builder.setContent("m");
+                short cid = SysConstant.CMD_HEART;
+                short sid = SysConstant.SERVICE_DEFAULT;
+                sendMessage(sid, cid, builder.build());
+            }
+        };
+        timer.schedule(timerTask, SysConstant.HEART_TIME, SysConstant.HEART_TIME);
+    }
+
+    /**
+     * 取消心跳
+     */
+    public void cancelHeart() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
     }
 }

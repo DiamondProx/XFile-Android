@@ -5,8 +5,8 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.huangjiang.config.SysConstant;
 import com.huangjiang.manager.callback.MessageServerListenerQueue;
 import com.huangjiang.manager.callback.Packetlistener;
-import com.huangjiang.message.XFileChannelInitializer;
 import com.huangjiang.message.ServerThread;
+import com.huangjiang.message.XFileChannelInitializer;
 import com.huangjiang.message.base.DataBuffer;
 import com.huangjiang.message.base.Header;
 import com.huangjiang.message.protocol.XFileProtocol;
@@ -84,14 +84,15 @@ public class IMServerMessageManager extends IMBaseManager {
         short commandId = header.getCommandId();
         short serviceId = header.getServiceId();
         Packetlistener packetlistener = listenerQueue.pop(header.getSeqnum());
-        logger.e("****ServerMessagePacketDispatch1111");
+        // logger.e("****ServerMessagePacketDispatch1111");
         if (packetlistener != null) {
-            logger.e("****ServerMessagePacketDispatch2222");
+            // logger.e("****ServerMessagePacketDispatch2222");
             packetlistener.onSuccess(serviceId, body);
         }
         switch (commandId) {
-            case SysConstant.CMD_SEND_MESSAGE:
-                recvMessage(byteBuf, header);
+            case SysConstant.CMD_HEART:
+                // DiscardHeart
+                logger.e("****HEART_MESSAGE");
                 break;
             case SysConstant.CMD_FILE_NEW:
             case SysConstant.CMD_TASK_CHECK:
@@ -117,25 +118,11 @@ public class IMServerMessageManager extends IMBaseManager {
                 logger.e("****ServerMessage-DispatchShakeHand");
                 ShakeHand(ctx, body, header.getSeqnum());
                 break;
+            case SysConstant.CMD_HEART:
+                // DiscardHeart
+                logger.e("****HEART_MESSAGE");
+                break;
         }
-    }
-
-
-    void recvMessage(ByteBuf bf, Header header) {
-        try {
-            int lenght = header.getLength();
-            ByteBuf byteBuf = bf.readBytes(lenght - SysConstant.HEADER_LENGTH);
-            byte[] body = new byte[lenght - SysConstant.HEADER_LENGTH];
-            byteBuf.readBytes(body);
-            XFileProtocol.Chat chat = XFileProtocol.Chat.parseFrom(body);
-            System.out.println("*****Chat.getMessagetype:" + chat.getMessageType());
-            System.out.println("*****Chat.getContent:" + chat.getContent());
-            System.out.println("*****Chat.getFrom:" + chat.getFrom());
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.d(e.getMessage());
-        }
-
     }
 
 

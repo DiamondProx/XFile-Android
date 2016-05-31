@@ -39,6 +39,8 @@ public class SysConstant {
 
     public static final short CMD_FILE_RESUME_REMOTE = 0x16;//续传
 
+    public static final short CMD_HEART = 0x17;//心跳
+
     public static final String BROADCASE_ADDRESS = "255.255.255.255";//广播地址
 
     public static final int BROADCASE_PORT = 8081;// 发现设备服务器端口
@@ -74,6 +76,8 @@ public class SysConstant {
     public static final String DEFAULT_AP_IP = "192.168.43.1";// 热点默认地址
 
     public static final String SEARCH_KEY = "XFile";
+
+    public static final int HEART_TIME = 1000 * 60;// 心跳时间
 
 
 }

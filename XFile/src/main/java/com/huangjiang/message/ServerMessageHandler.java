@@ -29,7 +29,7 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        logger.e("****ServerMessage-ChannelRead");
+        // logger.e("****ServerMessage-ChannelRead");
         IMServerMessageManager imServerMessageManager = IMServerMessageManager.getInstance();
         if (imServerMessageManager.getAuthChannelHandlerContext() != null) {
             // 连接已经认证,判断是否是认证连接
@@ -39,7 +39,7 @@ public class ServerMessageHandler extends ChannelHandlerAdapter {
             }
         } else if (XFileApp.mLinkType == LinkType.NONE) {
             // 分发认证数据
-            logger.e("****ServerMessage-DispatchAuth");
+            // logger.e("****ServerMessage-DispatchAuth");
             imServerMessageManager.packetDispatchAuth(ctx, (ByteBuf) msg);
         }
     }
