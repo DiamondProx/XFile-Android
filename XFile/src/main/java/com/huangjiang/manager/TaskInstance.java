@@ -244,7 +244,7 @@ public class TaskInstance {
             currentTask.setFileEvent(FileEvent.SET_FILE_FAILED);
             triggerEvent(currentTask);
             e.printStackTrace();
-            logger.e("****transferFile Exception:"+e.getMessage());
+            logger.e("****transferFile Exception:" + e.getMessage());
         }
 
     }
@@ -430,7 +430,7 @@ public class TaskInstance {
                 triggerEvent(currentTask);
             }
         };
-        timer.schedule(timerTask, 8000);
+        timer.schedule(timerTask, 1000 * 16);
 
     }
 

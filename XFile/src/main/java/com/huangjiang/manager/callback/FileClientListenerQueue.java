@@ -16,25 +16,27 @@ public class FileClientListenerQueue {
 
     private static FileClientListenerQueue listenerQueue = new FileClientListenerQueue();
     private Logger logger = Logger.getLogger(FileClientListenerQueue.class);
-    public static FileClientListenerQueue instance(){
+
+    public static FileClientListenerQueue instance() {
         return listenerQueue;
     }
 
-    private volatile  boolean stopFlag = false;
-    private volatile  boolean hasTask = false;
+    private volatile boolean stopFlag = false;
+    private volatile boolean hasTask = false;
 
 
     //callback 队列
-    private Map<Integer,Packetlistener> callBackQueue = new ConcurrentHashMap<>();
+    private Map<Integer, Packetlistener> callBackQueue = new ConcurrentHashMap<>();
     private Handler timerHandler = new Handler();
 
 
-    public void onStart(){
+    public void onStart() {
         logger.d("FileClientListenerQueue#onStart run");
         stopFlag = false;
         startTimer();
     }
-    public void onDestory(){
+
+    public void onDestory() {
         logger.d("FileClientListenerQueue#onDestory ");
         callBackQueue.clear();
         stopTimer();
@@ -42,7 +44,7 @@ public class FileClientListenerQueue {
 
     //以前是TimerTask处理方式
     private void startTimer() {
-        if(!stopFlag && hasTask == false) {
+        if (!stopFlag && hasTask == false) {
             hasTask = true;
             timerHandler.postDelayed(new Runnable() {
                 @Override
@@ -51,16 +53,16 @@ public class FileClientListenerQueue {
                     hasTask = false;
                     startTimer();
                 }
-            }, 8 * 1000);
+            }, 16 * 1000);
         }
     }
 
-    private void stopTimer(){
+    private void stopTimer() {
         stopFlag = true;
     }
 
     private void timerImpl() {
-        long currentRealtime =   System.currentTimeMillis();//SystemClock.elapsedRealtime();
+        long currentRealtime = System.currentTimeMillis();//SystemClock.elapsedRealtime();
 
         for (java.util.Map.Entry<Integer, Packetlistener> entry : callBackQueue.entrySet()) {
 
@@ -82,16 +84,16 @@ public class FileClientListenerQueue {
         }
     }
 
-    public void push(int seqNo,Packetlistener packetlistener){
-        if(seqNo <=0 || null==packetlistener){
+    public void push(int seqNo, Packetlistener packetlistener) {
+        if (seqNo <= 0 || null == packetlistener) {
             logger.d("FileClientListenerQueue#push error, cause by Illegal params");
             return;
         }
-        callBackQueue.put(seqNo,packetlistener);
+        callBackQueue.put(seqNo, packetlistener);
     }
 
 
-    public Packetlistener pop(int seqNo){
+    public Packetlistener pop(int seqNo) {
         synchronized (FileClientListenerQueue.this) {
             if (callBackQueue.containsKey(seqNo)) {
                 Packetlistener packetlistener = callBackQueue.remove(seqNo);
