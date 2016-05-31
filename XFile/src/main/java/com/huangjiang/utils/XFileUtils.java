@@ -251,6 +251,8 @@ public class XFileUtils {
             fileType = FileType.Audio;
         } else if (XFileUtils.checkEndsWithInStringArray(extension, context.getResources().getStringArray(R.array.fileEndingVideo))) {
             fileType = FileType.Video;
+        } else if (XFileUtils.checkEndsWithInStringArray(extension, context.getResources().getStringArray(R.array.fileEndingApk))) {
+            fileType = FileType.Apk;
         } else {
             fileType = FileType.Normal;
         }
