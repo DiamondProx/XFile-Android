@@ -143,6 +143,9 @@ public class TransmitAdapter extends BaseAdapter implements View.OnClickListener
             case SET_FILE_SUCCESS:
                 OpenFileHelper.openFile(mContext, taskInfo);
                 break;
+            case SET_FILE_FAILED:
+                IMFileManager.getInstance().resumeReceive(taskInfo);
+                break;
         }
     }
 
