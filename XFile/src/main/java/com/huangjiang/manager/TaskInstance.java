@@ -87,6 +87,21 @@ public class TaskInstance {
      */
     private long createTime;
 
+    /**
+     * 每次发送包的大小,初始是5k
+     */
+    private int packetSize = 1024 * 5;
+
+    /**
+     * 请求时间
+     */
+    private long reqTime = 0;
+
+    /**
+     * 响应时间
+     */
+    private long rspTime = 0;
+
 
     public TaskInstance(TFileInfo task) {
         fileDao = DaoMaster.getInstance().newSession().getFileDao();
@@ -146,8 +161,9 @@ public class TaskInstance {
                 return;
             }
             // 继续传输未完成任务
-            if (remain >= SysConstant.FILE_SEGMENT_SIZE) {
-                readBytes = new byte[SysConstant.FILE_SEGMENT_SIZE];
+            int segmentSize = calculatePacketSize();
+            if (remain >= segmentSize) {
+                readBytes = new byte[segmentSize];
             } else {
                 readBytes = new byte[(int) remain];
             }
@@ -176,9 +192,9 @@ public class TaskInstance {
                         XFileProtocol.File rspFile = XFileProtocol.File.parseFrom(rsp);
                         cancelTimeout();
                         fileDao.updateTransmit(currentTask.getTaskId(), rspFile.getPosition(), 0);
-                        currentTask.setFileEvent(FileEvent.SET_FILE);
                         readIndex = rspFile.getPosition();
                         currentTask.setPosition(readIndex);
+                        currentTask.setFileEvent(FileEvent.SET_FILE);
                         long temPercent = readIndex * 100 / currentTask.getLength();
                         if (readPercent < temPercent) {
                             readPercent = temPercent;
@@ -204,6 +220,7 @@ public class TaskInstance {
 
                         if (!isCancel) {
                             // 正常收到答复继续传送文件
+                            rspTime = System.currentTimeMillis();
                             transferFile(rspFile);
                         }
                     } catch (Exception e) {
@@ -233,7 +250,7 @@ public class TaskInstance {
                     }
                 }
             };
-
+            reqTime = System.currentTimeMillis();
             if (XFileApp.mLinkType == LinkType.CLIENT) {
                 IMClientFileManager.getInstance().sendMessage(sid, cid, responseFile, packetlistener, (short) 0);
             } else if (XFileApp.mLinkType == LinkType.SERVER) {
@@ -288,7 +305,6 @@ public class TaskInstance {
                     writeIndex = 0;
                     isTransmit = false;
                     isCancel = false;
-                    currentTask.setFileEvent(FileEvent.SET_FILE_SUCCESS);
                     if (!StringUtils.isEmpty(currentTask.getExtension())) {
                         String newFilePath = XFileUtils.rename(currentTask.getPath(), currentTask.getExtension());
                         if (!StringUtils.isEmpty(newFilePath)) {
@@ -298,6 +314,7 @@ public class TaskInstance {
                     }
                     fileDao.updateTransmit(currentTask.getTaskId(), currentTask.getPosition(), 1);
                     transferDetailDao.addTotalSize(currentTask.getLength());
+                    currentTask.setFileEvent(FileEvent.SET_FILE_SUCCESS);
                     triggerEvent(currentTask);
                     final String taskId = getTaskId();
                     ThreadPoolManager.getInstance(TaskInstance.class.getName()).startTaskThread(new Runnable() {
@@ -326,41 +343,15 @@ public class TaskInstance {
                     });
                 } else {
                     sid = SysConstant.SERVICE_FILE_SET_SUCCESS;
+                    waitReceive();
                 }
 
                 short cid = SysConstant.CMD_FILE_SET_RSP;
 
-                Packetlistener packetlistener = new Packetlistener() {
-                    @Override
-                    public void onSuccess(short service, Object response) {
-
-                    }
-
-                    @Override
-                    public void onFaild() {
-                        logger.e("*****ReceiveFileFailed");
-                        if (!isCancel) {
-                            currentTask.setFileEvent(FileEvent.SET_FILE_FAILED);
-                            triggerEvent(currentTask);
-                            fileDao.updateTransmit(currentTask.getTaskId(), currentTask.getPosition(), 2);
-                        }
-                    }
-
-                    @Override
-                    public void onTimeout() {
-                        logger.e("*****ReceiveFileOnTimeout");
-                        if (!isCancel) {
-                            currentTask.setFileEvent(FileEvent.SET_FILE_FAILED);
-                            triggerEvent(currentTask);
-                            fileDao.updateTransmit(currentTask.getTaskId(), currentTask.getPosition(), 2);
-                        }
-                    }
-                };
-
                 if (XFileApp.mLinkType == LinkType.CLIENT) {
-                    IMClientFileManager.getInstance().sendMessage(sid, cid, responseFile, packetlistener, header.getSeqnum());
+                    IMClientFileManager.getInstance().sendMessage(sid, cid, responseFile, null, header.getSeqnum());
                 } else if (XFileApp.mLinkType == LinkType.SERVER) {
-                    IMServerFileManager.getInstance().sendMessage(sid, cid, responseFile, packetlistener, header.getSeqnum());
+                    IMServerFileManager.getInstance().sendMessage(sid, cid, responseFile, null, header.getSeqnum());
                 }
             }
 
@@ -425,12 +416,16 @@ public class TaskInstance {
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                isTransmit = false;
-                currentTask.setFileEvent(FileEvent.SET_FILE_FAILED);
-                triggerEvent(currentTask);
+                logger.e("*****ReceiveFileOnTimeout");
+                if (!isCancel) {
+                    isTransmit = false;
+                    currentTask.setFileEvent(FileEvent.SET_FILE_FAILED);
+                    fileDao.updateTransmit(currentTask.getTaskId(), currentTask.getPosition(), 0);
+                    triggerEvent(currentTask);
+                }
             }
         };
-        timer.schedule(timerTask, 1000 * 16);
+        timer.schedule(timerTask, SysConstant.RECEIVE_TIMEOUT);
 
     }
 
@@ -446,6 +441,23 @@ public class TaskInstance {
             timerTask.cancel();
             timerTask = null;
         }
+    }
+
+    /**
+     * 5秒内响应每次增加10k的数据量,最大200kb,最小10kb
+     */
+    private int calculatePacketSize() {
+        if (reqTime != 0 && rspTime != 0 && rspTime > reqTime) {
+            if (rspTime - reqTime < 5000) {
+                if (packetSize < SysConstant.SEGMENT_SIZE_MAX) {
+                    packetSize += SysConstant.SEGMENT_SIZE_ADD;
+                }
+            } else {
+                packetSize = SysConstant.SEGMENT_SIZE;
+            }
+            return packetSize;
+        }
+        return SysConstant.SEGMENT_SIZE;
     }
 
 

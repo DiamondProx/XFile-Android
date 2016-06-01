@@ -49,7 +49,11 @@ public class SysConstant {
 
     public static final int FILE_SERVER_PORT = 9098;// 文件服务器端口
 
-    public static final int FILE_SEGMENT_SIZE = 1024 * 100;// 分段文件大小
+    public static final int SEGMENT_SIZE = 1024 * 10;// 默认分段大小
+
+    public static final int SEGMENT_SIZE_ADD = 1024 * 10;//分段每次累加大小
+
+    public static final int SEGMENT_SIZE_MAX = 1024 * 200;//最大文件分段
 
     public static final short SERVICE_DEFAULT = 0x99;// 保留服务号
 
@@ -78,6 +82,8 @@ public class SysConstant {
     public static final String SEARCH_KEY = "XFile";
 
     public static final int HEART_TIME = 1000 * 60;// 心跳时间
+
+    public static final int RECEIVE_TIMEOUT = 1000 * 10;//发送文件超时时间
 
 
 }

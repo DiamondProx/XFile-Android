@@ -2,6 +2,7 @@ package com.huangjiang.manager.callback;
 
 import android.os.Handler;
 
+import com.huangjiang.config.SysConstant;
 import com.huangjiang.utils.Logger;
 
 import java.util.Map;
@@ -52,7 +53,7 @@ public class FileServerListenerQueue {
                     hasTask = false;
                     startTimer();
                 }
-            }, 16 * 1000);
+            }, SysConstant.RECEIVE_TIMEOUT);
         }
     }
 
