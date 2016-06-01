@@ -297,7 +297,7 @@ public class TaskInstance {
                     writePercent = tempPercent;
                     triggerEvent(currentTask);
                 }
-
+                boolean isComplete = false;
                 short sid;
                 if (reqFile.getPosition() + fileData.length == currentTask.getLength()) {
                     // 文件发送完成,提醒接收端结束状态
@@ -323,6 +323,7 @@ public class TaskInstance {
                             IMFileManager.getInstance().removeTask(taskId);
                         }
                     });
+                    isComplete = true;
                     reset();
                 }
 
@@ -343,7 +344,9 @@ public class TaskInstance {
                     });
                 } else {
                     sid = SysConstant.SERVICE_FILE_SET_SUCCESS;
-                    waitReceive();
+                    if (!isComplete) {
+                        waitReceive();
+                    }
                 }
 
                 short cid = SysConstant.CMD_FILE_SET_RSP;
@@ -417,7 +420,7 @@ public class TaskInstance {
             @Override
             public void run() {
                 logger.e("*****ReceiveFileOnTimeout");
-                if (!isCancel) {
+                if (!isCancel && currentTask != null) {
                     isTransmit = false;
                     currentTask.setFileEvent(FileEvent.SET_FILE_FAILED);
                     fileDao.updateTransmit(currentTask.getTaskId(), currentTask.getPosition(), 0);
