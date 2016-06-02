@@ -11,12 +11,15 @@ import android.widget.ListView;
 
 import com.huangjiang.adapter.TransmitAdapter;
 import com.huangjiang.business.event.FindResEvent;
+import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.history.HistoryLogic;
 import com.huangjiang.business.model.TFileInfo;
+import com.huangjiang.core.ThreadPoolManager;
 import com.huangjiang.dao.DaoMaster;
 import com.huangjiang.dao.TFileDao;
 import com.huangjiang.manager.IMFileManager;
 import com.huangjiang.manager.event.FileEvent;
+import com.huangjiang.utils.MediaStoreUtils;
 import com.huangjiang.utils.XFileUtils;
 import com.huangjiang.view.DialogHelper;
 import com.huangjiang.view.MenuHelper;
@@ -151,10 +154,8 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                 tFileInfo.setPath(dFileInfo.getPath());
                 adapter.updateTFileInfo(tFileInfo);
                 updateTransmitState(tFileInfo);
-                Fragment fragment = getParentFragment();
-                if (fragment != null && fragment instanceof TabMessageFragment) {
-                    ((TabMessageFragment) fragment).setStoreSpace();
-                }
+                notificationChange(dFileInfo);
+
             }
             break;
             case CHECK_TASK_FAILED:
@@ -189,6 +190,29 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
             return adapter.getCount();
         }
         return 0;
+    }
+
+    /**
+     * 更新存储空间,刷新数据
+     */
+    private void notificationChange(final TFileInfo tFileInfo) {
+        if (tFileInfo != null && !tFileInfo.isSend()) {
+            ThreadPoolManager.getInstance(HistoryFragment.class.getName()).startTaskThread(new Runnable() {
+                @Override
+                public void run() {
+                    tFileInfo.setFileType(XFileUtils.getFileType(getActivity(), tFileInfo.getExtension()));
+                    MediaStoreUtils.resetMediaStore(getActivity(), tFileInfo.getPath());
+                    OpFileEvent changeEvent = new OpFileEvent(OpFileEvent.OpType.CHANGE, null);
+                    changeEvent.setFileType(tFileInfo.getFileType());
+                    changeEvent.setSuccess(true);
+                    EventBus.getDefault().post(changeEvent);
+                }
+            });
+            Fragment fragment = getParentFragment();
+            if (fragment != null && fragment instanceof TabMessageFragment) {
+                ((TabMessageFragment) fragment).setStoreSpace();
+            }
+        }
     }
 
 }
