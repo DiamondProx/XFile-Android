@@ -21,6 +21,7 @@ import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.business.opfile.OpLogic;
 import com.huangjiang.business.search.SearchLogic;
+import com.huangjiang.utils.KeyboardUtils;
 import com.huangjiang.view.CustomDialog;
 import com.huangjiang.view.DialogHelper;
 import com.huangjiang.view.MenuHelper;
@@ -191,6 +192,7 @@ public class SearchFragment extends Fragment implements PopupMenu.MenuCallback, 
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        KeyboardUtils.hiddenSoftKeyboard(getActivity(), edtSearch);
         TFileInfo tFileInfo = (TFileInfo) searchAdapter.getItem(position);
         MenuHelper.showMenu(getActivity(), view, position, tFileInfo, SearchFragment.this);
     }

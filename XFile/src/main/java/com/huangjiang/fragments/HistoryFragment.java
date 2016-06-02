@@ -13,6 +13,7 @@ import com.huangjiang.adapter.TransmitAdapter;
 import com.huangjiang.business.event.FindResEvent;
 import com.huangjiang.business.event.OpFileEvent;
 import com.huangjiang.business.history.HistoryLogic;
+import com.huangjiang.business.model.FileType;
 import com.huangjiang.business.model.TFileInfo;
 import com.huangjiang.core.ThreadPoolManager;
 import com.huangjiang.dao.DaoMaster;
@@ -201,11 +202,13 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                 @Override
                 public void run() {
                     tFileInfo.setFileType(XFileUtils.getFileType(getActivity(), tFileInfo.getExtension()));
-                    MediaStoreUtils.resetMediaStore(getActivity(), tFileInfo.getPath());
-                    OpFileEvent changeEvent = new OpFileEvent(OpFileEvent.OpType.CHANGE, null);
-                    changeEvent.setFileType(tFileInfo.getFileType());
-                    changeEvent.setSuccess(true);
-                    EventBus.getDefault().post(changeEvent);
+                    if (tFileInfo.getFileType() == FileType.Image || tFileInfo.getFileType() == FileType.Audio || tFileInfo.getFileType() == FileType.Video) {
+                        MediaStoreUtils.resetMediaStore(getActivity(), tFileInfo.getPath());
+                        OpFileEvent changeEvent = new OpFileEvent(OpFileEvent.OpType.CHANGE, null);
+                        changeEvent.setFileType(tFileInfo.getFileType());
+                        changeEvent.setSuccess(true);
+                        EventBus.getDefault().post(changeEvent);
+                    }
                 }
             });
             Fragment fragment = getParentFragment();
