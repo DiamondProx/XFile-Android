@@ -8,7 +8,7 @@ import android.widget.EditText;
 /**
  * 键盘工具
  */
-public class KeyboardUtils {
+public class SoftKeyboardUtils {
 
     /**
      * 隐藏键盘
