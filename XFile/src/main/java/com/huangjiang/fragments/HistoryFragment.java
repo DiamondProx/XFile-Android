@@ -30,7 +30,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -192,11 +191,4 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         return 0;
     }
 
-    /**
-     * 删除本地缓存文件
-     */
-    public boolean delCacheFile(TFileInfo tFileInfo) {
-        File cacheFile = new File(tFileInfo.getPath());
-        return cacheFile.delete();
-    }
 }

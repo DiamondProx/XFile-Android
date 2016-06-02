@@ -63,6 +63,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -281,8 +282,20 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
      * 发送文件
      */
     public void sendTFile(TFileInfo tFileInfo, ImageView originImage) {
+        if (tFileInfo == null || originImage == null) {
+            return;
+        }
         if (XFileApp.mLinkType == LinkType.NONE) {
             startActivity(new Intent(HomeActivity.this, ConnectActivity.class));
+            return;
+        }
+        File file = new File(tFileInfo.getPath());
+        if (!file.exists()) {
+            Toast.makeText(HomeActivity.this, R.string.file_not_exists, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (tFileInfo.getLength() == 0) {
+            Toast.makeText(HomeActivity.this, R.string.send_not_empty, Toast.LENGTH_SHORT).show();
             return;
         }
         setThrowView(originImage);
@@ -337,9 +350,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnChe
                 top_connect_layout.setVisibility(View.VISIBLE);
                 connect_device_name.setText(event.getDevice_name());
                 if (Config.getSound())
-                if (Config.getVibration()) {
-                    VibratorUtils.Vibrate();
-                }
+                    if (Config.getVibration()) {
+                        VibratorUtils.Vibrate();
+                    }
                 historyLogic.addOneConnect(event.getDevice_name());
                 break;
             case CONNECT_CLOSE:

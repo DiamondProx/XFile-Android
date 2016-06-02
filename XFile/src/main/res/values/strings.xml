@@ -167,6 +167,8 @@
     <string name="file_send_failed">文件%1$s发送失败</string>
     <string name="history_empty">暂无传输记录</string>
     <string name="disk_enough">磁盘空间不足</string>
+    <string name="file_not_exists">文件不存在</string>
+    <string name="send_not_empty">发个空文件就没必要了吧~</string>
 
 
 </resources>
