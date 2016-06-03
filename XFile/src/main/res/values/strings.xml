@@ -26,8 +26,8 @@
     <string name="wx_qr_code">微信二维码</string>
     <string name="contact_qq">QQ:26666302</string>
     <string name="app_version">版本: %1$s</string>
-    <string name="company">渡江科技有限公司</string>
-    <string name="copyright">Copyright © 2016 DuMobile,Inc.</string>
+    <string name="company">DiamondProx出品</string>
+    <string name="copyright">Copyright © 2016 DiamondProx.</string>
     <string name="allright">All Rights Reserved</string>
     <string name="is_new">已经是最新版本</string>
     <string name="check_version">检查新版本</string>
@@ -91,9 +91,9 @@
     <string name="mime_app">应用</string>
     <string name="mime_normal">文件</string>
     <string name="mime_apk">安装包</string>
+    <string name="backup_success">备份成功</string>
     <string name="please_input_new_name">请输入新文件名</string>
     <string name="sure_delete_file">你确定要删除吗?</string>
-    <string name="backup_success">备份成功</string>
     <string name="up_dir">上一级</string>
     <string name="local_music">本地音乐(%1$s)</string>
     <string name="local_video">本地视频(%1$s)</string>
